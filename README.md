@@ -1,6 +1,6 @@
 # MIRCS React
 
-This repository contains a React-based mircs-geogenealogy service.
+This repository contains the mircs-geogenealogy service prototype, built as a React web app connected to an ExpressJS server backed by MongoDB.
 
 # Dev Setup
 
@@ -12,8 +12,22 @@ The build scripts require Node.js to be installed - https://nodejs.org/. As Node
 
 Node.js ships with a tool called Node Package Manager (npm) - https://www.npmjs.com/ - which is required to run the build tools.
 
-### create-react-app
+## Running Locally
 
-The basic structure of this project was created with the create-react-app script provided by Facebook - https://github.com/facebookincubator/create-react-app. It installs a fairly opinionated environment based on Facebook's experience with their own React framework and represents the efforts of many smart people. I am grateful to their efforts and appreciate our ability to leverage it. To that end, I do not want us to "eject" and modify the environment. We can do things the "React way" and wrap to extend.
+You'll need to run two shells, one for the client UI and one for the server.
 
-For more information on React see Facebook's developer pages - https://facebook.github.io/react/docs/hello-world.html
+### Server:
+
+```bash
+$ cd server
+$ npm install
+$ npm start
+```
+
+### Client UI:
+
+```bash
+$ cd react-app
+$ npm install
+$ npm start
+```
