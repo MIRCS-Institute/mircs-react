@@ -1,8 +1,14 @@
+import * as mobx from 'mobx';
+import App from './components/App';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import registerServiceWorker from './registerServiceWorker';
 
-ReactDOM.render(<App />, document.getElementById('root'));
-registerServiceWorker();
+import './index.css';
+
+mobx.useStrict(true);
+
+ReactDOM.render(<App/>, document.getElementById('root'));
+
+// disable the service worker for the time being - it adds cache complexity that can make it occasionally hard to debug
+// import registerServiceWorker from './registerServiceWorker';
+// registerServiceWorker();
