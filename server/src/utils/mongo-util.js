@@ -23,4 +23,19 @@ MongoUtil.getDb = function() {
   });
 };
 
+MongoUtil.initialize = function() {
+  MongoClient.connect(MONGO_SERVER_URL, function(error, db) {
+      if (error) {
+        return reject(error);
+      }
+    db.createCollection("masterCollections", function(err, res) {
+      if (err) {
+	  throw err;
+	  }
+        console.log("Collection created!");
+        db.close();
+      });
+    });
+};
+
 module.exports = MongoUtil;

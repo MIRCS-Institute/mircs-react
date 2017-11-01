@@ -12,6 +12,7 @@ const express = require('express');
 const log = require(__server_src_dir + 'utils/log.js');
 const logger = require('morgan');
 const path = require('path');
+const MongoUtil = require(__server_src_dir + 'utils/mongo-util.js');
 
 const app = express();
 
@@ -46,3 +47,7 @@ const PORT = Environment.getRequired('SERVER_PORT');
 app.listen(PORT, function() {
   log.info(`expressjs server is listening on port ${PORT}...`);
 });
+
+
+// Create collection
+MongoUtil.initialize();

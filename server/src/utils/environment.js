@@ -20,7 +20,7 @@ const CONFIGURATION_VARS = {
     description: 'used to set the port acting as the http server'
   },
   MONGO_SERVER_URL: {
-    default: 'mongodb://localhost:27017/',
+    default: 'mongodb://localhost:27017/mircsdb',
     type: TYPE_STRING,
     description: 'MongoDB connection string - for details see https://docs.mongodb.org/manual/reference/connection-string/'
   },
