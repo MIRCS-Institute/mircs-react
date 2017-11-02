@@ -1,9 +1,9 @@
 import _ from 'lodash'
 import Card, { CardContent, CardHeader } from 'material-ui/Card'
-import ErrorSnackbar from './ErrorSnackbar';
+import ErrorSnackbar from './ErrorSnackbar'
 import http from '../utils/http'
-import LoadingSpinner from './LoadingSpinner';
-import React from 'react';
+import LoadingSpinner from './LoadingSpinner'
+import React from 'react'
 import { action, extendObservable } from 'mobx'
 import { observer } from 'mobx-react'
 
