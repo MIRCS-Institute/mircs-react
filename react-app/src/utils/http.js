@@ -62,6 +62,7 @@ http.jsonRequest = function(url, request) {
               '\n    request:', request,
               '\n    response:', response);
           }
+          return Promise.reject(new Error(`${response.status}: ${response.bodyText}`));
         }
 
         return response;

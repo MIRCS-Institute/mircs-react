@@ -5,6 +5,7 @@
   "scripts": {
     "start": "PORT=8000 react-scripts start",
     "build": "react-scripts build",
+    "clean": "rm -rf build",
     "test": "react-scripts test --env=jsdom"
   },
   "dependencies": {
