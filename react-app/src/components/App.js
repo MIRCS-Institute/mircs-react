@@ -1,10 +1,11 @@
 import blue from 'material-ui/colors/blue'
 import BugReportIcon from 'material-ui-icons/BugReport'
+import FileUploadIcon from 'material-ui-icons/FileUpload'
 import CollectionsIcon from 'material-ui-icons/Collections'
-import Grid from 'material-ui/Grid'
 import HomeIcon from 'material-ui-icons/Home'
-import List, { ListItem, ListItemIcon, ListItemText } from 'material-ui/List'
 import MapIcon from 'material-ui-icons/Map'
+import Grid from 'material-ui/Grid'
+import List, { ListItem, ListItemIcon, ListItemText } from 'material-ui/List'
 import React from 'react';
 import { HashRouter } from 'react-router-dom'
 import { Link, Route } from 'react-router-dom'
@@ -15,6 +16,7 @@ import { withRouter } from 'react-router-dom'
 import Collections from './Collections'
 import Maps from './Maps'
 import Potato from './Potato'
+import Upload from './Upload'
 import Unknown404 from './Unknown404'
 
 const theme = createMuiTheme({
@@ -72,6 +74,14 @@ const SideMenu = () => (
         <ListItemText primary="Maps"/>
       </ListItem>
     </Link>
+    <Link to="/upload" style={styles.sideMenuLink}>
+      <ListItem button>
+        <ListItemIcon>
+          <FileUploadIcon/>
+        </ListItemIcon>
+        <ListItemText primary="Upload"/>
+      </ListItem>
+    </Link>
     <Link to="/potato" style={styles.sideMenuLink}>
       <ListItem button>
         <ListItemIcon>
@@ -91,6 +101,7 @@ const ContentPane = withRouter((props) => (
     <Route path="/collections" component={Collections}/>
     <Route path="/maps" component={Maps}/>
     <Route path="/potato" component={Potato}/>
+    <Route path="/upload" component={Upload}/>
     <Route component={Unknown404}/>
   </Switch>
 ))
