@@ -18,17 +18,37 @@ const theme = createMuiTheme({
   }
 });
 
-// use FileReader and csv modules to parse CSV to JSON on client
-let onDrop = onDrop = (e) => {
-    const reader = new FileReader();
-    reader.onload = () => {
-        csv.parse(reader.result, (err, data) => {
-            // parsed CSV data
-            console.log(data);
-        });
-    };
+/* use FileReader and CSV modules to convert CSV to JSON on the client */
 
-    reader.readAsBinaryString(e[0]);
+let header = false;
+
+// new collection will be what we send to the backend
+let newCollection = {};
+
+let onDrop = onDrop = (e) => {
+  const reader = new FileReader();
+  reader.onload = () => {
+    csv.parse(reader.result, (err, data) => {
+      // parsed CSV data
+      // from here we want to take this data and convert it to JSON
+      // then we want to send it to the database
+      console.log(data);
+      let x = JSON.stringify(data[0]);
+      // data0 will be the header
+      // make sure to ask if there is a header...
+      for (let i = 0; i < data.length; i++) {
+        if (header) {
+          // write something to deal with the header [0]
+        } else {
+
+        }
+      }
+      // ok so once we figure this out and we properly make a json object
+      // then we should be able to connect to mongo and send it
+      console.log(x);
+    });
+  };
+  reader.readAsBinaryString(e[0]);
 }
 
 const Upload = () => (
@@ -36,9 +56,9 @@ const Upload = () => (
     <div style={styles.content}>
       <Grid container spacing={16} direction='row' justify='space-between'>
         <Grid item xs={12} sm={12}>
-        <h3>Drag and drop a CSV file to upload data to the MIRCS platform.</h3>
-        <Dropzone name={"here"} onDrop={onDrop} />
-        {/* <form method="post" enctype="multipart/form-data" action="/">
+          <h3>Drag and drop a CSV file to upload data to the MIRCS platform.</h3>
+          <Dropzone name={"here"} onDrop={onDrop} />
+          {/* <form method="post" enctype="multipart/form-data" action="/">
           <input type="file" name="filename"></input>
           <input type="submit" value="Upload"></input>
         </form> */}

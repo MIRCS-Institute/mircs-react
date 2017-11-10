@@ -58,20 +58,20 @@ const App = () => (
 
 const SideMenu = () => (
   <List>
-    <Link to="/collections" style={styles.sideMenuLink}>
-      <ListItem button>
-        <ListItemIcon>
-          <CollectionsIcon/>
-        </ListItemIcon>
-        <ListItemText primary="Collections"/>
-      </ListItem>
-    </Link>
     <Link to="/maps" style={styles.sideMenuLink}>
       <ListItem button>
         <ListItemIcon>
           <MapIcon/>
         </ListItemIcon>
         <ListItemText primary="Maps"/>
+      </ListItem>
+    </Link>
+    <Link to="/collections" style={styles.sideMenuLink}>
+      <ListItem button>
+        <ListItemIcon>
+          <CollectionsIcon/>
+        </ListItemIcon>
+        <ListItemText primary="Collections"/>
       </ListItem>
     </Link>
     <Link to="/upload" style={styles.sideMenuLink}>
