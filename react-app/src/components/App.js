@@ -20,7 +20,7 @@ import NavBar from './NavBar.js'
 import TabSelector from './TabSelector.js'
 import {Data} from './Data.js'
 
-
+import './App.css';
 
 const theme = createMuiTheme({
   palette: {
