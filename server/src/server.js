@@ -1,6 +1,6 @@
-//
-// Starts the MIRCS server
-//
+/* 
+this file starts the MIRCS server
+ */
 
 // set up __server_src_dir global variable, available to all modules
 global.__server_src_dir = __dirname + '/';
@@ -12,6 +12,7 @@ const express = require('express');
 const log = require(__server_src_dir + 'utils/log.js');
 const logger = require('morgan');
 const path = require('path');
+const bodyParser = require('body-parser');
 const MongoUtil = require(__server_src_dir + 'utils/mongo-util.js');
 
 const app = express();
@@ -29,6 +30,10 @@ app.use(express.static(path.join(__server_src_dir, '../../react-app/build')));
 
 // register the api
 app.use(createRouterForDir('api'));
+
+// configure the app the use body-parser for POST requests
+app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.json());
 
 // return 404 for unknown commands
 app.all('*', function(req, res) {
@@ -48,6 +53,20 @@ app.listen(PORT, function() {
   log.info(`expressjs server is listening on port ${PORT}...`);
 });
 
-
-// Create collection
+// create master collection
 MongoUtil.initialize();
+
+// const mongoose = require('mongoose');
+// mongoose.connect("mongodb://localhost:27017/mircsdb");
+// const db = mongoose.connection;
+
+// Master = require('./models/master');
+
+// app.get('api/collections', function(req, res){
+//   Master.getMaster(function(err, master){
+//     if(err) {
+//       throw err;
+//     }
+//     res.json(master);
+//   });
+// });

@@ -1,9 +1,5 @@
 import blue from 'material-ui/colors/blue'
-import BugReportIcon from 'material-ui-icons/BugReport'
 import FileUploadIcon from 'material-ui-icons/FileUpload'
-import CollectionsIcon from 'material-ui-icons/Collections'
-import HomeIcon from 'material-ui-icons/Home'
-import MapIcon from 'material-ui-icons/Map'
 import Grid from 'material-ui/Grid'
 import List, { ListItem, ListItemIcon, ListItemText } from 'material-ui/List'
 import React from 'react';
@@ -11,6 +7,13 @@ import Button from 'material-ui/Button';
 import { MuiThemeProvider, createMuiTheme } from 'material-ui/styles'
 import csv from 'csv';
 import Dropzone from 'react-dropzone';
+import http from '../utils/http'
+import _ from 'lodash'
+import Card, { CardContent, CardHeader } from 'material-ui/Card'
+import ErrorSnackbar from './ErrorSnackbar'
+import LoadingSpinner from './LoadingSpinner'
+import { action, extendObservable } from 'mobx'
+import { observer } from 'mobx-react'
 
 const theme = createMuiTheme({
   palette: {
@@ -18,55 +21,59 @@ const theme = createMuiTheme({
   }
 });
 
-/* use FileReader and CSV modules to convert CSV to JSON on the client */
+/* this class will fetch all uploaded CSV files the server and display them */
 
-let header = false;
+const currentUpload = observer(class extends React.Component {
+  constructor() {
+    super();
+    extendObservable(this, {
+      collection: [],
+      error: null,
+      isUploaded: false
+    });
+  }
 
-// new collection will be what we send to the backend
-let newCollection = {};
+  render() {
+    return (
+      <div>
+        {/* remember to use isUploaded */}
+        <Card style={{ marginBottom: 10 }}>
+          <CardHeader title={"CSV File Upload"} />
+          <CardContent>
+            <div>
+              <p>Drag and drop a CSV file below to upload data to the MIRCS platform.</p>
+              <Dropzone style={styles.dropzone} multiple="false" name={"fileUpload"} onDrop={uploadCSV} />
+            </div>
+          </CardContent>
+        </Card>
+        <ErrorSnackbar error={this.error} />
+      </div>
+    );
+  }
+});
 
-let onDrop = onDrop = (e) => {
+let header = true; // if the CSV file contains a header at row 0, most usually do
+let parsedDocument = {};
+
+/* use FileReader and CSV modules to convert CSV to a readable format */
+let uploadCSV = uploadCSV = (e) => {
   const reader = new FileReader();
   reader.onload = () => {
     csv.parse(reader.result, (err, data) => {
-      // parsed CSV data
-      // from here we want to take this data and convert it to JSON
+      // from here we want to take this data and
       // then we want to send it to the database
-      console.log(data);
-      let x = JSON.stringify(data[0]);
-      // data0 will be the header
-      // make sure to ask if there is a header...
-      for (let i = 0; i < data.length; i++) {
-        if (header) {
-          // write something to deal with the header [0]
-        } else {
+      parsedDocument.information = JSON.stringify(data);
 
-        }
-      }
+      let x = http.jsonRequest('/api/routes/upload-document');
+      console.log(x);
+
       // ok so once we figure this out and we properly make a json object
       // then we should be able to connect to mongo and send it
-      console.log(x);
+      console.log(parsedDocument.information);
     });
   };
   reader.readAsBinaryString(e[0]);
 }
-
-const Upload = () => (
-  <MuiThemeProvider theme={theme}>
-    <div style={styles.content}>
-      <Grid container spacing={16} direction='row' justify='space-between'>
-        <Grid item xs={12} sm={12}>
-          <h3>Drag and drop a CSV file to upload data to the MIRCS platform.</h3>
-          <Dropzone name={"here"} onDrop={onDrop} />
-          {/* <form method="post" enctype="multipart/form-data" action="/">
-          <input type="file" name="filename"></input>
-          <input type="submit" value="Upload"></input>
-        </form> */}
-        </Grid>
-      </Grid>
-    </div>
-  </MuiThemeProvider>
-);
 
 const styles = {
   header: {
@@ -88,6 +95,12 @@ const styles = {
   content: {
     padding: '5px'
   },
+  dropzone: {
+    height: '200px',
+    borderWidth: '2px',
+    borderStyle: 'dashed',
+    borderRadius: '5px'
+  }
 };
 
-export default Upload;
+export default currentUpload;

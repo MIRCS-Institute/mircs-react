@@ -5,10 +5,11 @@ const FsUtil = require(__server_src_dir + '/utils/fs-util.js');
 const log = require(__server_src_dir + 'utils/log.js');
 const unused = require(__server_src_dir + 'utils/unused.js');
 
-//
-// Scans the contents of [dir]/param, [dir]/middleware, and [dir]/routes for well-named files and executes functions within
-// them, giving us a route-declaration-by-convention mechanism.
-//
+/* 
+scans the contents of [dir]/param, [dir]/middleware, and [dir]/routes 
+for well-named files and executes functions within
+them, giving us a route-declaration-by-convention mechanism.
+ */
 function createRouterForDir(dir) {
   const router = new express.Router();
 
@@ -65,7 +66,7 @@ function createRouterForDir(dir) {
   })();
 
   // list all registered routes
-  if (log.level() === log.TRACE) {
+  if (true) {
     (function listAllRoutes() {
       var routes = router.stack;
       var routesMapping = [];

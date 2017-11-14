@@ -23,10 +23,11 @@ const Collections = observer(class extends React.Component {
   componentDidMount() {
     action(() => {
       this.isLoading = true;
-      http.jsonRequest('/api/list-databases')
+      http.jsonRequest('/api/list-collections')
         .then(action((response) => {
           this.isLoading = false;
-          this.collections = _.get(response, 'bodyJson.databases');
+          console.log(response);
+          this.collections = _.get(response, 'bodyJson');
         }))
         .catch(action((error) => {
           this.isLoading = false;
@@ -41,7 +42,10 @@ const Collections = observer(class extends React.Component {
       <div>
         {this.isLoading && <LoadingSpinner title='Loading Collections...' />}
 
-        {!this.isLoading && <header>Collections</header>}
+        {!this.isLoading && <header style={styles.header}>Collections</header>}
+
+        {!this.isLoading && <p style={styles.description}>
+        Each card represents a dataset that has been uploaded to the platform.</p>}
 
         {this.collections.map((collection) => (
           <CollectionCard key={collection.name} collection={collection} />
@@ -55,33 +59,29 @@ const Collections = observer(class extends React.Component {
 
 /* each individual card will represent a single collection */
 const CollectionCard = (props) => (
-  <Card style={{ marginBottom: 10 }}>
+  <Card style={styles.card}>
     <CardHeader title={props.collection.name} />
     <CardContent>
       <div>
-        size on disk: {props.collection.sizeOnDisk}
+        <strong>Collection name:</strong> {props.collection.name}
       </div>
       <div>
-        is empty: {'' + props.collection.empty}
+        <strong>Description:</strong> {'' + props.collection.content}
       </div>
     </CardContent>
   </Card>
 );
 
+const styles = {
+  header: {
+    fontSize: '30px'
+  },
+  card: {
+    marginBottom: '15px',
+  },
+  description: {
+    marginBottom: '20px'
+  }
+};
+
 export default Collections;
-
-
-  // componentDidMount() {
-  //   action(() => {
-  //     this.isLoading = true;
-  //     http.jsonRequest('/api/list-databases')
-  //       .then(action((response) => {
-  //         this.isLoading = false;
-  //         this.collections = _.get(response, 'bodyJson.databases');
-  //       }))
-  //       .catch(action((error) => {
-  //         this.isLoading = false;
-  //         this.error = error;
-  //       }));
-  //   })();
-  // }

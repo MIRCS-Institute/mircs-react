@@ -1,0 +1,19 @@
+const mongoose = require('mongoose');
+
+const masterScheme = mongoose.Schema({
+    name: {
+        type: String,
+        required: true
+    },
+    create_date:{
+        type: Date,
+        default: Date.now
+    }
+})
+
+const Master = module.exports = mongoose.model('Master', masterScheme);
+
+/* GET Master */
+module.exports.getMaster = function(callback, limit){
+    Master.find(callback).limit(limit);
+}

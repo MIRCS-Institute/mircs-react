@@ -121,10 +121,12 @@ const styles = {
     verticalAlign: 'top'
   },
   sideMenuLink: {
-    textDecoration: 'none'
+    textDecoration: 'none',
+    paddingRight: '10px'
   },
   content: {
-    padding: '5px'
+    padding: '5px',
+    paddingRight: '15%'
   },
 };
 

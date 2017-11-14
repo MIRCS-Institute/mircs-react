@@ -1,6 +1,6 @@
-//
-// A sample route that echoes back to the request body sent to the server, plus a time stamp field.
-//
+/*
+A sample route that echoes back to the request body sent to the server, plus a time stamp field.
+*/
 const _ = require('lodash');
 
 module.exports = function(router) {
