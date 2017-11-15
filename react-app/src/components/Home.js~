@@ -1,30 +1,116 @@
+import blue from 'material-ui/colors/blue'
+import BugReportIcon from 'material-ui-icons/BugReport'
+import CollectionsIcon from 'material-ui-icons/Collections'
+import Grid from 'material-ui/Grid'
+import HomeIcon from 'material-ui-icons/Home'
+import List, { ListItem, ListItemIcon, ListItemText } from 'material-ui/List'
+import MapIcon from 'material-ui-icons/Map'
 import React from 'react';
+import { HashRouter } from 'react-router-dom'
+import { Link, Route } from 'react-router-dom'
+import { MuiThemeProvider, createMuiTheme } from 'material-ui/styles'
+import { Switch } from 'react-router-dom'
+import { withRouter } from 'react-router-dom'
+import logo from './HEADER.png';
+import People from './People'
+import Maps from './Maps'
+import Streets from './Streets'
+import Buildings from './Buildings'
+import Contact from './Contact'
+import FAQ from './FAQ'
+import Unknown404 from './Unknown404'
+import {Tabs, Tab} from 'material-ui/Tabs';
+import Button from 'material-ui/Button'
+import About from './About'
 
 const Home = () => (
- <div className="Halifax-text"> 
- <div className="Highlight"><h3>Geo-Genealogy</h3></div>
- <p>
- Since the fall of 2014, we have been building initial components for a geo-genealogy prototype for the province. Working partnerships have been formed with the Heritage Trust of Nova Scotia, the Genealogical Association of Nova Scotia, and the Durham Heritage Society. Several faculty at Dalhousie University - within the Business School, the GISciences Centre, sand Faculty of Computer Science - have helped facilitate initial work. 
- </p>
- <p>
- Historical maps are colourful and compelling for many people. The geography of those maps, though, is one way of introducing more context into our understanding of social patterns. The search for general social laws is long past dead, and much intellectual effort now is aimed at figuring out how to better incorporate temporal and spatial contexts into our knowledge of social phenomena. However, if social action is a result of the various purposes and beliefs which individuals hold, then our social understanding must become very local indeed. We accept the geographer's argument that geography, by locating action in space, contextualizes it in another equally fundamental way to history which contextualizes time. We think, therefore, that historical gis which contextualizes both time and space is a tool which can greatly advance this kind of improved understanding of context
- </p>
- <p>
- </p>
- <br></br>
- Outline of Program Concept<br></br>
-Community Prototype: Old North End Halifax<br></br>
-Community Prototype: Durham Community<br></br>
- <p>
- </p>
- <p>
- Workflow Plan: Workflow Schematic <br></br>
-Research Paper: Building an Historical GIS Platform from Archival Data
- </p>
- 
- <div className="Underline"><p>______________</p></div>
- </div> 
- 
+  <HashRouter>
+    <MuiThemeProvider theme={theme}>
+			<Grid container spacing={16} direction='row' justify='space-between'>
+            <Grid item xs={12} sm={2}>
+              <SideMenu/>
+            </Grid>
+            <Grid item xs={12} sm={8}>
+              <ContentPane/>
+            </Grid>
+          </Grid>	
+      </MuiThemeProvider>
+   </HashRouter>
 );
 
+const styles = {
+  logo: {
+    height: '40px',
+    width: '40px',
+    marginTop: '40px'
+  },
+  appTitle: {
+    fontSize: '1.4em',
+    paddingLeft: '15px',
+    marginRight: '0px',
+    lineHeight: '2',
+    verticalAlign: 'top',
+  },
+  sideMenuLink: {
+    textDecoration: 'none'
+  },
+  subHeader: {
+	textDecoration: 'underline'
+  },
+  content: {
+    padding: '5px'
+  },
+  
+};
+const ContentPane = withRouter((props) => (
+  <Switch key={props.location.key} location={props.location}>
+    <Route exact={true} path="/" style={styles.appTitle}>
+    </Route>
+    <Route path="/buildings" component={Buildings}/>
+    <Route path="/people" component={People}/>
+    <Route path="/maps" component={Maps}/>
+    <Route path="/streets" component={Streets}/>
+  </Switch>
+))
+const theme = createMuiTheme({
+  palette: {
+    primary: blue
+  }
+});
+const SideMenu = () => (
+  	<List>
+    <Link to="/buildings" style={styles.sideMenuLink}>
+      <ListItem button>
+        <ListItemIcon>
+          <HomeIcon/>
+        </ListItemIcon>
+        <ListItemText primary="Buildings"/>
+      </ListItem>
+    </Link>
+    <Link to="/people" style={styles.sideMenuLink}>
+      <ListItem button>	
+        <ListItemIcon>
+          <CollectionsIcon/>
+        </ListItemIcon>
+        <ListItemText primary="People"/>
+      </ListItem>
+    </Link>
+    <Link to="/maps" style={styles.sideMenuLink}>
+      <ListItem button>
+        <ListItemIcon>
+          <MapIcon/>
+        </ListItemIcon>
+        <ListItemText primary="Maps"/>
+      </ListItem>
+    </Link>
+    <Link to="/streets" style={styles.sideMenuLink}>
+      <ListItem button>
+        <ListItemIcon>
+          <BugReportIcon/>
+        </ListItemIcon>
+        <ListItemText primary="Streets"/>
+      </ListItem>
+    </Link>
+  </List>
+);
 export default Home;

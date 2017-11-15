@@ -71,7 +71,6 @@ const Faq = () => (
 <br></br>&#x25cf;Wilson, Alan. (2015). Highland Shepherd: James MacGregor, Father of the Scottish Enlightenment in Nova Scotia. Toronto: University of Toronto Press.
 
 	</p>
- <div className="Underline"><p>______________</p></div>
  </div> 
 );
 

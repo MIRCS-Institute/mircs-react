@@ -16,6 +16,7 @@ import People from './People'
 import Maps from './Maps'
 import Streets from './Streets'
 import Buildings from './Buildings'
+import Contact from './Contact'
 import Home from './Home'
 import FAQ from './FAQ'
 import Unknown404 from './Unknown404'
@@ -47,7 +48,7 @@ const App = () => (
     		 </Link>   
     		 </div>
     		 <div className="tab">
-          <Link to="/home" style={styles.sideMenuLink}>
+          <Link to="/contact" style={styles.sideMenuLink}>
           <Button><ListItemText primary="CONTACT"/></Button>
     		 </Link>   
     		 </div> 
@@ -56,20 +57,13 @@ const App = () => (
           <Button><ListItemText primary="ABOUT"/></Button>
     		 </Link>   
     		 </div>    		 
-    		 
     		 </center>
     		 <div className="Underline"><p>______________</p>
 			 </div> 
-    		 </div>	  
-          <div className="Header-Options">
-       <h3>Choose your data set</h3>        
-       </div>
+    		 </div>	   
         <div style={styles.content}>
-          <Grid container spacing={16} direction='row' justify='space-between'>
-            <Grid item xs={12} sm={2}>
-              <SideMenu/>
-            </Grid>
-            <Grid item xs={12} sm={8}>
+          <Grid container spacing={20} direction='row' justify='space-between'>
+            <Grid item xs={12} sm={16}>
               <ContentPane/>
             </Grid>
           </Grid>
@@ -80,48 +74,10 @@ const App = () => (
     <center><h4>&copy;MARITIME INSTITUTE FOR CIVIL SOCIETY <br></br>
 P.O. BOX 8041, HALIFAX, N.S. B3K 5L8</h4></center>
     </div>
-      </div>
-      
+      </div>      
     </MuiThemeProvider>    
   </HashRouter>
-);
-const SideMenu = () => (
-
-  	<List>
-    <Link to="/buildings" style={styles.sideMenuLink}>
-      <ListItem button>
-        <ListItemIcon>
-          <HomeIcon/>
-        </ListItemIcon>
-        <ListItemText primary="Buildings"/>
-      </ListItem>
-    </Link>
-    <Link to="/people" style={styles.sideMenuLink}>
-      <ListItem button>	
-        <ListItemIcon>
-          <CollectionsIcon/>
-        </ListItemIcon>
-        <ListItemText primary="People"/>
-      </ListItem>
-    </Link>
-    <Link to="/maps" style={styles.sideMenuLink}>
-      <ListItem button>
-        <ListItemIcon>
-          <MapIcon/>
-        </ListItemIcon>
-        <ListItemText primary="Maps"/>
-      </ListItem>
-    </Link>
-    <Link to="/streets" style={styles.sideMenuLink}>
-      <ListItem button>
-        <ListItemIcon>
-          <BugReportIcon/>
-        </ListItemIcon>
-        <ListItemText primary="Streets"/>
-      </ListItem>
-    </Link>
-  </List>
-);
+);	
 
 const ContentPane = withRouter((props) => (
   <Switch key={props.location.key} location={props.location}>
@@ -134,6 +90,7 @@ const ContentPane = withRouter((props) => (
     <Route path="/people" component={People}/>
     <Route path="/maps" component={Maps}/>
     <Route path="/streets" component={Streets}/>
+    <Route path="/contact" component={Contact}/>
     <Route component={Unknown404}/>
   </Switch>
 ))
@@ -162,5 +119,6 @@ const styles = {
   },
   
 };
+
 
 export default App;

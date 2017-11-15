@@ -15,9 +15,6 @@ const Faq = () => (
  <p>
  The boundaries we are using are mapped by North Street, Windsor Street, Cogswell, and the harbour. Within that neighbourhood, we have taken a random sample of five hundred households. During the winter and spring (2015), we built profiles of most of these households, identifying the composition and links between spouses, children, domestics, and lodgers, and developing information on occupations, ethnicity, and religion.
  </p> 
- <p>
- We have set up a development site (see below) to display and map this information, and are working on refinements and improvements to the model. Once it is stabilized, we will then be able to proceed with an analysis of the data, and expect that this will allow us to answer the question we have asked about the historical composition of the neighbourhood.
- </p>
  
   <div className="Highlight"><h3>Durham & the West River of Pictou?</h3></div>
   
@@ -74,7 +71,6 @@ const Faq = () => (
 <br></br>&#x25cf;Wilson, Alan. (2015). Highland Shepherd: James MacGregor, Father of the Scottish Enlightenment in Nova Scotia. Toronto: University of Toronto Press.
 
 	</p>
- <div className="Underline"><p>______________</p></div>
  </div> 
 );
 
