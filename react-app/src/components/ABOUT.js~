@@ -1,0 +1,11 @@
+import React from 'react';
+
+const Faq = () => (
+ <div className="Halifax-text"> 
+ <div className="Highlight"><h3>Old North End Halifax?</h3></div>
+
+ <div className="Underline"><p>______________</p></div>
+ </div> 
+);
+
+export default Faq;
