@@ -1,19 +1,15 @@
 import blue from 'material-ui/colors/blue'
-import FileUploadIcon from 'material-ui-icons/FileUpload'
-import Grid from 'material-ui/Grid'
-import List, { ListItem, ListItemIcon, ListItemText } from 'material-ui/List'
 import React from 'react';
-import Button from 'material-ui/Button';
-import { MuiThemeProvider, createMuiTheme } from 'material-ui/styles'
-import csv from 'csv';
+import { createMuiTheme } from 'material-ui/styles'
 import Dropzone from 'react-dropzone';
 import http from '../utils/http'
-import _ from 'lodash'
-import Card, { CardContent, CardHeader } from 'material-ui/Card'
+import Card, { CardContent } from 'material-ui/Card'
 import ErrorSnackbar from './ErrorSnackbar'
-import LoadingSpinner from './LoadingSpinner'
 import { action, extendObservable } from 'mobx'
 import { observer } from 'mobx-react'
+import _ from 'lodash'
+import csvConversion from '../utils/convertCSVtoJSON'
+import axios from 'axios'
 
 const theme = createMuiTheme({
   palette: {
@@ -26,23 +22,29 @@ const theme = createMuiTheme({
 const currentUpload = observer(class extends React.Component {
   constructor() {
     super();
+    this.handleChange = this.handleChange.bind(this);
     extendObservable(this, {
-      collection: [],
+      newCollection: [],
       error: null,
-      isUploaded: false
+      isUploaded: false,
     });
+  }
+
+  handleChange(newCollection) {
+    const x = csvConversion.convertToJson(newCollection);
   }
 
   render() {
     return (
       <div>
+        {<header style={styles.header}>CSV File Upload</header>}
+
         {/* remember to use isUploaded */}
         <Card style={{ marginBottom: 10 }}>
-          <CardHeader title={"CSV File Upload"} />
           <CardContent>
             <div>
               <p>Drag and drop a CSV file below to upload data to the MIRCS platform.</p>
-              <Dropzone style={styles.dropzone} multiple="false" name={"fileUpload"} onDrop={uploadCSV} />
+              <Dropzone style={styles.dropzone} name={"fileUpload"} onDrop={this.handleChange} />
             </div>
           </CardContent>
         </Card>
@@ -55,29 +57,15 @@ const currentUpload = observer(class extends React.Component {
 let header = true; // if the CSV file contains a header at row 0, most usually do
 let parsedDocument = {};
 
-/* use FileReader and CSV modules to convert CSV to a readable format */
-let uploadCSV = uploadCSV = (e) => {
-  const reader = new FileReader();
-  reader.onload = () => {
-    csv.parse(reader.result, (err, data) => {
-      // from here we want to take this data and
-      // then we want to send it to the database
-      parsedDocument.information = JSON.stringify(data);
-
-      let x = http.jsonRequest('/api/routes/upload-document');
-      console.log(x);
-
-      // ok so once we figure this out and we properly make a json object
-      // then we should be able to connect to mongo and send it
-      console.log(parsedDocument.information);
-    });
-  };
-  reader.readAsBinaryString(e[0]);
-}
+/* 
+use FileReader and CSV modules to convert CSV to a readable format 
+... later we will have it so there is a form... drag and drop for now
+*/
 
 const styles = {
   header: {
-    padding: '17px'
+    fontSize: '30px',
+    marginBottom: '20px'
   },
   logo: {
     height: '50px',

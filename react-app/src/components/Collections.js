@@ -19,14 +19,14 @@ const Collections = observer(class extends React.Component {
     });
   }
 
-  /* here we are using lodash to access a property of response at the path 'bodyJson' */
+  /* here we are using lodash to access a property of 'response' at the path 'bodyJson' */
   componentDidMount() {
     action(() => {
       this.isLoading = true;
-      http.jsonRequest('/api/list-collections')
+      // use the http.jsonRequest to create a response object from a URL
+      http.jsonRequest('/api/read-all-collections')
         .then(action((response) => {
           this.isLoading = false;
-          console.log(response);
           this.collections = _.get(response, 'bodyJson');
         }))
         .catch(action((error) => {
@@ -45,7 +45,7 @@ const Collections = observer(class extends React.Component {
         {!this.isLoading && <header style={styles.header}>Collections</header>}
 
         {!this.isLoading && <p style={styles.description}>
-        Each card represents a dataset that has been uploaded to the platform.</p>}
+          Each card represents a dataset that has been uploaded to the platform.</p>}
 
         {this.collections.map((collection) => (
           <CollectionCard key={collection.name} collection={collection} />
@@ -66,7 +66,7 @@ const CollectionCard = (props) => (
         <strong>Collection name:</strong> {props.collection.name}
       </div>
       <div>
-        <strong>Description:</strong> {'' + props.collection.content}
+        <strong>Number of Rows:</strong> {'' + props.collection.rows}
       </div>
     </CardContent>
   </Card>

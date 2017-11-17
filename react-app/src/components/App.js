@@ -82,14 +82,14 @@ const SideMenu = () => (
         <ListItemText primary="Upload"/>
       </ListItem>
     </Link>
-    <Link to="/potato" style={styles.sideMenuLink}>
+    {/* <Link to="/potato" style={styles.sideMenuLink}>
       <ListItem button>
         <ListItemIcon>
           <BugReportIcon/>
         </ListItemIcon>
         <ListItemText primary="Potato"/>
       </ListItem>
-    </Link>
+    </Link> */}
   </List>
 );
 
