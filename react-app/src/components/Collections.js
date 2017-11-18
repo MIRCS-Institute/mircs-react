@@ -7,8 +7,9 @@ import React from 'react'
 import { action, extendObservable } from 'mobx'
 import { observer } from 'mobx-react'
 
-/* this class will fetch all uploaded CSV files the server and display them */
-
+//
+// Simple UI sketch demonstrating how to fetch from the server api and display the results.
+//
 const Collections = observer(class extends React.Component {
   constructor() {
     super();
@@ -19,15 +20,13 @@ const Collections = observer(class extends React.Component {
     });
   }
 
-  /* here we are using lodash to access a property of 'response' at the path 'bodyJson' */
   componentDidMount() {
     action(() => {
       this.isLoading = true;
-      // use the http.jsonRequest to create a response object from a URL
-      http.jsonRequest('/api/read-all-collections')
+      http.jsonRequest('/api/list-databases')
         .then(action((response) => {
           this.isLoading = false;
-          this.collections = _.get(response, 'bodyJson');
+          this.collections = _.get(response, 'bodyJson.databases');
         }))
         .catch(action((error) => {
           this.isLoading = false;
@@ -36,52 +35,35 @@ const Collections = observer(class extends React.Component {
     })();
   }
 
-  /* the page will render depending on the circumstances below */
   render() {
     return (
       <div>
-        {this.isLoading && <LoadingSpinner title='Loading Collections...' />}
+        {this.isLoading && <LoadingSpinner title='Loading Collections...'/>}
 
-        {!this.isLoading && <header style={styles.header}>Collections</header>}
-
-        {!this.isLoading && <p style={styles.description}>
-          Each card represents a dataset that has been uploaded to the platform.</p>}
+        {!this.isLoading && <header>Collections:</header>}
 
         {this.collections.map((collection) => (
-          <CollectionCard key={collection.name} collection={collection} />
+          <CollectionCard key={collection.name} collection={collection}/>
         ))}
 
-        <ErrorSnackbar error={this.error} />
+        <ErrorSnackbar error={this.error}/>
       </div>
     );
   }
 });
 
-/* each individual card will represent a single collection */
 const CollectionCard = (props) => (
-  <Card style={styles.card}>
-    <CardHeader title={props.collection.name} />
+  <Card style={{ marginBottom: 10 }}>
+    <CardHeader title={props.collection.name}/>
     <CardContent>
       <div>
-        <strong>Collection name:</strong> {props.collection.name}
+        size on disk: {props.collection.sizeOnDisk}
       </div>
       <div>
-        <strong>Number of Rows:</strong> {'' + props.collection.rows}
+        is empty: {'' + props.collection.empty}
       </div>
     </CardContent>
   </Card>
 );
-
-const styles = {
-  header: {
-    fontSize: '30px'
-  },
-  card: {
-    marginBottom: '15px',
-  },
-  description: {
-    marginBottom: '20px'
-  }
-};
 
 export default Collections;

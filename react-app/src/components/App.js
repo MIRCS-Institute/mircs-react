@@ -1,11 +1,10 @@
 import blue from 'material-ui/colors/blue'
 import BugReportIcon from 'material-ui-icons/BugReport'
-import FileUploadIcon from 'material-ui-icons/FileUpload'
 import CollectionsIcon from 'material-ui-icons/Collections'
-import HomeIcon from 'material-ui-icons/Home'
-import MapIcon from 'material-ui-icons/Map'
 import Grid from 'material-ui/Grid'
+import HomeIcon from 'material-ui-icons/Home'
 import List, { ListItem, ListItemIcon, ListItemText } from 'material-ui/List'
+import MapIcon from 'material-ui-icons/Map'
 import React from 'react';
 import { HashRouter } from 'react-router-dom'
 import { Link, Route } from 'react-router-dom'
@@ -16,7 +15,6 @@ import { withRouter } from 'react-router-dom'
 import Collections from './Collections'
 import Maps from './Maps'
 import Potato from './Potato'
-import Upload from './Upload'
 import Unknown404 from './Unknown404'
 
 const theme = createMuiTheme({
@@ -58,14 +56,6 @@ const App = () => (
 
 const SideMenu = () => (
   <List>
-    <Link to="/maps" style={styles.sideMenuLink}>
-      <ListItem button>
-        <ListItemIcon>
-          <MapIcon/>
-        </ListItemIcon>
-        <ListItemText primary="Maps"/>
-      </ListItem>
-    </Link>
     <Link to="/collections" style={styles.sideMenuLink}>
       <ListItem button>
         <ListItemIcon>
@@ -74,22 +64,22 @@ const SideMenu = () => (
         <ListItemText primary="Collections"/>
       </ListItem>
     </Link>
-    <Link to="/upload" style={styles.sideMenuLink}>
+    <Link to="/maps" style={styles.sideMenuLink}>
       <ListItem button>
         <ListItemIcon>
-          <FileUploadIcon/>
+          <MapIcon/>
         </ListItemIcon>
-        <ListItemText primary="Upload"/>
+        <ListItemText primary="Maps"/>
       </ListItem>
     </Link>
-    {/* <Link to="/potato" style={styles.sideMenuLink}>
+    <Link to="/potato" style={styles.sideMenuLink}>
       <ListItem button>
         <ListItemIcon>
           <BugReportIcon/>
         </ListItemIcon>
         <ListItemText primary="Potato"/>
       </ListItem>
-    </Link> */}
+    </Link>
   </List>
 );
 
@@ -101,7 +91,6 @@ const ContentPane = withRouter((props) => (
     <Route path="/collections" component={Collections}/>
     <Route path="/maps" component={Maps}/>
     <Route path="/potato" component={Potato}/>
-    <Route path="/upload" component={Upload}/>
     <Route component={Unknown404}/>
   </Switch>
 ))
@@ -121,12 +110,10 @@ const styles = {
     verticalAlign: 'top'
   },
   sideMenuLink: {
-    textDecoration: 'none',
-    paddingRight: '10px'
+    textDecoration: 'none'
   },
   content: {
-    padding: '5px',
-    paddingRight: '15%'
+    padding: '5px'
   },
 };
 
