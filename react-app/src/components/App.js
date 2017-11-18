@@ -2,12 +2,11 @@ import blue from 'material-ui/colors/blue'
 import BugReportIcon from 'material-ui-icons/BugReport'
 import CollectionsIcon from 'material-ui-icons/Collections'
 import Grid from 'material-ui/Grid'
-import HomeIcon from 'material-ui-icons/Home'
 import List, { ListItem, ListItemIcon, ListItemText } from 'material-ui/List'
 import MapIcon from 'material-ui-icons/Map'
 import React from 'react';
 import { HashRouter } from 'react-router-dom'
-import { Link, Route } from 'react-router-dom'
+import { Route } from 'react-router-dom'
 import { MuiThemeProvider, createMuiTheme } from 'material-ui/styles'
 import { Switch } from 'react-router-dom'
 import { withRouter } from 'react-router-dom'
@@ -39,21 +38,20 @@ const App = () => (
 				<NavBar/>
 			</center>
         </header>
-		
-		
+
         <div style={styles.content}>
           <Grid container spacing={16} direction='row'>
-        
-			{/* Side menu */}
-			<Grid item xs={12} sm={2}>
+
+      			{/* Side menu */}
+      			<Grid item xs={12} sm={2}>
               <DataSetSelector/>
             </Grid>
-            
-			{/* Content */}
-			<Grid item xs={12} sm={8}>
+
+      			{/* Content */}
+      			<Grid item xs={12} sm={8}>
               <ContentPane/>
             </Grid>
-			
+
           </Grid>
         </div>
       </div>
@@ -66,7 +64,7 @@ const DataSetSelector = () => (
   <h2>
 	DATA SETS
   </h2>
-  
+
   <List>
 
       <ListItem button>
@@ -75,7 +73,7 @@ const DataSetSelector = () => (
         </ListItemIcon>
         <ListItemText primary="Data Set 1"/>
       </ListItem>
-    
+
       <ListItem button>
         <ListItemIcon>
           <MapIcon/>
@@ -89,7 +87,7 @@ const DataSetSelector = () => (
         </ListItemIcon>
         <ListItemText primary="Data Set 76"/>
       </ListItem>
-	  
+
   </List>
   </div>
 );
@@ -137,12 +135,12 @@ const styles = {
   content: {
     padding: '5px',
   },
-  
+
   contentDisplay: {
 	width: '100%',
 	height: '100%',
   },
-  
+
   dataSetSelector: {
     padding: '5px',
 	background: 'orange'
