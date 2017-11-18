@@ -5,15 +5,36 @@
 */
 
 const _ = require('lodash');
+const MongoUtil = require(__server_src_dir + 'utils/mongo-util.js');
 
 module.exports = function(router) {
   router.post('/api/datasets', function(req, res, next) {
+    const newDataSet = _.clone(req.body);
+    if (!newDataSet.name) {
+      return res.status(400).send('name is required');
+    }
+    newDataSet.createdAt = newDataSet.updatedAt = new Date();
 
-    // TODO: replace this placeholder code
+    let dataSet;
+    let dataSetCollection;
+    MongoUtil.getCollection(MongoUtil.DATA_SETS_COLLECTION)
+      .then((collection) => {
+        dataSetCollection = collection;
+        return dataSetCollection.insertOne(newDataSet);
+      })
+      .then((result) => {
+        dataSet = result.ops[0];
 
-    const responseObject = _.extend(req.body, {
-      updatedAt: new Date().toISOString()
-    });
-    res.status(200).send(responseObject);
+        dataSet._collectionName = MongoUtil.DATA_SETS_COLLECTION_PREFIX + dataSet._id;
+
+        return dataSetCollection.updateOne({_id:dataSet._id}, dataSet);
+      })
+      .then(() => {
+        return MongoUtil.createCollection(dataSet._collectionName);
+      })
+      .then(() => {
+        res.status(200).send(dataSet);
+      })
+      .catch(next);
   });
 };

@@ -74,7 +74,7 @@ const DataSets = observer(class extends React.Component {
           Each card represents a dataset that has been uploaded to the platform.</p>}
 
         {this.dataSets.map((dataSet) => (
-          <DataSetCard key={dataSet.name} dataSet={dataSet} />
+          <DataSetCard key={dataSet._id} dataSet={dataSet} />
         ))}
 
         <ErrorSnackbar error={this.error} />
@@ -96,15 +96,13 @@ const DataSetCard = (props) => (
       </div>
       <div>
         <strong>Fields:</strong>
-        {props.dataSet.fields.map((field, index) => (
+        {_.map(props.dataSet.fields, (field, index) => (
           <div key={index} style={{ marginLeft: 10 }}>{field.name}: {field.type}</div>
         ))}
       </div>
     </CardContent>
   </Card>
 );
-
-const DATA_SET_FORM_FIELDS = ['name', 'description', 'fields']
 
 const EditDataSetDialog = observer(class extends React.Component {
   static propTypes = {
@@ -129,7 +127,8 @@ const EditDataSetDialog = observer(class extends React.Component {
   componentWillReceiveProps(nextProps) {
     if (nextProps.open) {
       const dataSetCopy = _.clone(nextProps.dataSet) || {};
-      _.each(DATA_SET_FORM_FIELDS, (key) => { ensureString(dataSetCopy, key) });
+      ensureString(dataSetCopy, 'name');
+      ensureString(dataSetCopy, 'description');
 
       action(() => {
         this.dataSet = dataSetCopy;
@@ -179,13 +178,10 @@ const EditDataSetDialog = observer(class extends React.Component {
   }
 
   canSave = () => {
-    let canSave = true;
-    _.each(DATA_SET_FORM_FIELDS, (key) => {
-      if (!this.dataSet[key]) {
-        canSave = false;
-      }
-    });
-    return canSave;
+    if (!this.dataSet.name) {
+      return false;
+    }
+    return true;
   }
 
   render() {
@@ -193,10 +189,10 @@ const EditDataSetDialog = observer(class extends React.Component {
       <Dialog open={this.props.open} fullWidth={true}>
         <DialogTitle>{this.isCreate ? 'Create Data Set' : 'Edit Data Set'}</DialogTitle>
         <DialogContent>
-          {_.map(DATA_SET_FORM_FIELDS, (key, index) => (
-            <TextField key={key} autoFocus={index===0} margin='dense' key={key} id={key} label={key} type='text' fullWidth
-                  value={this.dataSet[key]} onChange={this.handleFieldChange(key)}/>
-          ))}
+          <TextField autoFocus margin='dense' label='name' type='text' fullWidth
+                value={this.dataSet.name} onChange={this.handleFieldChange('name')}/>
+          <TextField margin='dense' label='description' type='text' fullWidth
+                value={this.dataSet.description} onChange={this.handleFieldChange('description')}/>
         </DialogContent>
         <DialogActions>
           <Button onClick={this.props.onCancel} color='primary' disabled={this.isSaving}>

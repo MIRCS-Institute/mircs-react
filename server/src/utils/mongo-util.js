@@ -6,7 +6,10 @@ const MONGO_SERVER_URL = Environment.getRequired('MONGO_SERVER_URL');
 
 const MongoUtil = {};
 
-/* 
+MongoUtil.DATA_SETS_COLLECTION = 'DataSets';
+MongoUtil.DATA_SETS_COLLECTION_PREFIX = 'mircs_';
+
+/*
 todo: remember to close the db
 */
 
@@ -14,18 +17,7 @@ todo: remember to close the db
 
 /* the initialize function will create the master collection upon starting the server */
 MongoUtil.initialize = function () {
-  MongoClient.connect(MONGO_SERVER_URL, function (error, db) {
-    if (error) {
-      return reject(error);
-    }
-    db.createCollection("masterCollection", function (err, res) {
-      if (err) {
-        throw err;
-      }
-      console.log("master collection created...");
-      db.close();
-    });
-  });
+  return MongoUtil.createCollection(MongoUtil.DATA_SETS_COLLECTION);
 };
 
 /* COLLECTION METHODS */
@@ -34,18 +26,15 @@ MongoUtil.initialize = function () {
 createCollection will insert an uploaded collection into the database
  */
 MongoUtil.createCollection = function (newCollection) {
-  return new Promise(function (resolve, reject) {
-    MongoClient.connect(MONGO_SERVER_URL, function (error, db) {
-      if (error) {
-        return reject(error);
+  MongoClient.connect(MONGO_SERVER_URL, function (error, db) {
+    if (error) {
+      return reject(error);
+    }
+    db.createCollection(newCollection, function (err, res) {
+      if (err) {
+        throw err;
       }
-      // convert the contents of the master collection to an array and resolve the promise
-      db.collection('masterCollection', function (err, masterCollection) {
-        console.log(newCollection);
-        // masterCollection.insertOne({ _id: 10, item: "brayyyyy", qty: 20 });
-        masterCollection.insertOne(newCollection);
-        resolve(masterCollection);
-      });
+      db.close();
     });
   });
 };
@@ -73,28 +62,23 @@ MongoUtil.deleteCollection = function () {
 
 /* MASTER COLLECTION METHODS */
 
-/* INSERT 
-insertIntoMasterCollection will insert a collection into the master collection 
+/* INSERT
+insertIntoMasterCollection will insert a collection into the master collection
 */
 MongoUtil.insertMasterCollection = function () {
 
 };
 
-/* READ
-getMasterCollection will return the entire contents of the master collection 
+/*
+Returns a promise that resolves to a named collection
 */
-MongoUtil.getMasterCollection = function () {
+MongoUtil.getCollection = function (collectionName) {
   return new Promise(function (resolve, reject) {
     MongoClient.connect(MONGO_SERVER_URL, function (error, db) {
-      if (error) {
-        return reject(error);
-      }
-      // convert the contents of the master collection to an array and resolve the promise
-      db.collection('masterCollection', function (err, masterCollection) {
-        masterCollection.find().toArray(function (err, collections) {
-          if (err) throw err;
-          resolve(collections);
-        });
+      if (error) { return reject(error); }
+      db.collection(collectionName, function (err, collection) {
+        if (error) { return reject(error); }
+        resolve(collection);
       });
     });
   });
@@ -104,8 +88,8 @@ module.exports = MongoUtil;
 
 
 
-// /* 
-// the getDb function will connect to Mongo and return a promise to 
+// /*
+// the getDb function will connect to Mongo and return a promise to
 // a Mongo Db object configured for our database using environment variables.
 // @see http://mongodb.github.io/node-mongodb-native/2.2/api/Db.html
 // */
