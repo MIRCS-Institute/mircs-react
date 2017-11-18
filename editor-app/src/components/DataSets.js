@@ -26,20 +26,22 @@ const DataSets = observer(class extends React.Component {
 
   /* here we are using lodash to access a property of 'response' at the path 'bodyJson' */
   componentDidMount() {
-    action(() => {
-      this.isLoading = true;
-      // use the http.jsonRequest to create a response object from a URL
-      http.jsonRequest('/api/datasets')
-        .then(action((response) => {
-          this.isLoading = false;
-          this.dataSets = _.get(response, 'bodyJson.list');
-        }))
-        .catch(action((error) => {
-          this.isLoading = false;
-          this.error = error;
-        }));
-    })();
+    this.refresh();
   }
+
+  refresh = action(() => {
+    this.isLoading = true;
+    // use the http.jsonRequest to create a response object from a URL
+    http.jsonRequest('/api/datasets')
+      .then(action((response) => {
+        this.isLoading = false;
+        this.dataSets = _.get(response, 'bodyJson.list');
+      }))
+      .catch(action((error) => {
+        this.isLoading = false;
+        this.error = error;
+      }));
+  })
 
   handleCreateClick = action(() => {
     this.showCreateDialog = true;
@@ -49,9 +51,9 @@ const DataSets = observer(class extends React.Component {
     this.showCreateDialog = false;
   })
 
-  handleCreateAfterSave = action((newDataSet) => {
+  handleCreateAfterSave = action(() => {
     this.showCreateDialog = false;
-    this.dataSet = newDataSet;
+    this.refresh();
   })
 
   /* the page will render depending on the circumstances below */
@@ -87,10 +89,16 @@ const DataSetCard = (props) => (
     <CardHeader title={props.dataSet.name} />
     <CardContent>
       <div>
-        <strong>Data Set name:</strong> {props.dataSet.name}
+        <strong>Name:</strong> {props.dataSet.name}
       </div>
       <div>
-        <strong>Number of Rows:</strong> {'' + props.dataSet.rows}
+        <strong>Description:</strong> {props.dataSet.description}
+      </div>
+      <div>
+        <strong>Fields:</strong>
+        {props.dataSet.fields.map((field, index) => (
+          <div key={index} style={{ marginLeft: 10 }}>{field.name}: {field.type}</div>
+        ))}
       </div>
     </CardContent>
   </Card>
@@ -146,9 +154,9 @@ const EditDataSetDialog = observer(class extends React.Component {
     });
   }
 
-  handleSave = action((event) => {
+  handleSave = action(() => {
     this.isSaving = true;
-    http.jsonRequest('/api/echo-request-body', { method: 'post', bodyJson: this.dataSet })
+    this.doSave()
       .then(action((response) => {
         this.isSaving = false;
         this.props.afterSave(response.bodyJson);
@@ -157,7 +165,18 @@ const EditDataSetDialog = observer(class extends React.Component {
         this.isSaving = false;
         this.error = error;
       }));
+
   })
+
+  doSave() {
+    // TODO: format this.dataSet.fields
+
+    if (this.isCreate) {
+      return http.jsonRequest('/api/datasets', { method: 'post', bodyJson: this.dataSet });
+    } else {
+      return http.jsonRequest('/api/datasets/' + this.dataSet._id, { method: 'put', bodyJson: this.dataSet });
+    }
+  }
 
   canSave = () => {
     let canSave = true;
