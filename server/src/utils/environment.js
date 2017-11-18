@@ -15,7 +15,7 @@ const CONFIGURATION_VARS = {
     description: 'when set to true extra debug output is logged'
   },
   SERVER_PORT: {
-    default: 80,
+    default: 8001,
     type: TYPE_NUMBER,
     description: 'used to set the port acting as the http server'
   },
