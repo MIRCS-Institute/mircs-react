@@ -3,7 +3,7 @@ import BugReportIcon from 'material-ui-icons/BugReport'
 import FileUploadIcon from 'material-ui-icons/FileUpload'
 import CollectionsIcon from 'material-ui-icons/Collections'
 import HomeIcon from 'material-ui-icons/Home'
-import MapIcon from 'material-ui-icons/Map'
+import ExtensionIcon from 'material-ui-icons/Extension'
 import Grid from 'material-ui/Grid'
 import List, { ListItem, ListItemIcon, ListItemText } from 'material-ui/List'
 import React from 'react';
@@ -14,7 +14,7 @@ import { Switch } from 'react-router-dom'
 import { withRouter } from 'react-router-dom'
 
 import Collections from './Collections'
-import Maps from './Maps'
+import DataSets from './DataSets'
 import Potato from './Potato'
 import Upload from './Upload'
 import Unknown404 from './Unknown404'
@@ -58,12 +58,12 @@ const App = () => (
 
 const SideMenu = () => (
   <List>
-    <Link to="/maps" style={styles.sideMenuLink}>
+    <Link to="/datasets" style={styles.sideMenuLink}>
       <ListItem button>
         <ListItemIcon>
-          <MapIcon/>
+          <ExtensionIcon/>
         </ListItemIcon>
-        <ListItemText primary="Maps"/>
+        <ListItemText primary="Data Sets"/>
       </ListItem>
     </Link>
     <Link to="/collections" style={styles.sideMenuLink}>
@@ -82,24 +82,25 @@ const SideMenu = () => (
         <ListItemText primary="Upload"/>
       </ListItem>
     </Link>
-    {/* <Link to="/potato" style={styles.sideMenuLink}>
+    <Link to="/potato" style={styles.sideMenuLink}>
       <ListItem button>
         <ListItemIcon>
           <BugReportIcon/>
         </ListItemIcon>
         <ListItemText primary="Potato"/>
       </ListItem>
-    </Link> */}
+    </Link>
   </List>
 );
 
 const ContentPane = withRouter((props) => (
   <Switch key={props.location.key} location={props.location}>
     <Route exact={true} path="/">
-      <h3>Welcome to the MIRCS Geogenealogy prototype. May the schwartz be with you.</h3>
+      <h3>Welcome to the MIRCS Geogenealogy data editor. May the schwartz be with you.</h3>
     </Route>
+    <Route path="/datasets" component={DataSets}/>
+
     <Route path="/collections" component={Collections}/>
-    <Route path="/maps" component={Maps}/>
     <Route path="/potato" component={Potato}/>
     <Route path="/upload" component={Upload}/>
     <Route component={Unknown404}/>
