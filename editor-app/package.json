@@ -1,0 +1,32 @@
+{
+  "name": "mircs-react-app",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "clean": "rm -rf build",
+    "test": "react-scripts test --env=jsdom"
+  },
+  "dependencies": {
+    "FileReader": "^0.10.2",
+    "axios": "^0.17.1",
+    "csv": "^2.0.0",
+    "csvtojson": "^1.1.9",
+    "fs": "0.0.1-security",
+    "material-ui": "^1.0.0-beta.18",
+    "material-ui-icons": "^1.0.0-beta.17",
+    "mobx": "^3.3.1",
+    "mobx-react": "^4.3.3",
+    "react": "^15.6.1",
+    "react-dom": "^15.6.1",
+    "react-dropzone": "^4.2.3",
+    "react-router-dom": "^4.2.2",
+    "react-scripts": "^1.0.14"
+  },
+  "proxy": {
+    "/": {
+      "target": "http://localhost:8001/"
+    }
+  }
+}
