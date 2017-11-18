@@ -2,20 +2,24 @@ import blue from 'material-ui/colors/blue'
 import BugReportIcon from 'material-ui-icons/BugReport'
 import CollectionsIcon from 'material-ui-icons/Collections'
 import Grid from 'material-ui/Grid'
-import HomeIcon from 'material-ui-icons/Home'
 import List, { ListItem, ListItemIcon, ListItemText } from 'material-ui/List'
 import MapIcon from 'material-ui-icons/Map'
 import React from 'react';
 import { HashRouter } from 'react-router-dom'
-import { Link, Route } from 'react-router-dom'
+import { Route } from 'react-router-dom'
 import { MuiThemeProvider, createMuiTheme } from 'material-ui/styles'
 import { Switch } from 'react-router-dom'
 import { withRouter } from 'react-router-dom'
 
-import Collections from './Collections'
-import Maps from './Maps'
+//Components
+import Maps from './Maps.js'
 import Potato from './Potato'
 import Unknown404 from './Unknown404'
+import NavBar from './NavBar.js'
+import TabSelector from './TabSelector.js'
+import {Data} from './Data.js'
+
+import './App.css';
 
 const theme = createMuiTheme({
   palette: {
@@ -24,29 +28,30 @@ const theme = createMuiTheme({
 });
 
 const App = () => (
-  <HashRouter>
+	<HashRouter>
     <MuiThemeProvider theme={theme}>
       <div>
-        <header style={styles.header}>
-          <Grid container spacing={16} direction='row' justify='space-between'>
-            <Link to="/" style={styles.sideMenuLink}>
-              <HomeIcon style={styles.logo}/>
-            </Link>
-            <span style={styles.appTitle}>MIRCS Geogenealogy</span>
-            <div>
-              {/* place for a material Menu? */}
-            </div>
-          </Grid>
+		{/*Title and NavBar*/}
+		<header style={styles.header}>
+			<center>
+				<span style={styles.appTitle}>MIRCS Geogenealogy</span>
+				<NavBar/>
+			</center>
         </header>
 
         <div style={styles.content}>
-          <Grid container spacing={16} direction='row' justify='space-between'>
-            <Grid item xs={12} sm={4}>
-              <SideMenu/>
+          <Grid container spacing={16} direction='row'>
+
+      			{/* Side menu */}
+      			<Grid item xs={12} sm={2}>
+              <DataSetSelector/>
             </Grid>
-            <Grid item xs={12} sm={8}>
+
+      			{/* Content */}
+      			<Grid item xs={12} sm={8}>
               <ContentPane/>
             </Grid>
+
           </Grid>
         </div>
       </div>
@@ -54,42 +59,56 @@ const App = () => (
   </HashRouter>
 );
 
-const SideMenu = () => (
+const DataSetSelector = () => (
+  <div style={styles.dataSetSelector}>
+  <h2>
+	DATA SETS
+  </h2>
+
   <List>
-    <Link to="/collections" style={styles.sideMenuLink}>
+
       <ListItem button>
         <ListItemIcon>
           <CollectionsIcon/>
         </ListItemIcon>
-        <ListItemText primary="Collections"/>
+        <ListItemText primary="Data Set 1"/>
       </ListItem>
-    </Link>
-    <Link to="/maps" style={styles.sideMenuLink}>
+
       <ListItem button>
         <ListItemIcon>
           <MapIcon/>
         </ListItemIcon>
-        <ListItemText primary="Maps"/>
+        <ListItemText primary="Data Set 2"/>
       </ListItem>
-    </Link>
-    <Link to="/potato" style={styles.sideMenuLink}>
+
       <ListItem button>
         <ListItemIcon>
           <BugReportIcon/>
         </ListItemIcon>
-        <ListItemText primary="Potato"/>
+        <ListItemText primary="Data Set 76"/>
       </ListItem>
-    </Link>
+
   </List>
+  </div>
 );
 
-const ContentPane = withRouter((props) => (
-  <Switch key={props.location.key} location={props.location}>
+
+const ContentPane = () => (
+	<div>
+		<TabSelector/>
+		<ContentDisplay/>
+	</div>
+)
+
+
+
+const ContentDisplay = withRouter((props) => (
+  <Switch key={props.location.key} location={props.location} style={styles.contentDisplay}>
     <Route exact={true} path="/">
       <h3>Welcome to the MIRCS Geogenealogy prototype. May the schwartz be with you.</h3>
     </Route>
-    <Route path="/collections" component={Collections}/>
-    <Route path="/maps" component={Maps}/>
+    <Route path="/map" component={Maps}/>
+    <Route path="/data" component={Data}/>
     <Route path="/potato" component={Potato}/>
     <Route component={Unknown404}/>
   </Switch>
@@ -97,7 +116,8 @@ const ContentPane = withRouter((props) => (
 
 const styles = {
   header: {
-    padding: '17px'
+    padding: '17px',
+	background: 'lime'
   },
   logo: {
     height: '50px',
@@ -113,7 +133,17 @@ const styles = {
     textDecoration: 'none'
   },
   content: {
-    padding: '5px'
+    padding: '5px',
+  },
+
+  contentDisplay: {
+	width: '100%',
+	height: '100%',
+  },
+
+  dataSetSelector: {
+    padding: '5px',
+	background: 'orange'
   },
 };
 

@@ -9,6 +9,7 @@
     "test": "react-scripts test --env=jsdom"
   },
   "dependencies": {
+    "leaflet": "^1.2.0",
     "material-ui": "^1.0.0-beta.18",
     "material-ui-icons": "^1.0.0-beta.17",
     "mobx": "^3.3.1",
