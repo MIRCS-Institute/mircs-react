@@ -1,7 +1,5 @@
 import blue from 'material-ui/colors/blue'
-import BugReportIcon from 'material-ui-icons/BugReport'
 import FileUploadIcon from 'material-ui-icons/FileUpload'
-import CollectionsIcon from 'material-ui-icons/Collections'
 import HomeIcon from 'material-ui-icons/Home'
 import ExtensionIcon from 'material-ui-icons/Extension'
 import Grid from 'material-ui/Grid'
@@ -13,9 +11,7 @@ import { MuiThemeProvider, createMuiTheme } from 'material-ui/styles'
 import { Switch } from 'react-router-dom'
 import { withRouter } from 'react-router-dom'
 
-import Collections from './Collections'
 import DataSets from './DataSets'
-import Potato from './Potato'
 import Upload from './Upload'
 import Unknown404 from './Unknown404'
 

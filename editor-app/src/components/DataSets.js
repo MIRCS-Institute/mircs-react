@@ -90,9 +90,14 @@ const DataSets = observer(class extends React.Component {
 
 /* each individual card will represent a single Data Set */
 const DataSetCard = observer(class extends React.Component {
-  handleDeleteClick = () => {
-    console.log('delete', this.props.dataSet._id);
+  constructor() {
+    super();
+    extendObservable(this, {
+      showEditDialog: false
+    });
+  }
 
+  handleDeleteClick = () => {
     http.jsonRequest(`/api/datasets/${this.props.dataSet._id}`, { method:'delete' })
       .then(action((response) => {
         this.props.onRefresh();
@@ -101,6 +106,19 @@ const DataSetCard = observer(class extends React.Component {
         this.props.onError(error);
       }));
   }
+
+  handleEditClick = action(() => {
+    this.showEditDialog = true;
+  })
+
+  handleEditCancel = action(() => {
+    this.showEditDialog = false;
+  })
+
+  handleEditAfterSave = action(() => {
+    this.showEditDialog = false;
+    this.props.onRefresh();
+  })
 
   render() {
     return (
@@ -119,10 +137,16 @@ const DataSetCard = observer(class extends React.Component {
               <div key={index} style={{ marginLeft: 10 }}>{field.name}: {field.type}</div>
             ))}
           </div>
+
+        <EditDataSetDialog open={this.showEditDialog} dataSet={this.props.dataSet} onCancel={this.handleEditCancel} afterSave={this.handleEditAfterSave}/>
+
         </CardContent>
         <CardActions>
           <Button raised color='accent' style={{ marginTop: 10 }} onClick={this.handleDeleteClick}>
             Delete Data Set
+          </Button>
+          <Button raised style={{ marginTop: 10 }} onClick={this.handleEditClick}>
+            Edit Data Set
           </Button>
         </CardActions>
       </Card>

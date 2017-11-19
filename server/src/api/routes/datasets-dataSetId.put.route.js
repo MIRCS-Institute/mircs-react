@@ -1,20 +1,42 @@
 /*
   - modifies the contents of DataSet with _id dataSetId
-  - request body contains a DataSet object (the _id and _collectionName are optional, if supplied they MUST be exactly what is in the database otherwise the request fails with code 400)
+  - request body contains a DataSet object (the _id and _collectionName are optional, if supplied they will be ignored
   - updatedAt field is updated with server time (later updatedBy will be updated with authenticated user id)
   - response body contains the fully populated DataSet object with the updated values
 */
 
 const _ = require('lodash');
+const MongoUtil = require(__server_src_dir + 'utils/mongo-util.js');
 
 module.exports = function(router) {
   router.put('/api/datasets/:dataSetId', function(req, res, next) {
+    if (!req.dataSet) {
+      return res.status(404).send({ error: 'No Data Set found with id ' + req.params.dataSetId });
+    }
 
-    // TODO: replace this placeholder code
+    const updatedDataSet = _.clone(req.body);
 
-    const responseObject = _.extend(req.body, {
-      updatedAt: new Date().toISOString()
-    });
-    res.status(200).send(responseObject);
+    // overwrite system fields from existing record
+    updatedDataSet._id = req.dataSet._id;
+    updatedDataSet.createdAt = req.dataSet.createdAt;
+    updatedDataSet.updatedAt = new Date();
+    updatedDataSet._collectionName = req.dataSet._collectionName;
+
+    let db;
+    let dataSetCollection;
+    MongoUtil.getDb()
+      .then((theDb) => {
+        db = theDb;
+        dataSetCollection = db.collection(MongoUtil.DATA_SETS_COLLECTION)
+
+        return dataSetCollection.updateOne({ _id: updatedDataSet._id }, updatedDataSet);
+      })
+      .then(() => {
+        res.status(200).send(updatedDataSet);
+      })
+      .catch(next)
+      .then(() => {
+        db.close();
+      });
   });
 };

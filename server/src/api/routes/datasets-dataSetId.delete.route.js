@@ -22,7 +22,7 @@ module.exports = function(router) {
         if (collectionName) {
           return db.collection(collectionName).drop().catch(function(error) {
             // best effort here, do not fail the entire operation if the collection cannot be deleted
-            console.error('Error deleting collection for Data Set', req.dataSet, error);
+            console.error('Ignoring error deleting collection for Data Set', req.dataSet, error);
           });
         }
       })
