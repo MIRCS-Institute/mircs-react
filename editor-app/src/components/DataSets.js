@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import TextField from 'material-ui/TextField'
 import _ from 'lodash'
 import Button from 'material-ui/Button'
-import Card, { CardContent, CardHeader } from 'material-ui/Card'
+import Card, { CardActions, CardContent, CardHeader } from 'material-ui/Card'
 import Dialog, { DialogActions, DialogContent, DialogTitle} from 'material-ui/Dialog'
 import ErrorSnackbar from './ErrorSnackbar'
 import http from '../utils/http'
@@ -56,6 +56,11 @@ const DataSets = observer(class extends React.Component {
     this.refresh();
   })
 
+  handleError = action((error) => {
+    this.error = error;
+    this.refresh();
+  })
+
   /* the page will render depending on the circumstances below */
   render() {
     return (
@@ -74,7 +79,7 @@ const DataSets = observer(class extends React.Component {
           Each card represents a dataset that has been uploaded to the platform.</p>}
 
         {this.dataSets.map((dataSet) => (
-          <DataSetCard key={dataSet._id} dataSet={dataSet} />
+          <DataSetCard key={dataSet._id} dataSet={dataSet} onRefresh={this.refresh} onError={this.handleError}/>
         ))}
 
         <ErrorSnackbar error={this.error} />
@@ -84,25 +89,46 @@ const DataSets = observer(class extends React.Component {
 });
 
 /* each individual card will represent a single Data Set */
-const DataSetCard = (props) => (
-  <Card style={styles.card}>
-    <CardHeader title={props.dataSet.name} />
-    <CardContent>
-      <div>
-        <strong>Name:</strong> {props.dataSet.name}
-      </div>
-      <div>
-        <strong>Description:</strong> {props.dataSet.description}
-      </div>
-      <div>
-        <strong>Fields:</strong>
-        {_.map(props.dataSet.fields, (field, index) => (
-          <div key={index} style={{ marginLeft: 10 }}>{field.name}: {field.type}</div>
-        ))}
-      </div>
-    </CardContent>
-  </Card>
-);
+const DataSetCard = observer(class extends React.Component {
+  handleDeleteClick = () => {
+    console.log('delete', this.props.dataSet._id);
+
+    http.jsonRequest(`/api/datasets/${this.props.dataSet._id}`, { method:'delete' })
+      .then(action((response) => {
+        this.props.onRefresh();
+      }))
+      .catch(action((error) => {
+        this.props.onError(error);
+      }));
+  }
+
+  render() {
+    return (
+      <Card style={styles.card}>
+        <CardHeader title={this.props.dataSet.name} />
+        <CardContent>
+          <div>
+            <strong>Name:</strong> {this.props.dataSet.name}
+          </div>
+          <div>
+            <strong>Description:</strong> {this.props.dataSet.description}
+          </div>
+          <div>
+            <strong>Fields:</strong>
+            {_.map(this.props.dataSet.fields, (field, index) => (
+              <div key={index} style={{ marginLeft: 10 }}>{field.name}: {field.type}</div>
+            ))}
+          </div>
+        </CardContent>
+        <CardActions>
+          <Button raised color='accent' style={{ marginTop: 10 }} onClick={this.handleDeleteClick}>
+            Delete Data Set
+          </Button>
+        </CardActions>
+      </Card>
+    );
+  }
+});
 
 const EditDataSetDialog = observer(class extends React.Component {
   static propTypes = {

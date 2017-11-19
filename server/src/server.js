@@ -1,6 +1,6 @@
-/* 
-this file starts the MIRCS server
- */
+/*
+Starts the MIRCS server
+*/
 
 // set up __server_src_dir global variable, available to all modules
 global.__server_src_dir = __dirname + '/';
@@ -32,7 +32,7 @@ app.use(express.static(path.join(__server_src_dir, '../../react-app/build')));
 app.use(createRouterForDir('api'));
 
 // configure the app the use body-parser for POST requests
-app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 // return 404 for unknown commands
@@ -48,25 +48,13 @@ app.all('*', function(req, res) {
   res.status(404).send({ error: `Cannot ${req.method} ${req.path}` });
 });
 
-const PORT = Environment.getRequired('SERVER_PORT');
-app.listen(PORT, function() {
-  log.info(`expressjs server is listening on port ${PORT}...`);
-});
-
-// create master collection
-MongoUtil.initialize();
-
-// const mongoose = require('mongoose');
-// mongoose.connect("mongodb://localhost:27017/mircsdb");
-// const db = mongoose.connection;
-
-// Master = require('./models/master');
-
-// app.get('api/collections', function(req, res){
-//   Master.getMaster(function(err, master){
-//     if(err) {
-//       throw err;
-//     }
-//     res.json(master);
-//   });
-// });
+MongoUtil.initialize()
+  .then(() => {
+    const PORT = Environment.getRequired('SERVER_PORT');
+    app.listen(PORT, function() {
+      log.info(`expressjs server is listening on port ${PORT}...`);
+    });
+  })
+  .catch((error) => {
+    console.error('Error starting server.', error);
+  });

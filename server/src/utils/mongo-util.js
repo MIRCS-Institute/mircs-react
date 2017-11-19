@@ -2,6 +2,7 @@ const _ = require('lodash');
 const Environment = require(__server_src_dir + 'utils/environment.js');
 const log = require(__server_src_dir + 'utils/log.js');
 const MongoClient = require('mongodb').MongoClient
+
 const MONGO_SERVER_URL = Environment.getRequired('MONGO_SERVER_URL');
 
 const MongoUtil = {};
@@ -40,12 +41,12 @@ creates a new collection in the database
 @see http://mongodb.github.io/node-mongodb-native/2.2/api/Db.html#createCollection
  */
 MongoUtil.createCollection = function(collectionName, options) {
-  return MongoUtil.getDb().then((db) => {
-    db.createCollection(collectionName, options, function(err, res) {
-      if (err) {
-        throw err;
-      }
+  return MongoUtil.getDb().then(function(db) {
+    return db.createCollection(collectionName, options, function(error, res) {
       db.close();
+      if (error) {
+        throw error;
+      }
     });
   });
 };
@@ -57,19 +58,18 @@ finds and returns documents in a collection matching the passed query
 MongoUtil.find = function(collectionName, query) {
   let db;
   return MongoUtil.getDb()
-    .then((theDb) => {
+    .then(function(theDb) {
       db = theDb;
 
       return new Promise(function(resolve, reject) {
         db.collection(collectionName)
           .find(query)
-          .toArray(function(err, result) {
+          .toArray(function(error, result) {
             db.close();
-            if (err) {
-              return reject(err);
-            } else {
-              return resolve(result);
+            if (error) {
+              return reject(error);
             }
+            return resolve(result);
           });
       });
     });

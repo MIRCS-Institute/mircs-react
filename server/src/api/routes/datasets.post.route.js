@@ -32,7 +32,7 @@ module.exports = function(router) {
         return dataSetCollection.updateOne({ _id: dataSet._id }, dataSet);
       })
       .then(() => {
-        return MongoUtil.createCollection(dataSet._collectionName);
+        return db.createCollection(dataSet._collectionName);
       })
       .then(() => {
         res.status(201).send(dataSet);

@@ -4,7 +4,7 @@ to the Request object as `req.dataSet`.
 */
 
 const MongoUtil = require(__server_src_dir + 'utils/mongo-util.js');
-const ObjectID = require('mongodb').ObjectID
+const ObjectID = require('mongodb').ObjectID;
 
 module.exports = function(router) {
   router.param('dataSetId', function(req, res, next, dataSetId) {
@@ -14,8 +14,7 @@ module.exports = function(router) {
       return next(exception);
     }
 
-    const query = { _id: dataSetId };
-    MongoUtil.find(MongoUtil.DATA_SETS_COLLECTION, query)
+    MongoUtil.find(MongoUtil.DATA_SETS_COLLECTION, { _id: dataSetId })
       .then((dataSets) => {
         req.dataSet = dataSets[0];
         next();
