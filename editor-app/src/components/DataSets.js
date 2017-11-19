@@ -1,15 +1,17 @@
-import { CircularProgress } from 'material-ui/Progress'
-import PropTypes from 'prop-types'
-import TextField from 'material-ui/TextField'
 import _ from 'lodash'
 import Button from 'material-ui/Button'
 import Card, { CardActions, CardContent, CardHeader } from 'material-ui/Card'
+import csv from 'csv'
 import Dialog, { DialogActions, DialogContent, DialogTitle} from 'material-ui/Dialog'
+import Dropzone from 'react-dropzone'
 import ErrorSnackbar from './ErrorSnackbar'
 import http from '../utils/http'
 import LoadingSpinner from './LoadingSpinner'
+import PropTypes from 'prop-types'
 import React from 'react'
+import TextField from 'material-ui/TextField'
 import { action, extendObservable } from 'mobx'
+import { CircularProgress } from 'material-ui/Progress'
 import { observer } from 'mobx-react'
 
 const DataSets = observer(class extends React.Component {
@@ -99,6 +101,10 @@ const DataSetCard = observer(class extends React.Component {
   }
 
   componentDidMount() {
+    this.refreshStats();
+  }
+
+  refreshStats() {
     http.jsonRequest(`/api/datasets/${this.props.dataSet._id}/stats`)
       .then(action((response) => {
         this.stats = _.get(response, 'bodyJson');
@@ -109,7 +115,7 @@ const DataSetCard = observer(class extends React.Component {
   }
 
   handleDeleteClick = () => {
-    http.jsonRequest(`/api/datasets/${this.props.dataSet._id}`, { method:'delete' })
+    http.jsonRequest(`/api/datasets/${this.props.dataSet._id}`, { method: 'delete' })
       .then(action((response) => {
         this.props.onRefresh();
       }))
@@ -131,32 +137,89 @@ const DataSetCard = observer(class extends React.Component {
     this.props.onRefresh();
   })
 
+  handleDrop = action((acceptedFiles, rejectedFiles) => {
+    if (!acceptedFiles.length) {
+      return;
+    }
+
+    const file = acceptedFiles[0];
+    const reader = new FileReader();
+    reader.onload = () => {
+      csv.parse(reader.result, (error, data) => {
+        if (error) {
+          return this.props.onError(error);
+        }
+        this.handleCsvLoaded(data, file);
+      });
+    };
+    reader.readAsBinaryString(file);
+
+  })
+
+  handleCsvLoaded = (data, file) => {
+    const headers = data[0];
+    const illegalHeaders = [];
+    _.each(headers, function(header) {
+      if (headers[0] === '$' || header.indexOf('.') >= 0) {
+        illegalHeaders.push(header);
+      }
+    });
+    if (illegalHeaders.length) {
+      return this.props.onError(new Error('Headers cannot contain dots (i.e. .) or null characters, and they must not start with a dollar sign (i.e. $). Illegal headers: ' + illegalHeaders.join(', ')));
+    }
+
+    const records = [];
+    _.each(data, function(row, index) {
+      if (index > 0) { // skip header row
+        const record = {};
+        _.each(row, function(value, rowValueIndex) {
+          const key = headers[rowValueIndex];
+          record[key] = value;
+        });
+        records.push(record);
+      }
+    });
+
+    http.jsonRequest(`/api/datasets/${this.props.dataSet._id}/records`, { method: 'post', bodyJson: records })
+      .then(action((response) => {
+        this.refreshStats();
+      }))
+      .catch(action((error) => {
+        this.props.onError(error);
+      }));
+  }
+
   render() {
     return (
       <Card style={styles.card}>
         <CardHeader title={this.props.dataSet.name} />
         <CardContent>
-          <div>
-            <strong>Name:</strong> {this.props.dataSet.name}
-          </div>
-          <div>
-            <strong>Description:</strong> {this.props.dataSet.description}
-          </div>
-          {this.stats && <div>
-            <strong>Stats:</strong>
-            {_.map(this.stats, (value, key) => (
-              <div key={key} style={{ marginLeft: 10 }}>{key}: {value}</div>
-            ))}
-          </div>}
-          {this.props.dataSet.fields && <div>
-            <strong>Fields:</strong>
-            {_.map(this.props.dataSet.fields, (field, index) => (
-              <div key={index} style={{ marginLeft: 10 }}>{field.name}: {field.type}</div>
-            ))}
-          </div>}
+          <Dropzone onDrop={this.handleDrop} accept="text/csv"
+                    activeStyle={{ backgroundColor: 'lightgray' }}
+                    rejectStyle={{ backgroundColor: 'red', cursor: 'no-drop' }}>
 
-        <EditDataSetDialog open={this.showEditDialog} dataSet={this.props.dataSet} onCancel={this.handleEditCancel} afterSave={this.handleEditAfterSave}/>
+            <div>
+              <strong>Name:</strong> {this.props.dataSet.name}
+            </div>
+            <div>
+              <strong>Description:</strong> {this.props.dataSet.description}
+            </div>
+            {this.stats && <div>
+              <strong>Stats:</strong>
+              {_.map(this.stats, (value, key) => (
+                <div key={key} style={{ marginLeft: 10 }}>{key}: {value}</div>
+              ))}
+            </div>}
+            {this.props.dataSet.fields && <div>
+              <strong>Fields:</strong>
+              {_.map(this.props.dataSet.fields, (field, index) => (
+                <div key={index} style={{ marginLeft: 10 }}>{field.name}: {field.type}</div>
+              ))}
+            </div>}
 
+            <EditDataSetDialog open={this.showEditDialog} dataSet={this.props.dataSet} onCancel={this.handleEditCancel} afterSave={this.handleEditAfterSave}/>
+
+          </Dropzone>
         </CardContent>
         <CardActions>
           <Button raised color='accent' style={{ marginTop: 10 }} onClick={this.handleDeleteClick}>

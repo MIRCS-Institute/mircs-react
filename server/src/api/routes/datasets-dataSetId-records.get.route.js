@@ -1,17 +1,24 @@
 /*
-  - get list of records
+  - get list of records in a Data Set
 */
 
 const _ = require('lodash');
+const MongoUtil = require(__server_src_dir + 'utils/mongo-util.js');
 
 module.exports = function(router) {
   router.get('/api/datasets/:dataSetId/records', function(req, res, next) {
+    if (!req.dataSet) {
+      return res.status(404).send({ error: 'No Data Set found with id ' + req.params.dataSetId });
+    }
 
-    // TODO: replace this placeholder code
+    const collectionName = req.dataSet._collectionName;
+    if (!collectionName) {
+      return res.status(500).send({ error: 'Data Set contains no _collectionName', dataSet: req.dataSet });
+    }
 
-    const responseObject = _.extend(req.body, {
-      updatedAt: new Date().toISOString()
-    });
-    res.status(200).send(responseObject);
+    MongoUtil.find(collectionName, {})
+      .then((records) => {
+        res.status(200).send({ list: records });
+      }, next);
   });
 };
