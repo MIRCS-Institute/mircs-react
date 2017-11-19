@@ -93,8 +93,19 @@ const DataSetCard = observer(class extends React.Component {
   constructor() {
     super();
     extendObservable(this, {
-      showEditDialog: false
+      showEditDialog: false,
+      stats: null
     });
+  }
+
+  componentDidMount() {
+    http.jsonRequest(`/api/datasets/${this.props.dataSet._id}/stats`)
+      .then(action((response) => {
+        this.stats = _.get(response, 'bodyJson');
+      }))
+      .catch(action((error) => {
+        this.props.onError(error);
+      }));
   }
 
   handleDeleteClick = () => {
@@ -131,12 +142,18 @@ const DataSetCard = observer(class extends React.Component {
           <div>
             <strong>Description:</strong> {this.props.dataSet.description}
           </div>
-          <div>
+          {this.stats && <div>
+            <strong>Stats:</strong>
+            {_.map(this.stats, (value, key) => (
+              <div key={key} style={{ marginLeft: 10 }}>{key}: {value}</div>
+            ))}
+          </div>}
+          {this.props.dataSet.fields && <div>
             <strong>Fields:</strong>
             {_.map(this.props.dataSet.fields, (field, index) => (
               <div key={index} style={{ marginLeft: 10 }}>{field.name}: {field.type}</div>
             ))}
-          </div>
+          </div>}
 
         <EditDataSetDialog open={this.showEditDialog} dataSet={this.props.dataSet} onCancel={this.handleEditCancel} afterSave={this.handleEditAfterSave}/>
 
