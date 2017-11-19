@@ -1,6 +1,7 @@
 import _ from 'lodash'
 import Button from 'material-ui/Button'
 import Card, { CardActions, CardContent, CardHeader } from 'material-ui/Card'
+import ConfirmDeleteDialog from './ConfirmDeleteDialog'
 import csv from 'csv'
 import Dialog, { DialogActions, DialogContent, DialogTitle} from 'material-ui/Dialog'
 import Dropzone from 'react-dropzone'
@@ -96,6 +97,7 @@ const DataSetCard = observer(class extends React.Component {
     super();
     extendObservable(this, {
       showEditDialog: false,
+      showConfirmDeleteDialog: false,
       stats: null
     });
   }
@@ -114,7 +116,16 @@ const DataSetCard = observer(class extends React.Component {
       }));
   }
 
-  handleDeleteClick = () => {
+  handleDeleteClick = action(() => {
+    this.showConfirmDeleteDialog = true;
+  })
+
+  handleDeleteCancel = action(() => {
+    this.showConfirmDeleteDialog = false;
+  })
+
+  handleDeleteConfirm = action(() => {
+    this.showConfirmDeleteDialog = false;
     http.jsonRequest(`/api/datasets/${this.props.dataSet._id}`, { method: 'delete' })
       .then(action((response) => {
         this.props.onRefresh();
@@ -122,7 +133,7 @@ const DataSetCard = observer(class extends React.Component {
       .catch(action((error) => {
         this.props.onError(error);
       }));
-  }
+  })
 
   handleEditClick = action(() => {
     this.showEditDialog = true;
@@ -218,6 +229,8 @@ const DataSetCard = observer(class extends React.Component {
             </div>}
 
             <EditDataSetDialog open={this.showEditDialog} dataSet={this.props.dataSet} onCancel={this.handleEditCancel} afterSave={this.handleEditAfterSave}/>
+
+            {this.showConfirmDeleteDialog && <ConfirmDeleteDialog name={this.props.dataSet.name} onConfirm={this.handleDeleteConfirm} onCancel={this.handleDeleteCancel}/>}
 
           </Dropzone>
         </CardContent>
