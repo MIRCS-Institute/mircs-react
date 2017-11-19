@@ -5,8 +5,8 @@ const FsUtil = require(__server_src_dir + '/utils/fs-util.js');
 const log = require(__server_src_dir + 'utils/log.js');
 const unused = require(__server_src_dir + 'utils/unused.js');
 
-/* 
-scans the contents of [dir]/param, [dir]/middleware, and [dir]/routes 
+/*
+scans the contents of [dir]/param, [dir]/middleware, and [dir]/routes
 for well-named files and executes functions within
 them, giving us a route-declaration-by-convention mechanism.
  */
@@ -34,7 +34,7 @@ function createRouterForDir(dir) {
       unused(name);
       try {
         router.use(require(filePath));
-      } catch(exception) {
+      } catch (exception) {
         log.fatal(`Error starting middleware ${filePath}:`, exception);
         throw exception;
       }
@@ -46,7 +46,7 @@ function createRouterForDir(dir) {
       unused(name);
       try {
         require(filePath)(router);
-      } catch(exception) {
+      } catch (exception) {
         log.fatal(`Error starting param handler ${filePath}:`, exception);
         throw exception;
       }
@@ -58,7 +58,7 @@ function createRouterForDir(dir) {
       unused(name);
       try {
         require(filePath)(router);
-      } catch(exception) {
+      } catch (exception) {
         log.fatal(`Error starting route ${filePath}:`, exception);
         throw exception;
       }
@@ -96,7 +96,7 @@ function createRouterForDir(dir) {
 
   return function(req, res, next) {
     return router(req, res, function onRouteError(error) {
-      var errorMessage = 'Error handling request.';
+      let errorMessage = 'Error handling request ' + _.get(error, 'message', '');
 
       if (error) {
         log.error('Error handling request', req.method, dir + req.path, {
@@ -108,7 +108,7 @@ function createRouterForDir(dir) {
 
         if (log.level() <= log.DEBUG) {
           // include error details when building in engineering mode to help debug issues
-          errorMessage += ' ' + error.stack || error;
+          errorMessage += '\n' + error.stack || error;
         }
       } else if (!_.startsWith(req.url, '/' + dir)) {
         return next();

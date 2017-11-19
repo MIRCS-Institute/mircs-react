@@ -66,28 +66,12 @@ const SideMenu = () => (
         <ListItemText primary="Data Sets"/>
       </ListItem>
     </Link>
-    <Link to="/collections" style={styles.sideMenuLink}>
-      <ListItem button>
-        <ListItemIcon>
-          <CollectionsIcon/>
-        </ListItemIcon>
-        <ListItemText primary="Collections"/>
-      </ListItem>
-    </Link>
     <Link to="/upload" style={styles.sideMenuLink}>
       <ListItem button>
         <ListItemIcon>
           <FileUploadIcon/>
         </ListItemIcon>
         <ListItemText primary="Upload"/>
-      </ListItem>
-    </Link>
-    <Link to="/potato" style={styles.sideMenuLink}>
-      <ListItem button>
-        <ListItemIcon>
-          <BugReportIcon/>
-        </ListItemIcon>
-        <ListItemText primary="Potato"/>
       </ListItem>
     </Link>
   </List>
@@ -100,8 +84,6 @@ const ContentPane = withRouter((props) => (
     </Route>
     <Route path="/datasets" component={DataSets}/>
 
-    <Route path="/collections" component={Collections}/>
-    <Route path="/potato" component={Potato}/>
     <Route path="/upload" component={Upload}/>
     <Route component={Unknown404}/>
   </Switch>

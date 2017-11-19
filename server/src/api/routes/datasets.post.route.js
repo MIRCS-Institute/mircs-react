@@ -15,11 +15,13 @@ module.exports = function(router) {
     }
     newDataSet.createdAt = newDataSet.updatedAt = new Date();
 
-    let dataSet;
+    let db;
     let dataSetCollection;
-    MongoUtil.getCollection(MongoUtil.DATA_SETS_COLLECTION)
-      .then((collection) => {
-        dataSetCollection = collection;
+    let dataSet;
+    MongoUtil.getDb()
+      .then((theDb) => {
+        db = theDb;
+        dataSetCollection = db.collection(MongoUtil.DATA_SETS_COLLECTION)
         return dataSetCollection.insertOne(newDataSet);
       })
       .then((result) => {
@@ -27,14 +29,17 @@ module.exports = function(router) {
 
         dataSet._collectionName = MongoUtil.DATA_SETS_COLLECTION_PREFIX + dataSet._id;
 
-        return dataSetCollection.updateOne({_id:dataSet._id}, dataSet);
+        return dataSetCollection.updateOne({ _id: dataSet._id }, dataSet);
       })
       .then(() => {
         return MongoUtil.createCollection(dataSet._collectionName);
       })
       .then(() => {
-        res.status(200).send(dataSet);
+        res.status(201).send(dataSet);
       })
-      .catch(next);
+      .catch(next)
+      .then(() => {
+        db.close();
+      });
   });
 };

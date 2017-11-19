@@ -12,11 +12,10 @@ const MongoUtil = require(__server_src_dir + 'utils/mongo-util.js');
 
 module.exports = function(router) {
   router.get('/api/datasets', function(req, res, next) {
-    MongoUtil.getCollection(MongoUtil.DATA_SETS_COLLECTION).then((collection) => {
-      collection.find().toArray(function (err, collections) {
-        if (err) return next(err);
-        res.status(200).send({ list: collections });
-      });
-    });
+    const query = {};
+    MongoUtil.find(MongoUtil.DATA_SETS_COLLECTION, query)
+      .then((dataSets) => {
+        res.status(200).send({ list: dataSets });
+      }, next);
   });
 };

@@ -7,30 +7,41 @@ const MONGO_SERVER_URL = Environment.getRequired('MONGO_SERVER_URL');
 const MongoUtil = {};
 
 MongoUtil.DATA_SETS_COLLECTION = 'DataSets';
-MongoUtil.DATA_SETS_COLLECTION_PREFIX = 'mircs_';
-
-/*
-todo: remember to close the db
-*/
-
-/* SERVER METHODs */
+MongoUtil.DATA_SETS_COLLECTION_PREFIX = 'dataset_';
 
 /* the initialize function will create the master collection upon starting the server */
-MongoUtil.initialize = function () {
+MongoUtil.initialize = function() {
   return MongoUtil.createCollection(MongoUtil.DATA_SETS_COLLECTION);
 };
 
-/* COLLECTION METHODS */
+/*
+Connects to MongoDB and returns a promise that resolves to a Database object connected to
+our database.
 
-/* CREATE
-createCollection will insert an uploaded collection into the database
+Configuration is gathered from the environment.js module.
+
+Note: the returned db instance should be closed when finished.
+
+@see http://mongodb.github.io/node-mongodb-native/2.2/api/Db.html
+*/
+MongoUtil.getDb = function() {
+  return new Promise(function(resolve, reject) {
+    MongoClient.connect(MONGO_SERVER_URL, function(error, db) {
+      if (error) {
+        return reject(error);
+      }
+      resolve(db);
+    });
+  });
+};
+
+/*
+creates a new collection in the database
+@see http://mongodb.github.io/node-mongodb-native/2.2/api/Db.html#createCollection
  */
-MongoUtil.createCollection = function (newCollection) {
-  MongoClient.connect(MONGO_SERVER_URL, function (error, db) {
-    if (error) {
-      return reject(error);
-    }
-    db.createCollection(newCollection, function (err, res) {
+MongoUtil.createCollection = function(collectionName, options) {
+  return MongoUtil.getDb().then((db) => {
+    db.createCollection(collectionName, options, function(err, res) {
       if (err) {
         throw err;
       }
@@ -39,67 +50,30 @@ MongoUtil.createCollection = function (newCollection) {
   });
 };
 
-/* READ
-readCollection will return a requested collection
- */
-MongoUtil.readCollection = function () {
-
-};
-
-/* UPDATE
-updateCollection will update an existing collection
- */
-MongoUtil.updateCollection = function () {
-
-};
-
-/* DELETE
-deleteCollection will delete a collection
-*/
-MongoUtil.deleteCollection = function () {
-
-};
-
-/* MASTER COLLECTION METHODS */
-
-/* INSERT
-insertIntoMasterCollection will insert a collection into the master collection
-*/
-MongoUtil.insertMasterCollection = function () {
-
-};
-
 /*
-Returns a promise that resolves to a named collection
+finds and returns documents in a collection matching the passed query
+@see http://mongodb.github.io/node-mongodb-native/2.2/api/Collection.html#find
 */
-MongoUtil.getCollection = function (collectionName) {
-  return new Promise(function (resolve, reject) {
-    MongoClient.connect(MONGO_SERVER_URL, function (error, db) {
-      if (error) { return reject(error); }
-      db.collection(collectionName, function (err, collection) {
-        if (error) { return reject(error); }
-        resolve(collection);
+MongoUtil.find = function(collectionName, query) {
+  let db;
+  return MongoUtil.getDb()
+    .then((theDb) => {
+      db = theDb;
+
+      return new Promise(function(resolve, reject) {
+        db.collection(collectionName)
+          .find(query)
+          .toArray(function(err, result) {
+            db.close();
+            if (err) {
+              return reject(err);
+            } else {
+              return resolve(result);
+            }
+          });
       });
     });
-  });
 };
 
+
 module.exports = MongoUtil;
-
-
-
-// /*
-// the getDb function will connect to Mongo and return a promise to
-// a Mongo Db object configured for our database using environment variables.
-// @see http://mongodb.github.io/node-mongodb-native/2.2/api/Db.html
-// */
-// MongoUtil.getDb = function () {
-//   return new Promise(function (resolve, reject) {
-//     MongoClient.connect(MONGO_SERVER_URL, function (error, db) {
-//       if (error) {
-//         return reject(error);
-//       }
-//       resolve(db);
-//     });
-//   });
-// };
