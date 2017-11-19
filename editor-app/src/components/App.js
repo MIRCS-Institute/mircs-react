@@ -1,5 +1,4 @@
 import blue from 'material-ui/colors/blue'
-import FileUploadIcon from 'material-ui-icons/FileUpload'
 import HomeIcon from 'material-ui-icons/Home'
 import ExtensionIcon from 'material-ui-icons/Extension'
 import Grid from 'material-ui/Grid'
@@ -12,7 +11,6 @@ import { Switch } from 'react-router-dom'
 import { withRouter } from 'react-router-dom'
 
 import DataSets from './DataSets'
-import Upload from './Upload'
 import Unknown404 from './Unknown404'
 
 const theme = createMuiTheme({
@@ -62,14 +60,6 @@ const SideMenu = () => (
         <ListItemText primary="Data Sets"/>
       </ListItem>
     </Link>
-    <Link to="/upload" style={styles.sideMenuLink}>
-      <ListItem button>
-        <ListItemIcon>
-          <FileUploadIcon/>
-        </ListItemIcon>
-        <ListItemText primary="Upload"/>
-      </ListItem>
-    </Link>
   </List>
 );
 
@@ -80,7 +70,6 @@ const ContentPane = withRouter((props) => (
     </Route>
     <Route path="/datasets" component={DataSets}/>
 
-    <Route path="/upload" component={Upload}/>
     <Route component={Unknown404}/>
   </Switch>
 ))
