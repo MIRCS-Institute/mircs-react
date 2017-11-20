@@ -24,7 +24,8 @@ const Records = observer(class extends React.Component {
       error: null,
       isLoading: false,
 
-      showCreateDialog: false
+      showCreateDialog: false,
+      showConfirmDeleteDialog: false
     });
   }
 
@@ -53,6 +54,25 @@ const Records = observer(class extends React.Component {
       }));
   })
 
+  handleDeleteClick = action(() => {
+    this.showConfirmDeleteDialog = true;
+  })
+
+  handleDeleteCancel = action(() => {
+    this.showConfirmDeleteDialog = false;
+  })
+
+  handleDeleteConfirm = action(() => {
+    this.showConfirmDeleteDialog = false;
+    http.jsonRequest(`/api/datasets/${this.props.dataSetId}/records`, { method: 'delete' })
+      .then(action((response) => {
+        this.props.onRefresh();
+      }))
+      .catch(action((error) => {
+        this.props.onError(error);
+      }));
+  })
+
   handleError = action((error) => {
     this.error = error;
     this.refresh();
@@ -61,13 +81,20 @@ const Records = observer(class extends React.Component {
   render() {
     return (
       <div>
-        <header style={styles.header}>{this.dataSet && this.dataSet.name} Records</header>
+        <header style={styles.header}>
+          <span>{this.dataSet && this.dataSet.name} Records</span>
+          <Button raised color='accent' style={styles.headerButton} onClick={this.handleDeleteClick}>
+            Delete All Records
+          </Button>
+        </header>
 
         {this.isLoading && <LoadingSpinner title='Loading Records...' />}
 
         {this.records.map((record) => (
-          <RecordCard key={record._id} record={record} onRefresh={this.refresh} onError={this.handleError}/>
+          <RecordCard key={record._id} dataSetId={this.props.dataSetId} record={record} onRefresh={this.refresh} onError={this.handleError}/>
         ))}
+
+        {this.showConfirmDeleteDialog && <ConfirmDeleteDialog name={`all records in ${this.dataSet.name} data set`} onConfirm={this.handleDeleteConfirm} onCancel={this.handleDeleteCancel}/>}
 
         <ErrorSnackbar error={this.error} />
       </div>
@@ -76,6 +103,35 @@ const Records = observer(class extends React.Component {
 });
 
 const RecordCard = observer(class extends React.Component {
+  constructor() {
+    super();
+    extendObservable(this, {
+      showEditDialog: false,
+      showConfirmDeleteDialog: false,
+      stats: null,
+      fields: null
+    });
+  }
+
+  handleDeleteClick = action(() => {
+    this.showConfirmDeleteDialog = true;
+  })
+
+  handleDeleteCancel = action(() => {
+    this.showConfirmDeleteDialog = false;
+  })
+
+  handleDeleteConfirm = action(() => {
+    this.showConfirmDeleteDialog = false;
+    http.jsonRequest(`/api/datasets/${this.props.dataSetId}/records/${this.props.record._id}`, { method: 'delete' })
+      .then(action((response) => {
+        this.props.onRefresh();
+      }))
+      .catch(action((error) => {
+        this.props.onError(error);
+      }));
+  })
+
   render() {
     return (
       <Card style={styles.card}>
@@ -85,7 +141,15 @@ const RecordCard = observer(class extends React.Component {
               <strong>{key}:</strong> {''+value}
             </div>
           ))}
+
+          {this.showConfirmDeleteDialog && <ConfirmDeleteDialog name={this.props.record._id} onConfirm={this.handleDeleteConfirm} onCancel={this.handleDeleteCancel}/>}
+
         </CardContent>
+        <CardActions>
+          <Button raised color='accent' onClick={this.handleDeleteClick}>
+            Delete Record
+          </Button>
+        </CardActions>
       </Card>
     );
   }
@@ -95,6 +159,9 @@ const styles = {
   header: {
     fontSize: '30px',
     marginBottom: '20px'
+  },
+  headerButton: {
+    marginRight: 10
   },
   card: {
     marginBottom: '15px',
