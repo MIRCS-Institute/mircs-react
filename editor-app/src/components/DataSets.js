@@ -27,7 +27,6 @@ const DataSets = observer(class extends React.Component {
     });
   }
 
-  /* here we are using lodash to access a property of 'response' at the path 'bodyJson' */
   componentDidMount() {
     this.refresh();
   }
@@ -64,22 +63,21 @@ const DataSets = observer(class extends React.Component {
     this.refresh();
   })
 
-  /* the page will render depending on the circumstances below */
   render() {
     return (
       <div>
-        {this.isLoading && <LoadingSpinner title='Loading Data Sets...' />}
-
         {!this.isLoading && <header style={styles.header}>Data Sets</header>}
 
         <Button raised color='primary' style={{ marginTop: 10 }} onClick={this.handleCreateClick}>
           Create a Data Set
         </Button>
 
-        <EditDataSetDialog open={this.showCreateDialog} onCancel={this.handleCreateCancel} afterSave={this.handleCreateAfterSave}/>
-
         {!this.isLoading && <p style={styles.description}>
           Each card represents a dataset that has been uploaded to the platform.</p>}
+
+        {this.isLoading && <LoadingSpinner title='Loading Data Sets...' />}
+
+        <EditDataSetDialog open={this.showCreateDialog} onCancel={this.handleCreateCancel} afterSave={this.handleCreateAfterSave}/>
 
         {this.dataSets.map((dataSet) => (
           <DataSetCard key={dataSet._id} dataSet={dataSet} onRefresh={this.refresh} onError={this.handleError}/>
@@ -244,11 +242,14 @@ const DataSetCard = observer(class extends React.Component {
           </Dropzone>
         </CardContent>
         <CardActions>
-          <Button raised color='accent' style={{ marginTop: 10 }} onClick={this.handleDeleteClick}>
+          <Button raised color='accent' onClick={this.handleDeleteClick}>
             Delete Data Set
           </Button>
-          <Button raised style={{ marginTop: 10 }} onClick={this.handleEditClick}>
+          <Button raised onClick={this.handleEditClick}>
             Edit Data Set
+          </Button>
+          <Button raised href={`#/datasets/${this.props.dataSet._id}`}>
+            View Records
           </Button>
         </CardActions>
       </Card>
@@ -364,7 +365,8 @@ const EditDataSetDialog = observer(class extends React.Component {
 
 const styles = {
   header: {
-    fontSize: '30px'
+    fontSize: '30px',
+    marginBottom: '20px'
   },
   card: {
     marginBottom: '15px',

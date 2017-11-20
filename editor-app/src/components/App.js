@@ -3,7 +3,7 @@ import HomeIcon from 'material-ui-icons/Home'
 import ExtensionIcon from 'material-ui-icons/Extension'
 import Grid from 'material-ui/Grid'
 import List, { ListItem, ListItemIcon, ListItemText } from 'material-ui/List'
-import React from 'react';
+import React from 'react'
 import { HashRouter } from 'react-router-dom'
 import { Link, Route } from 'react-router-dom'
 import { MuiThemeProvider, createMuiTheme } from 'material-ui/styles'
@@ -11,6 +11,7 @@ import { Switch } from 'react-router-dom'
 import { withRouter } from 'react-router-dom'
 
 import DataSets from './DataSets'
+import Records from './Records'
 import Unknown404 from './Unknown404'
 
 const theme = createMuiTheme({
@@ -68,7 +69,10 @@ const ContentPane = withRouter((props) => (
     <Route exact={true} path="/">
       <h3>Welcome to the MIRCS Geogenealogy data editor. May the schwartz be with you.</h3>
     </Route>
-    <Route path="/datasets" component={DataSets}/>
+    <Route exact path="/datasets" component={DataSets}/>
+    <Route exact path="/datasets/:dataSetId" render={({ match }) => (
+      <Records dataSetId={match.params.dataSetId}/>
+    )}/>
 
     <Route component={Unknown404}/>
   </Switch>
