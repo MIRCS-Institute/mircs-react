@@ -9,6 +9,7 @@ const MongoUtil = {};
 
 MongoUtil.DATA_SETS_COLLECTION = 'DataSets';
 MongoUtil.DATA_SETS_COLLECTION_PREFIX = 'dataset_';
+MongoUtil.DATA_SETS_FIELDS_COLLECTION_SUFFIX = '_fields';
 
 /* the initialize function will create the master collection upon starting the server */
 MongoUtil.initialize = function() {

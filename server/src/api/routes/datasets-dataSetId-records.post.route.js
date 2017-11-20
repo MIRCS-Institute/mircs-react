@@ -19,15 +19,31 @@ module.exports = function(router) {
     }
 
     let db;
+    let responseJson;
     MongoUtil.getDb()
       .then((theDb) => {
         db = theDb;
 
-        return db.collection(collectionName).insertMany(req.body);
+        return db.collection(collectionName).insertMany(req.body)
+          .then((result) => {
+            responseJson = _.pick(result, ['insertedCount', 'insertedIds']);
+          });
       })
-      .then((result) => {
-        result = _.pick(result, ['insertedCount', 'insertedIds']);
-        res.status(201).send(result);
+      .then(() => {
+        return db.collection(collectionName).mapReduce(
+          function map() {
+            for (var key in this) {
+              emit(key, typeof this[key]);
+            }
+          },
+          function reduce(key, vals) {
+            return vals[0];
+          }, {
+            out: collectionName + MongoUtil.DATA_SETS_FIELDS_COLLECTION_SUFFIX
+          });
+      })
+      .then(() => {
+        res.status(201).send(responseJson);
       })
       .catch(next)
       .then(() => {

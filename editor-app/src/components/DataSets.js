@@ -98,7 +98,8 @@ const DataSetCard = observer(class extends React.Component {
     extendObservable(this, {
       showEditDialog: false,
       showConfirmDeleteDialog: false,
-      stats: null
+      stats: null,
+      fields: null
     });
   }
 
@@ -110,6 +111,14 @@ const DataSetCard = observer(class extends React.Component {
     http.jsonRequest(`/api/datasets/${this.props.dataSet._id}/stats`)
       .then(action((response) => {
         this.stats = _.get(response, 'bodyJson');
+      }))
+      .catch(action((error) => {
+        this.props.onError(error);
+      }));
+
+    http.jsonRequest(`/api/datasets/${this.props.dataSet._id}/fields`)
+      .then(action((response) => {
+        this.fields = _.get(response, 'bodyJson.fields');
       }))
       .catch(action((error) => {
         this.props.onError(error);
@@ -221,10 +230,10 @@ const DataSetCard = observer(class extends React.Component {
                 <div key={key} style={{ marginLeft: 10 }}>{key}: {value}</div>
               ))}
             </div>}
-            {this.props.dataSet.fields && <div>
+            {this.fields && <div>
               <strong>Fields:</strong>
-              {_.map(this.props.dataSet.fields, (field, index) => (
-                <div key={index} style={{ marginLeft: 10 }}>{field.name}: {field.type}</div>
+              {_.map(this.fields, (field) => (
+                <div key={field._id} style={{ marginLeft: 10 }}>{field._id} ({field.value})</div>
               ))}
             </div>}
 
