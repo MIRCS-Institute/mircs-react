@@ -66,10 +66,10 @@ const Records = observer(class extends React.Component {
     this.showConfirmDeleteDialog = false;
     http.jsonRequest(`/api/datasets/${this.props.dataSetId}/records`, { method: 'delete' })
       .then(action((response) => {
-        this.props.onRefresh();
+        this.refresh();
       }))
       .catch(action((error) => {
-        this.props.onError(error);
+        this.handleError(error);
       }));
   })
 
