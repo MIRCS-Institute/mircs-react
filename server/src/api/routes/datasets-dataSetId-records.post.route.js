@@ -30,17 +30,7 @@ module.exports = function(router) {
           });
       })
       .then(() => {
-        return db.collection(collectionName).mapReduce(
-          function map() {
-            for (var key in this) {
-              emit(key, typeof this[key]);
-            }
-          },
-          function reduce(key, vals) {
-            return vals[0];
-          }, {
-            out: collectionName + MongoUtil.DATA_SETS_FIELDS_COLLECTION_SUFFIX
-          });
+        return MongoUtil.refreshFields(db, collectionName);
       })
       .then(() => {
         res.status(201).send(responseJson);

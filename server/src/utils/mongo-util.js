@@ -76,5 +76,21 @@ MongoUtil.find = function(collectionName, query) {
     });
 };
 
+/*
+update the fields collection associated with a collection
+*/
+MongoUtil.refreshFields = function(db, collectionName) {
+  return db.collection(collectionName).mapReduce(
+    function map() {
+      for (var key in this) {
+        emit(key, typeof this[key]);
+      }
+    },
+    function reduce(key, vals) {
+      return vals[0];
+    }, {
+      out: collectionName + MongoUtil.DATA_SETS_FIELDS_COLLECTION_SUFFIX
+    });
+};
 
 module.exports = MongoUtil;

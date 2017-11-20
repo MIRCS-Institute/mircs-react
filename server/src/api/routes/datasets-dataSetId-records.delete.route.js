@@ -25,6 +25,9 @@ module.exports = function(router) {
         dataSetCollection = db.collection(collectionName)
         return dataSetCollection.deleteMany({});
       })
+      .then(() => {
+        return MongoUtil.refreshFields(db, collectionName);
+      })
       .then(function() {
         res.status(200).send({ result: 'deleted' });
       })

@@ -25,6 +25,9 @@ module.exports = function(router) {
         dataSetCollection = db.collection(collectionName)
         return dataSetCollection.deleteOne({ _id: ObjectID(req.params.recordId) });
       })
+      .then(() => {
+        return MongoUtil.refreshFields(db, collectionName);
+      })
       .then(function() {
         res.status(200).send({ result: 'deleted' });
       })
