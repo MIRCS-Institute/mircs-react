@@ -4,10 +4,16 @@ const log = require(__server_src_dir + 'utils/log.js');
 const MongoClient = require('mongodb').MongoClient
 const MONGO_SERVER_URL = Environment.getRequired('MONGO_SERVER_URL');
 
+const mongoose = require('mongoose');
+mongoose.connect(MONGO_SERVER_URL);
+
+// import the required models
+const DataSet = require("../models/dataSetSchema");
+
 const MongoUtil = {};
 
 /* 
-todo: remember to close the db
+todo: always remember to close the db
 */
 
 /* SERVER METHODs */
@@ -18,84 +24,92 @@ MongoUtil.initialize = function () {
     if (error) {
       return reject(error);
     }
-    db.createCollection("masterCollection", function (err, res) {
+    db.createCollection("datasets", function (err, res) {
       if (err) {
         throw err;
       }
-      console.log("master collection created...");
+      console.log("The database has been initialized.");
       db.close();
     });
   });
 };
 
-/* COLLECTION METHODS */
+/* RELATIONSHIP METHODS */
 
 /* CREATE
-createCollection will insert an uploaded collection into the database
+createNewRelationship will take in a relationship object
+this object represents a number of datasets and their to-be-joined fields
+this function will create an entry in the "relationships" collection with their join
  */
-MongoUtil.createCollection = function (newCollection) {
+MongoUtil.createNewRelationship = function (relationship) {
+
+};
+
+/* READ
+readRelationship will take in... */
+MongoUtil.readRelationship = function () {
+
+};
+
+/* DATASET METHODS */
+
+/* CREATE
+createDataSet will insert an uploaded collection into the database
+ */
+MongoUtil.createDataSet = function (newDataSet) {
   return new Promise(function (resolve, reject) {
     MongoClient.connect(MONGO_SERVER_URL, function (error, db) {
       if (error) {
         return reject(error);
       }
-      // convert the contents of the master collection to an array and resolve the promise
-      db.collection('masterCollection', function (err, masterCollection) {
-        console.log(newCollection);
-        // masterCollection.insertOne({ _id: 10, item: "brayyyyy", qty: 20 });
-        masterCollection.insertOne(newCollection);
-        resolve(masterCollection);
-      });
+      // save the new dataSet with our mongoose dataSet schema
+      const dataSets = new DataSet(newDataSet);
+      dataSets.save();
+      resolve(newDataSet);
+      db.close();
     });
   });
 };
 
 /* READ
-readCollection will return a requested collection
+readDataSet will return a requested collection
  */
-MongoUtil.readCollection = function () {
+MongoUtil.readDataSet = function () {
 
 };
 
 /* UPDATE
-updateCollection will update an existing collection
+updateDataSet will update an existing collection
  */
-MongoUtil.updateCollection = function () {
+MongoUtil.updateDataSet = function () {
 
 };
 
 /* DELETE
-deleteCollection will delete a collection
+deleteDataSet will delete a collection
 */
-MongoUtil.deleteCollection = function () {
+MongoUtil.deleteDataSet = function () {
 
 };
 
-/* MASTER COLLECTION METHODS */
-
-/* INSERT 
-insertIntoMasterCollection will insert a collection into the master collection 
-*/
-MongoUtil.insertMasterCollection = function () {
-
-};
+/* MASTER DATASET METHODS */
 
 /* READ
-getMasterCollection will return the entire contents of the master collection 
+getMasterDataSet will return the entire contents of the master collection 
 */
-MongoUtil.getMasterCollection = function () {
+MongoUtil.getAllDataSets = function () {
   return new Promise(function (resolve, reject) {
     MongoClient.connect(MONGO_SERVER_URL, function (error, db) {
       if (error) {
         return reject(error);
       }
-      // convert the contents of the master collection to an array and resolve the promise
-      db.collection('masterCollection', function (err, masterCollection) {
-        masterCollection.find().toArray(function (err, collections) {
-          if (err) throw err;
-          resolve(collections);
+      // send back every single dataset in an array
+      const arrayOfDataSets = DataSet.find()
+        .then(function (datasets) {
+          return datasets;
         });
-      });
+      resolve(arrayOfDataSets);
+      db.close();
     });
   });
 };

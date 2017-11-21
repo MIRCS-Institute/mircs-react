@@ -9,11 +9,11 @@ import { observer } from 'mobx-react'
 
 /* this class will fetch all uploaded CSV files the server and display them */
 
-const Collections = observer(class extends React.Component {
+const DataSets = observer(class extends React.Component {
   constructor() {
     super();
     extendObservable(this, {
-      collections: [],
+      dataSets: [],
       error: null,
       isLoading: false
     });
@@ -24,10 +24,10 @@ const Collections = observer(class extends React.Component {
     action(() => {
       this.isLoading = true;
       // use the http.jsonRequest to create a response object from a URL
-      http.jsonRequest('/api/read-all-collections')
+      http.jsonRequest('/api/datasets')
         .then(action((response) => {
           this.isLoading = false;
-          this.collections = _.get(response, 'bodyJson');
+          this.dataSets = _.get(response, 'bodyJson');
         }))
         .catch(action((error) => {
           this.isLoading = false;
@@ -40,15 +40,15 @@ const Collections = observer(class extends React.Component {
   render() {
     return (
       <div>
-        {this.isLoading && <LoadingSpinner title='Loading Collections...' />}
+        {this.isLoading && <LoadingSpinner title='Loading DataSets...' />}
 
-        {!this.isLoading && <header style={styles.header}>Collections</header>}
+        {!this.isLoading && <header style={styles.header}>DataSets</header>}
 
         {!this.isLoading && <p style={styles.description}>
           Each card represents a dataset that has been uploaded to the platform.</p>}
 
-        {this.collections.map((collection) => (
-          <CollectionCard key={collection.name} collection={collection} />
+        {this.dataSets.map((dataSet) => (
+          <DataSetCard key={dataSet.name} dataSet={dataSet} />
         ))}
 
         <ErrorSnackbar error={this.error} />
@@ -58,15 +58,18 @@ const Collections = observer(class extends React.Component {
 });
 
 /* each individual card will represent a single collection */
-const CollectionCard = (props) => (
+const DataSetCard = (props) => (
   <Card style={styles.card}>
-    <CardHeader title={props.collection.name} />
+    <CardHeader title={props.dataSet.name} />
     <CardContent>
       <div>
-        <strong>Collection name:</strong> {props.collection.name}
+        <strong>Name:</strong> {props.dataSet.name}
       </div>
       <div>
-        <strong>Number of Rows:</strong> {'' + props.collection.rows}
+        <strong>Description:</strong> {'' + props.dataSet.description}
+      </div>
+      <div>
+        <strong>Created:</strong> {'' + props.dataSet.createdAt}
       </div>
     </CardContent>
   </Card>
@@ -84,4 +87,4 @@ const styles = {
   }
 };
 
-export default Collections;
+export default DataSets;

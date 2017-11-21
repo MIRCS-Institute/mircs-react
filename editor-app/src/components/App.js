@@ -13,7 +13,7 @@ import { MuiThemeProvider, createMuiTheme } from 'material-ui/styles'
 import { Switch } from 'react-router-dom'
 import { withRouter } from 'react-router-dom'
 
-import Collections from './Collections'
+import DataSets from './DataSets'
 import Maps from './Maps'
 import Potato from './Potato'
 import Upload from './Upload'
@@ -66,12 +66,12 @@ const SideMenu = () => (
         <ListItemText primary="Maps"/>
       </ListItem>
     </Link>
-    <Link to="/collections" style={styles.sideMenuLink}>
+    <Link to="/datasets" style={styles.sideMenuLink}>
       <ListItem button>
         <ListItemIcon>
           <CollectionsIcon/>
         </ListItemIcon>
-        <ListItemText primary="Collections"/>
+        <ListItemText primary="Data Sets"/>
       </ListItem>
     </Link>
     <Link to="/upload" style={styles.sideMenuLink}>
@@ -98,7 +98,7 @@ const ContentPane = withRouter((props) => (
     <Route exact={true} path="/">
       <h3>Welcome to the MIRCS Geogenealogy prototype. May the schwartz be with you.</h3>
     </Route>
-    <Route path="/collections" component={Collections}/>
+    <Route path="/datasets" component={DataSets}/>
     <Route path="/maps" component={Maps}/>
     <Route path="/potato" component={Potato}/>
     <Route path="/upload" component={Upload}/>

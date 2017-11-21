@@ -5,15 +5,12 @@
 */
 
 const _ = require('lodash');
+const MongoUtil = require(__server_src_dir + 'utils/mongo-util.js');
 
-module.exports = function(router) {
-  router.post('/api/datasets', function(req, res, next) {
-
-    // TODO: replace this placeholder code
-
-    const responseObject = _.extend(req.body, {
-      updatedAt: new Date().toISOString()
-    });
-    res.status(200).send(responseObject);
+module.exports = function (router) {
+  router.post('/api/datasets', function (req, res, next) {
+    MongoUtil.createDataSet(req.body.file).then(function (dataSet) {
+      res.status(200).send(dataSet);
+    })
   });
 };

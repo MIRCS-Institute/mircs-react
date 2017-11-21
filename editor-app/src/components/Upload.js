@@ -24,14 +24,14 @@ const currentUpload = observer(class extends React.Component {
     super();
     this.handleChange = this.handleChange.bind(this);
     extendObservable(this, {
-      newCollection: [],
+      newDataSet: [],
       error: null,
       isUploaded: false,
     });
   }
 
-  handleChange(newCollection) {
-    const x = csvConversion.convertToJson(newCollection);
+  handleChange(newDataSet) {
+    const x = csvConversion.convertToJson(newDataSet);
   }
 
   render() {
