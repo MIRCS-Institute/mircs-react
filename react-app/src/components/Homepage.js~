@@ -23,14 +23,14 @@ import Unknown404 from './Unknown404'
 import {Tabs, Tab} from 'material-ui/Tabs';
 import Button from 'material-ui/Button'
 import About from './About'
-
+import App from './App'
 const theme = createMuiTheme({
   palette: {
     primary: blue
   }
 });
 
-const App = () => (
+const Homepage = () => (
   <HashRouter>
     <MuiThemeProvider theme={theme}>
       <div className="Header">
@@ -41,15 +41,10 @@ const App = () => (
           <Link to="/home" style={styles.sideMenuLink}>
           <Button><ListItemText primary="HOME"/></Button>
     		 </Link>  
-    		 </div>
-    		 <div className="tab">
-          <Link to="/home" style={styles.sideMenuLink}>
-          <Button><ListItemText primary="EXPLORE"/></Button>
-    		 </Link>  
     		 </div>    		 
     		 <div className="tab">
           <Link to="/faq" style={styles.sideMenuLink}>
-          <Button><ListItemText primary="F.A.Q"/></Button>
+          <Button><ListItemText primary="FAQ"/></Button>
     		 </Link>   
     		 </div>
     		 <div className="tab">
@@ -67,21 +62,13 @@ const App = () => (
 			 </div> 
     		 </div>	   
         <div style={styles.content}>
-          <Grid container spacing={0} direction='row' justify='space-between'>
+          <Grid container spacing={20} direction='row' justify='space-between'>
             <Grid item xs={12} sm={16}>
-            <div className="Background">
               <ContentPane/>
-              </div>
             </Grid>
           </Grid>
         </div>
-        <div className="App-Footer-Extension">
         </div>
-        <div className="App-Footer">
-    <center><h4>&copy;MARITIME INSTITUTE FOR CIVIL SOCIETY <br></br>
-P.O. BOX 8041, HALIFAX, N.S. B3K 5L8</h4></center>
-    </div>
-      </div>      
     </MuiThemeProvider>    
   </HashRouter>
 );	
@@ -90,6 +77,7 @@ const ContentPane = withRouter((props) => (
   <Switch key={props.location.key} location={props.location}>
     <Route exact={true} path="/" style={styles.appTitle}>
     </Route>
+     <Route path="/homepage" component={HomePage}/>
     <Route path="/home" component={Home}/>
     <Route path="/faq" component={FAQ}/>
     <Route path="/about" component={About}/>
@@ -103,6 +91,11 @@ const ContentPane = withRouter((props) => (
 ))
 
 const styles = {
+  logo: {
+    height: '40px',
+    width: '40px',
+    marginTop: '40px'
+  },
   appTitle: {
     fontSize: '1.4em',
     paddingLeft: '15px',
@@ -117,10 +110,10 @@ const styles = {
 	textDecoration: 'underline'
   },
   content: {
-    padding: '0px'
+    padding: '5px'
   },
   
 };
 
 
-export default App;
+export default Homepage;

@@ -41,10 +41,15 @@ const App = () => (
           <Link to="/home" style={styles.sideMenuLink}>
           <Button><ListItemText primary="HOME"/></Button>
     		 </Link>  
+    		 </div>
+    		 <div className="tab">
+          <Link to="/home" style={styles.sideMenuLink}>
+          <Button><ListItemText primary="EXPLORE"/></Button>
+    		 </Link>  
     		 </div>    		 
     		 <div className="tab">
           <Link to="/faq" style={styles.sideMenuLink}>
-          <Button><ListItemText primary="FAQ"/></Button>
+          <Button><ListItemText primary="F.A.Q"/></Button>
     		 </Link>   
     		 </div>
     		 <div className="tab">
@@ -58,13 +63,15 @@ const App = () => (
     		 </Link>   
     		 </div>    		 
     		 </center>
-    		 <div className="Underline"><p>______________</p>
+    		 <div className="Underline"><p>_</p>
 			 </div> 
     		 </div>	   
         <div style={styles.content}>
-          <Grid container spacing={20} direction='row' justify='space-between'>
+          <Grid container spacing={0} direction='row' justify='space-between'>
             <Grid item xs={12} sm={16}>
+            <div className="Background">
               <ContentPane/>
+              </div>
             </Grid>
           </Grid>
         </div>
@@ -96,11 +103,6 @@ const ContentPane = withRouter((props) => (
 ))
 
 const styles = {
-  logo: {
-    height: '40px',
-    width: '40px',
-    marginTop: '40px'
-  },
   appTitle: {
     fontSize: '1.4em',
     paddingLeft: '15px',
@@ -115,7 +117,7 @@ const styles = {
 	textDecoration: 'underline'
   },
   content: {
-    padding: '5px'
+    padding: '0px'
   },
   
 };

@@ -2,6 +2,13 @@ import React from 'react';
 
 const Contact = () => (
  <div className="Halifax-text"> 
+ <center>
+ <div className="TopSpace">
+ </div>
+ <div className="TopColor">
+ </div>
+ <div className="Container">
+ <h2>CONTACT</h2>
  <div className="Highlight"><h3>Geo-Genealogy</h3></div>
  <p>
  Since the fall of 2014, we have been building initial components for a geo-genealogy prototype for the province. Working partnerships have been formed with the Heritage Trust of Nova Scotia, the Genealogical Association of Nova Scotia, and the Durham Heritage Society. Several faculty at Dalhousie University - within the Business School, the GISciences Centre, sand Faculty of Computer Science - have helped facilitate initial work. 
@@ -21,7 +28,10 @@ Community Prototype: Durham Community<br></br>
  Workflow Plan: Workflow Schematic <br></br>
 Research Paper: Building an Historical GIS Platform from Archival Data
  </p>
- 
+ </div>
+ </center>
+ <div className="BottomSpace">
+ </div>
  </div> 
  
 );
