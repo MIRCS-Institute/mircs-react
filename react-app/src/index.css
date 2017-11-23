@@ -1,3 +1,163 @@
 body {
   font-family: 'Roboto', sans-serif;
+  margin: 0px;
 }
+img{
+	width: 100%;
+  height: 200px;
+  display: block;
+  padding: 0px;
+  margin: 0px;
+}
+div.Tabs{
+	
+}
+div.tab{
+	width: 7em; 
+   border: 2px solid #000000;
+   word-wrap: break-word;
+   display: inline-block;
+   text-align: center;
+   padding: 3px;
+   margin: 1px;
+}
+
+div.Header-Options{
+	text-decoration: underline;
+	padding-left: 40px;
+	color: #7c7d7f;
+}
+div.Header-Name{
+	color: #e6a117;
+	font-size: 150%;
+	padding: 0px;
+	margin: 0px;
+}
+div.App-Footer{
+	background-color: #303338;
+	text-align: center;
+	padding: 15px;
+	color: #7c7d7f;
+}
+div.App-Footer-Extension{
+	background-color: #373b41;
+	padding-top: 120px;
+}
+
+div.Halifax-text{
+	text-align: center;
+}
+div.Highlight{
+	color: #e6a117;
+}
+div.Underline{
+	background-color: #303338;
+	color: #303338;
+	padding: 0px;
+	margin: 0px;
+}
+div.Container{
+	width: 80%;
+	background-color: white;
+	padding-top: 18px;
+	margin: 0px;
+	padding-bottom: 30px;
+}
+div.Background{
+	background-color: #eeede8;
+	padding: 0px;
+	margin: 0px;
+}
+div.BottomSpace{
+background-color: #eeede8;
+	padding: 70px;
+}
+div.TopSpace{
+	background-color: #eeede8;
+	padding: 40px;
+}
+div.TopColor{
+	width: 80%;
+	background-color: #e6a117;
+	padding: 3px;
+}
+p{
+	margin: 1.5em;
+	font-family: lusitana,serif;
+    line-height: 1.5;
+    margin-left: 70px;
+    margin-right: 70px;
+    margin-bottom: 0px;
+}
+h2{
+margin: 1.5em;
+    line-height: 1.5;
+    text-decoration: underline;
+}
+.Landing {
+  text-align: center;
+  margin: 0px;
+}
+
+.Landing-logo {
+  height: 300px;
+  width: 600px;
+  margin-top: 30px;
+}
+
+.Landing-header { 
+  font-size: large;
+  padding-bottom: 20px;
+  line-height: 1.5;
+  margin: 1.5em;
+}
+.Landing-intro {
+  font-size: medium;
+  width: 100%;
+}
+h3{
+	text-align: center;
+}
+.Landing-intro-left {
+	font-family: lusitana,serif;
+	margin-bottom: 30px;
+	margin-right: 160px;
+	align-content: center;
+	text-align:center;
+	padding-top: 10px;
+	padding-left: 60px;
+	padding-right: 60px;
+	padding-bottom: 10px;
+	width: 20em; 
+   border: 2px solid #000000;
+   word-wrap: break-word;	
+   display: inline-block;
+   background-color: white;
+}
+.Landing-intro-button-space{
+}
+.Landing-intro-right{
+	font-family: lusitana,serif;
+	margin-top: 10px;
+	text-align: center;
+	padding-top: 10px;
+	padding-left: 60px;
+	padding-right: 60px;
+	padding-bottom: 10px;
+	width: 20em; 
+   border: 2px solid #000000;
+   word-wrap: break-word;
+   display: inline-block;
+   background-color: white;
+}
+.Landing-intro-button{
+	margin-top: 50px;
+	margin-bottom: 50px;
+	width: 15em; 
+   border: 2px solid #000000;
+   word-wrap: break-word;
+   display: inline-block;
+   background-color: white;
+
+}
+
