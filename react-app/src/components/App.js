@@ -78,7 +78,7 @@ const DataSetSelector = () => (
         <ListItemIcon>
           <MapIcon/>
         </ListItemIcon>
-        <ListItemText primary="Data Set 2"/>
+        <ListItemText primary="Data Set 3"/>
       </ListItem>
 
       <ListItem button>
