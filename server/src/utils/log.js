@@ -18,32 +18,32 @@ log.TRACE = 0;
 
 var _level;
 
-log.level = function(level) {
-  if (!_.isInteger(level)) {
-    return _level;
-  }
-  if (level < log.TRACE || level > log.FATAL) {
-    throw new Error('level must be in range [' + log.TRACE + '-' + log.FATAL + '], got: ' + level);
-  }
+log.level = function (level) {
+    if (!_.isInteger(level)) {
+        return _level;
+    }
+    if (level < log.TRACE || level > log.FATAL) {
+        throw new Error('level must be in range [' + log.TRACE + '-' + log.FATAL + '], got: ' + level);
+    }
 
-  _level = level;
+    _level = level;
 
-  log.fatal = (level <= log.FATAL) ? console.trace.bind(console) : _.noop;
-  log.error = (level <= log.ERROR) ? console.error.bind(console) : _.noop;
-  log.warn = (level <= log.WARN) ? console.warn.bind(console) : _.noop;
-  log.info = (level <= log.INFO) ? console.info.bind(console) : _.noop;
-  log.debug = (level <= log.DEBUG) ? console.log.bind(console) : _.noop;
-  log.trace = (level <= log.TRACE) ? console.log.bind(console) : _.noop;
+    log.fatal = (level <= log.FATAL) ? console.trace.bind(console) : _.noop;
+    log.error = (level <= log.ERROR) ? console.error.bind(console) : _.noop;
+    log.warn = (level <= log.WARN) ? console.warn.bind(console) : _.noop;
+    log.info = (level <= log.INFO) ? console.info.bind(console) : _.noop;
+    log.debug = (level <= log.DEBUG) ? console.log.bind(console) : _.noop;
+    log.trace = (level <= log.TRACE) ? console.log.bind(console) : _.noop;
 };
 
 // set default level to INFO
 log.level(log.INFO);
 
-process.on('uncaughtException', function(err) {
-  log.error('uncaughtException:', _.get(err, 'stack', err));
+process.on('uncaughtException', function (err) {
+    log.error('uncaughtException:', _.get(err, 'stack', err));
 });
-process.on('unhandledRejection', function(reason, p) {
-  log.error('unhandledRejection promise:', p, '\nreason:', _.get(reason, 'stack', reason));
+process.on('unhandledRejection', function (reason, p) {
+    log.error('unhandledRejection promise:', p, '\nreason:', _.get(reason, 'stack', reason));
 });
 
 module.exports = log;

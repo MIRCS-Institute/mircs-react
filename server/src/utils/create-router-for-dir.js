@@ -11,116 +11,116 @@ for well-named files and executes functions within
 them, giving us a route-declaration-by-convention mechanism.
  */
 function createRouterForDir(dir) {
-  const router = new express.Router();
+    const router = new express.Router();
 
-  if (log.level() <= log.TRACE) {
-    // log all requests
-    router.use(function(req, res, next) {
-      unused(res);
-      log.trace(req.method, req.path, JSON.stringify({
-        body: req.body,
-        headers: req.headers,
-        query: req.query,
-        params: req.params
-      }, null, 2));
-      next();
-    });
-  }
+    if (log.level() <= log.TRACE) {
+        // log all requests
+        router.use(function (req, res, next) {
+            unused(res);
+            log.trace(req.method, req.path, JSON.stringify({
+                body: req.body,
+                headers: req.headers,
+                query: req.query,
+                params: req.params
+            }, null, 2));
+            next();
+        });
+    }
 
-  router.use(bodyParser.json()); // for parsing application/json
+    router.use(bodyParser.json()); // for parsing application/json
 
-  (function addMiddleware() {
-    FsUtil.forEachFileInDir(__server_src_dir + dir + '/middleware', '.middleware.js', function(filePath, name) {
-      unused(name);
-      try {
-        router.use(require(filePath));
-      } catch (exception) {
-        log.fatal(`Error starting middleware ${filePath}:`, exception);
-        throw exception;
-      }
-    });
-  })();
-
-  (function addParams() {
-    FsUtil.forEachFileInDir(__server_src_dir + dir + '/params', '.param.js', function(filePath, name) {
-      unused(name);
-      try {
-        require(filePath)(router);
-      } catch (exception) {
-        log.fatal(`Error starting param handler ${filePath}:`, exception);
-        throw exception;
-      }
-    });
-  })();
-
-  (function addRoutes() {
-    FsUtil.forEachFileInDir(__server_src_dir + dir + '/routes', '.route.js', function(filePath, name) {
-      unused(name);
-      try {
-        require(filePath)(router);
-      } catch (exception) {
-        log.fatal(`Error starting route ${filePath}:`, exception);
-        throw exception;
-      }
-    });
-  })();
-
-  // list all registered routes
-  if (true) {
-    (function listAllRoutes() {
-      var routes = router.stack;
-      var routesMapping = [];
-      _.each(routes, function(val) {
-        if (val.route) {
-          val = val.route;
-          var method = (val.stack[0].method || 'all').toUpperCase();
-          routesMapping.push(method + ': ' + val.path);
-        }
-      });
-      log.trace(`Registered routes for ${dir}:\n    ${routesMapping.join('\n    ')}`);
+    (function addMiddleware() {
+        FsUtil.forEachFileInDir(__server_src_dir + dir + '/middleware', '.middleware.js', function (filePath, name) {
+            unused(name);
+            try {
+                router.use(require(filePath));
+            } catch (exception) {
+                log.fatal(`Error starting middleware ${filePath}:`, exception);
+                throw exception;
+            }
+        });
     })();
-  }
 
-  // return 404 for unknown commands
-  router.all(`/${dir}*`, function(req, res) {
-    log.info('404 - Unknown ' + dir + ' command', {
-      method: req.method,
-      path: req.path,
-      query: req.query,
-      params: req.params,
-      headers: req.headers,
-      body: req.body
+    (function addParams() {
+        FsUtil.forEachFileInDir(__server_src_dir + dir + '/params', '.param.js', function (filePath, name) {
+            unused(name);
+            try {
+                require(filePath)(router);
+            } catch (exception) {
+                log.fatal(`Error starting param handler ${filePath}:`, exception);
+                throw exception;
+            }
+        });
+    })();
+
+    (function addRoutes() {
+        FsUtil.forEachFileInDir(__server_src_dir + dir + '/routes', '.route.js', function (filePath, name) {
+            unused(name);
+            try {
+                require(filePath)(router);
+            } catch (exception) {
+                log.fatal(`Error starting route ${filePath}:`, exception);
+                throw exception;
+            }
+        });
+    })();
+
+    // list all registered routes
+    if (true) {
+        (function listAllRoutes() {
+            var routes = router.stack;
+            var routesMapping = [];
+            _.each(routes, function (val) {
+                if (val.route) {
+                    val = val.route;
+                    var method = (val.stack[0].method || 'all').toUpperCase();
+                    routesMapping.push(method + ': ' + val.path);
+                }
+            });
+            log.trace(`Registered routes for ${dir}:\n    ${routesMapping.join('\n    ')}`);
+        })();
+    }
+
+    // return 404 for unknown commands
+    router.all(`/${dir}*`, function (req, res) {
+        log.info('404 - Unknown ' + dir + ' command', {
+            method: req.method,
+            path: req.path,
+            query: req.query,
+            params: req.params,
+            headers: req.headers,
+            body: req.body
+        });
+        res.status(404).send({error: `Cannot ${req.method} ${req.path}`});
     });
-    res.status(404).send({ error: `Cannot ${req.method} ${req.path}` });
-  });
 
-  return function(req, res, next) {
-    return router(req, res, function onRouteError(error) {
-      let errorMessage = 'Error handling request ' + _.get(error, 'message', '');
+    return function (req, res, next) {
+        return router(req, res, function onRouteError(error) {
+            let errorMessage = 'Error handling request ' + _.get(error, 'message', '');
 
-      if (error) {
-        log.error('Error handling request', req.method, dir + req.path, {
-          query: req.query,
-          params: req.params,
-          headers: req.headers,
-          body: req.body
-        }, '\nerror:', error);
+            if (error) {
+                log.error('Error handling request', req.method, dir + req.path, {
+                    query: req.query,
+                    params: req.params,
+                    headers: req.headers,
+                    body: req.body
+                }, '\nerror:', error);
 
-        if (log.level() <= log.DEBUG) {
-          // include error details when building in engineering mode to help debug issues
-          errorMessage += '\n' + error.stack || error;
-        }
-      } else if (!_.startsWith(req.url, '/' + dir)) {
-        return next();
-      }
+                if (log.level() <= log.DEBUG) {
+                    // include error details when building in engineering mode to help debug issues
+                    errorMessage += '\n' + error.stack || error;
+                }
+            } else if (!_.startsWith(req.url, '/' + dir)) {
+                return next();
+            }
 
-      log.error('Request not handled', req.path, req.method);
-      if (log.level() <= log.DEBUG) {
-        errorMessage += ' Request not handled.';
-      }
-      res.status(500).send({ error: errorMessage });
-    });
-  };
+            log.error('Request not handled', req.path, req.method);
+            if (log.level() <= log.DEBUG) {
+                errorMessage += ' Request not handled.';
+            }
+            res.status(500).send({error: errorMessage});
+        });
+    };
 }
 
 module.exports = createRouterForDir;

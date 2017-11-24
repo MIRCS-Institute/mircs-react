@@ -2,11 +2,11 @@
   - update a Relationship object
 */
 
-module.exports = function(router) {
-  router.put('/api/relationships/:relationshipId', function(req, res, next) {
+module.exports = function (router) {
+    router.put('/api/relationships/:relationshipId', function (req, res, next) {
 
-    // TODO: implement
+        // TODO: implement
 
-    res.status(500).send({ error: 'Unimplemented' });
-  });
+        res.status(500).send({error: 'Unimplemented'});
+    });
 };

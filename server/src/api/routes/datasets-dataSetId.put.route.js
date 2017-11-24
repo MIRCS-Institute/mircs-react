@@ -8,35 +8,35 @@
 const _ = require('lodash');
 const MongoUtil = require(__server_src_dir + 'utils/mongo-util.js');
 
-module.exports = function(router) {
-  router.put('/api/datasets/:dataSetId', function(req, res, next) {
-    if (!req.dataSet) {
-      return res.status(404).send({ error: 'No Data Set found with id ' + req.params.dataSetId });
-    }
+module.exports = function (router) {
+    router.put('/api/datasets/:dataSetId', function (req, res, next) {
+        if (!req.dataSet) {
+            return res.status(404).send({error: 'No Data Set found with id ' + req.params.dataSetId});
+        }
 
-    const updatedDataSet = _.clone(req.body);
+        const updatedDataSet = _.clone(req.body);
 
-    // overwrite system fields from existing record
-    updatedDataSet._id = req.dataSet._id;
-    updatedDataSet.createdAt = req.dataSet.createdAt;
-    updatedDataSet.updatedAt = new Date();
-    updatedDataSet._collectionName = req.dataSet._collectionName;
+        // overwrite system fields from existing record
+        updatedDataSet._id = req.dataSet._id;
+        updatedDataSet.createdAt = req.dataSet.createdAt;
+        updatedDataSet.updatedAt = new Date();
+        updatedDataSet._collectionName = req.dataSet._collectionName;
 
-    let db;
-    let dataSetCollection;
-    MongoUtil.getDb()
-      .then((theDb) => {
-        db = theDb;
-        dataSetCollection = db.collection(MongoUtil.DATA_SETS_COLLECTION)
+        let db;
+        let dataSetCollection;
+        MongoUtil.getDb()
+            .then((theDb) => {
+                db = theDb;
+                dataSetCollection = db.collection(MongoUtil.DATA_SETS_COLLECTION)
 
-        return dataSetCollection.updateOne({ _id: updatedDataSet._id }, updatedDataSet);
-      })
-      .then(() => {
-        res.status(200).send(updatedDataSet);
-      })
-      .catch(next)
-      .then(() => {
-        db.close();
-      });
-  });
+                return dataSetCollection.updateOne({_id: updatedDataSet._id}, updatedDataSet);
+            })
+            .then(() => {
+                res.status(200).send(updatedDataSet);
+            })
+            .catch(next)
+            .then(() => {
+                db.close();
+            });
+    });
 };

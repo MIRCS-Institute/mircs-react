@@ -3,4 +3,5 @@
 // Prevents jshint errors in a self-documenting way.
 //
 
-module.exports = function unused() {};
+module.exports = function unused() {
+};
