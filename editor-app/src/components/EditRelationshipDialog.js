@@ -2,18 +2,23 @@ import _ from 'lodash'
 import AddCircleIcon from 'material-ui-icons/AddCircle'
 import Button from 'material-ui/Button'
 import ButtonProgress from './ButtonProgress'
+import CancelIcon from 'material-ui-icons/Cancel'
 import ChooseDataSetDialog from './ChooseDataSetDialog'
 import DataSetName from './DataSetName'
 import Dialog, { DialogActions, DialogContent, DialogTitle} from 'material-ui/Dialog'
 import ErrorSnackbar from './ErrorSnackbar'
+import ForwardIcon from 'material-ui-icons/Forward'
 import Grid from 'material-ui/Grid'
 import http from '../utils/http'
 import IconButton from 'material-ui/IconButton'
 import Layout from '../utils/Layout'
 import PropTypes from 'prop-types'
 import React from 'react'
+import RemoveCircleIcon from 'material-ui-icons/RemoveCircle'
+import Select from 'material-ui/Select'
 import TextField from 'material-ui/TextField'
 import { action, extendObservable } from 'mobx'
+import { FormControl } from 'material-ui/Form'
 import { observer } from 'mobx-react'
 
 const EditRelationshipDialog = observer(class extends React.Component {
@@ -32,7 +37,8 @@ const EditRelationshipDialog = observer(class extends React.Component {
       relationship: {},
       isCreate: true,
       isSaving: false,
-      error: null
+      error: null,
+      showAddJoinElement: false
     });
   }
 
@@ -113,6 +119,23 @@ const EditRelationshipDialog = observer(class extends React.Component {
     });
   }
 
+  haveDataSetsBeenSelected = () => {
+    // relationship.dataSets must exist and contain two non-null elements
+    return !!(this.relationship.dataSets && this.relationship.dataSets[0] && this.relationship.dataSets[1]);
+  }
+
+  onAddNewJoinElementClick = action(() => {
+    this.showAddJoinElement = true;
+  })
+
+  onCancelJoinElementClick = action(() => {
+    this.showAddJoinElement = false;
+  })
+
+  onAddJoinElementClick = action(() => {
+    console.log('onAddJoinElementClick');
+  })
+
   render() {
     return (
       <Dialog open={this.props.open} fullWidth={true}>
@@ -123,17 +146,48 @@ const EditRelationshipDialog = observer(class extends React.Component {
           <TextField margin='dense' label='description' type='text' fullWidth
                 value={this.relationship.description} onChange={this.handleFieldChange('description')}/>
 
-          <div style={{ flexGrow: 1 }}>
-            <Grid container spacing={24}>
-              <Grid item xs={6}>
-                <DataSetChooser label='Data Set 1' dataSetId={_.get(this.relationship, 'dataSets[0]')} onDataSetChanged={this.handleDataSetChanged(0)}/>
-              </Grid>
-
-              <Grid item xs={6}>
-                <DataSetChooser label='Data Set 2' dataSetId={_.get(this.relationship, 'dataSets[1]')} onDataSetChanged={this.handleDataSetChanged(1)}/>
-              </Grid>
+          <Grid container spacing={24}>
+            <Grid item xs={5}>
+              <DataSetChooser label='Data Set 1' dataSetId={_.get(this.relationship, 'dataSets[0]')} onDataSetChanged={this.handleDataSetChanged(0)}/>
             </Grid>
-          </div>
+
+            <Grid item xs={5}>
+              <DataSetChooser label='Data Set 2' dataSetId={_.get(this.relationship, 'dataSets[1]')} onDataSetChanged={this.handleDataSetChanged(1)}/>
+            </Grid>
+
+            {this.relationship.joinElements && this.relationship.joinElements.map((joinElement) => (
+              <div>
+                {JSON.stringify(joinElement)}
+              </div>
+            ))}
+
+            {this.showAddJoinElement &&
+              <Grid container spacing={24}>
+                <Grid item xs={4}>
+                  <FieldChooser dataSetId={_.get(this.relationship, 'dataSets[0]')}/>
+                </Grid>
+                <Grid item xs={1}>
+                  <div>=</div>
+                </Grid>
+                <Grid item xs={4}>
+                  <FieldChooser dataSetId={_.get(this.relationship, 'dataSets[1]')}/>
+                </Grid>
+
+                <Grid item xs={2} style={{ ...Layout.row }}>
+                  <IconButton onClick={this.onAddJoinElementClick} color='primary'><AddCircleIcon/></IconButton>
+                  <IconButton onClick={this.onCancelJoinElementClick} color='accent'><CancelIcon/></IconButton>
+                </Grid>
+              </Grid>}
+
+            {!this.showAddJoinElement &&
+              <Grid container alignItems="center" justify="center">
+                <IconButton onClick={this.onAddNewJoinElementClick} color='primary' disabled={!this.haveDataSetsBeenSelected()}>
+                  <AddCircleIcon/>
+                </IconButton>
+                {!this.haveDataSetsBeenSelected() && <div>(select data sets)</div>}
+              </Grid>}
+
+          </Grid>
 
         </DialogContent>
         <DialogActions>
@@ -148,6 +202,84 @@ const EditRelationshipDialog = observer(class extends React.Component {
 
         <ErrorSnackbar error={this.error}/>
       </Dialog>
+    );
+  }
+})
+
+const FieldChooser = observer(class extends React.Component {
+  static propTypes = {
+    dataSetId: PropTypes.string,
+    fieldId: PropTypes.string,
+  }
+
+  constructor(props) {
+    super(props);
+    extendObservable(this, {
+      dataSetId: props.dataSetId,
+      fieldId: props.fieldId,
+      fields: null,
+      isLoading: false,
+      error: null,
+    });
+  }
+
+  componentWillMount() {
+    this.refresh();
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (this.dataSetId !== nextProps.dataSetId) {
+      action(() => {
+        this.dataSetId = nextProps.dataSetId;
+        this.refresh();
+      })();
+    }
+  }
+
+  refresh() {
+    if (!this.dataSetId) {
+      this.fields = null;
+    } else {
+      this.isLoading = true;
+      const fetchingDataSetId = this.dataSetId;
+      http.jsonRequest(`/api/datasets/${fetchingDataSetId}/fields`)
+        .then(action((response) => {
+          // due to the asynchronous nature of http requests, we check to see that this response is
+          // regarding the one requested, otherwise we ignore it
+          if (fetchingDataSetId === this.props.dataSetId) {
+            this.fields = response.bodyJson.fields;
+          }
+        }))
+        .catch(action((error) => {
+          console.error('Error fetching fields for DataSet', fetchingDataSetId, error);
+          this.error = error;
+        }))
+        .then(action(() => {
+          this.isLoading = false;
+        }));
+    }
+  }
+
+  handleSelect = action((event) => {
+    console.log('event.target.value:', event.target.value);
+  });
+
+  render() {
+    return (
+      <FormControl disabled={this.props.disabled}>
+        <Select native
+                value={this.field}
+                onChange={this.handleSelect}>
+          <option>
+            None
+          </option>
+          {this.fields && this.fields.map((field) => (
+             <option key={field._id} value={field._id}>
+               {field._id}
+             </option>
+           ))}
+        </Select>
+      </FormControl>
     );
   }
 })
@@ -188,7 +320,7 @@ const DataSetChooser = observer(class extends React.Component {
   render() {
     return (
       <div style={{ ...Layout.row, ...Layout.align('start', 'center') }}>
-        <IconButton onClick={this.onAddClick}><AddCircleIcon/></IconButton>
+        <IconButton onClick={this.onAddClick}><ForwardIcon/></IconButton>
         <DataSetName label={this.props.label} dataSetId={this.props.dataSetId}/>
 
         <ChooseDataSetDialog open={this.isChooseDataSetDialogOpen} onCancel={this.handleCancel} onChoose={this.handleChoose}/>
