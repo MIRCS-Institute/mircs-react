@@ -1,3 +1,4 @@
+import _ from 'lodash'
 import blue from 'material-ui/colors/blue'
 import HomeIcon from 'material-ui-icons/Home'
 import ExtensionIcon from 'material-ui-icons/Extension'
@@ -6,7 +7,7 @@ import Grid from 'material-ui/Grid'
 import List, { ListItem, ListItemIcon, ListItemText } from 'material-ui/List'
 import React from 'react'
 import { HashRouter } from 'react-router-dom'
-import { Link, Route } from 'react-router-dom'
+import { Link, NavLink, Route } from 'react-router-dom'
 import { MuiThemeProvider, createMuiTheme } from 'material-ui/styles'
 import { Switch } from 'react-router-dom'
 import { withRouter } from 'react-router-dom'
@@ -55,24 +56,22 @@ const App = () => (
 
 const SideMenu = () => (
   <List>
-    <Link to="/datasets" style={styles.sideMenuLink}>
-      <ListItem button>
-        <ListItemIcon>
-          <ExtensionIcon/>
-        </ListItemIcon>
-        <ListItemText primary="Data Sets"/>
-      </ListItem>
-    </Link>
-    <Link to="/relationships" style={styles.sideMenuLink}>
-      <ListItem button>
-        <ListItemIcon>
-          <WeekendIcon/>
-        </ListItemIcon>
-        <ListItemText primary="Relationships"/>
-      </ListItem>
-    </Link>
+    <MenuItem route="/datasets" text="Data Sets" icon={<ExtensionIcon/>} />
+    <MenuItem route="/relationships" text="Relationships" icon={<WeekendIcon/>} />
   </List>
 );
+
+const MenuItem = withRouter((props) => (
+  <NavLink to={props.route} style={styles.navLink} activeStyle={styles.selectedNavLink}>
+    <ListItem button>
+      <ListItemIcon style={ _.startsWith(props.location.pathname, props.route) ? styles.selectedNavLink : {}}>
+        {props.icon}
+      </ListItemIcon>
+      <ListItemText primary={props.text} disableTypography/>
+    </ListItem>
+  </NavLink>
+))
+
 
 const ContentPane = withRouter((props) => (
   <Switch key={props.location.key} location={props.location}>
@@ -110,6 +109,13 @@ const styles = {
   content: {
     padding: '5px',
     paddingRight: '15%'
+  },
+  navLink: {
+    textDecoration: 'none',
+    color: 'black'
+  },
+  selectedNavLink: {
+    color: blue[400]
   },
 };
 
