@@ -1,6 +1,7 @@
 import _ from 'lodash'
 import AddCircleIcon from 'material-ui-icons/AddCircle'
 import Button from 'material-ui/Button'
+import ButtonProgress from './ButtonProgress'
 import ChooseDataSetDialog from './ChooseDataSetDialog'
 import DataSetName from './DataSetName'
 import Dialog, { DialogActions, DialogContent, DialogTitle} from 'material-ui/Dialog'
@@ -13,7 +14,6 @@ import PropTypes from 'prop-types'
 import React from 'react'
 import TextField from 'material-ui/TextField'
 import { action, extendObservable } from 'mobx'
-import { CircularProgress } from 'material-ui/Progress'
 import { observer } from 'mobx-react'
 
 const EditRelationshipDialog = observer(class extends React.Component {
@@ -142,7 +142,7 @@ const EditRelationshipDialog = observer(class extends React.Component {
           </Button>
           <Button onClick={this.handleSave} color='accent' disabled={!this.canSave()}>
             Save
-            {this.isSaving && <CircularProgress size={24} style={styles.buttonProgress}/>}
+            {this.isSaving && <ButtonProgress/>}
           </Button>
         </DialogActions>
 
@@ -196,15 +196,5 @@ const DataSetChooser = observer(class extends React.Component {
     );
   }
 })
-
-const styles = {
-  buttonProgress: {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    marginTop: -12,
-    marginLeft: -12,
-  },
-};
 
 export default EditRelationshipDialog;
