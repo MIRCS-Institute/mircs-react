@@ -11,10 +11,10 @@ import { MuiThemeProvider, createMuiTheme } from 'material-ui/styles'
 import { Switch } from 'react-router-dom'
 import { withRouter } from 'react-router-dom'
 
-import DataSets from './DataSets'
-import Records from './Records'
-import Relationships from './Relationships'
-import Unknown404 from './Unknown404'
+import DataSets from '../pages/DataSets'
+import Records from '../pages/Records'
+import Relationships from '../pages/Relationships'
+import Unknown404 from '../pages/Unknown404'
 
 const theme = createMuiTheme({
   palette: {
