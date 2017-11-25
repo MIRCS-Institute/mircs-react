@@ -2,6 +2,7 @@ import _ from 'lodash'
 import Button from 'material-ui/Button'
 import Card, { CardActions, CardContent, CardHeader } from 'material-ui/Card'
 import ConfirmDeleteDialog from './ConfirmDeleteDialog'
+import DataSetName from './DataSetName'
 import EditRelationshipDialog from './EditRelationshipDialog'
 import http from '../utils/http'
 import React from 'react'
@@ -64,9 +65,9 @@ const RelationshipCard = observer(class extends React.Component {
           {_.get(this.props.relationship, 'dataSets.length') > 0 &&
               <div>
                 <strong>Data Sets:</strong>
-                {this.props.relationship.dataSets.map((dataSet, index) => (
+                {this.props.relationship.dataSets.map((dataSetId, index) => (
                     <div key={index}>
-                      {dataSet && <span>{index+1}: {dataSet.name}</span>}
+                      {dataSetId && <span>{index+1}: <DataSetName label='' dataSetId={dataSetId}/></span>}
                     </div>
                   ))}
               </div>

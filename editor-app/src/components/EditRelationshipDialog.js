@@ -2,6 +2,7 @@ import _ from 'lodash'
 import AddCircleIcon from 'material-ui-icons/AddCircle'
 import Button from 'material-ui/Button'
 import ChooseDataSetDialog from './ChooseDataSetDialog'
+import DataSetName from './DataSetName'
 import Dialog, { DialogActions, DialogContent, DialogTitle} from 'material-ui/Dialog'
 import ErrorSnackbar from './ErrorSnackbar'
 import Grid from 'material-ui/Grid'
@@ -38,7 +39,11 @@ const EditRelationshipDialog = observer(class extends React.Component {
   componentWillReceiveProps(nextProps) {
     if (nextProps.open) {
       action(() => {
-        const relationshipCopy = JSON.parse(JSON.stringify(nextProps.relationship));
+        let relationshipCopy = {};
+        if (nextProps.relationship) {
+          relationshipCopy = JSON.parse(JSON.stringify(nextProps.relationship));
+        }
+
         ensureString(relationshipCopy, 'name');
         ensureString(relationshipCopy, 'description');
         if (!relationshipCopy.dataSets) {
@@ -46,6 +51,9 @@ const EditRelationshipDialog = observer(class extends React.Component {
         }
         while (relationshipCopy.dataSets.length < 2) {
           relationshipCopy.dataSets.push(null);
+        }
+        if (!relationshipCopy.joinElements) {
+          relationshipCopy.joinElements = [];
         }
 
         this.relationship = relationshipCopy;
@@ -118,11 +126,11 @@ const EditRelationshipDialog = observer(class extends React.Component {
           <div style={{ flexGrow: 1 }}>
             <Grid container spacing={24}>
               <Grid item xs={6}>
-                <DataSetChooser label='Data Set 1' dataSet={_.get(this.relationship, 'dataSets[0]')} onDataSetChanged={this.handleDataSetChanged(0)}/>
+                <DataSetChooser label='Data Set 1' dataSetId={_.get(this.relationship, 'dataSets[0]')} onDataSetChanged={this.handleDataSetChanged(0)}/>
               </Grid>
 
               <Grid item xs={6}>
-                <DataSetChooser label='Data Set 2' dataSet={_.get(this.relationship, 'dataSets[1]')} onDataSetChanged={this.handleDataSetChanged(1)}/>
+                <DataSetChooser label='Data Set 2' dataSetId={_.get(this.relationship, 'dataSets[1]')} onDataSetChanged={this.handleDataSetChanged(1)}/>
               </Grid>
             </Grid>
           </div>
@@ -144,12 +152,10 @@ const EditRelationshipDialog = observer(class extends React.Component {
   }
 })
 
-
 const DataSetChooser = observer(class extends React.Component {
   static propTypes = {
-    //
     label: PropTypes.string.isRequired,
-    dataSet: PropTypes.object,
+    dataSetId: PropTypes.string,
     // called when the user changes data set
     onDataSetChanged: PropTypes.func.isRequired,
   }
@@ -157,8 +163,8 @@ const DataSetChooser = observer(class extends React.Component {
   constructor() {
     super();
     extendObservable(this, {
-      isLoading: false,
-      isChooseDataSetDialogOpen: false
+      isChooseDataSetDialogOpen: false,
+      error: null
     });
   }
 
@@ -176,17 +182,14 @@ const DataSetChooser = observer(class extends React.Component {
 
   handleChoose = action((dataSet) => {
     this.isChooseDataSetDialogOpen = false;
-    this.dataSet = dataSet;
-    this.props.onDataSetChanged(dataSet);
+    this.props.onDataSetChanged(dataSet && dataSet._id);
   })
 
   render() {
     return (
       <div style={{ ...Layout.row, ...Layout.align('start', 'center') }}>
         <IconButton onClick={this.onAddClick}><AddCircleIcon/></IconButton>
-        <div>
-          {this.props.dataSet ? this.props.dataSet.name : this.props.label}
-        </div>
+        <DataSetName label={this.props.label} dataSetId={this.props.dataSetId}/>
 
         <ChooseDataSetDialog open={this.isChooseDataSetDialogOpen} onCancel={this.handleCancel} onChoose={this.handleChoose}/>
       </div>
