@@ -58,6 +58,11 @@ const ChooseDataSetDialog = observer(class extends React.Component {
 
           {this.isLoading && <LoadingSpinner title='Loading Data Sets...' />}
 
+          <div>
+            <Button onClick={() => { this.props.onChoose(null); }}>
+              None
+            </Button>
+          </div>
           {this.dataSets && this.dataSets.map((dataSet) => (
             <div key={dataSet._id}>
               <Button onClick={() => { this.props.onChoose(dataSet); }}>
