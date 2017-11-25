@@ -4,9 +4,9 @@
 
 module.exports = function(router) {
   router.get('/api/relationships/:relationshipId', function(req, res, next) {
-
-    // TODO: implement
-
-    res.status(500).send({ error: 'Unimplemented' });
+    if (!req.relationship) {
+      return res.status(404).send({ error: 'No Relationship found with id ' + req.params.relationshipId });
+    }
+    res.status(200).send(req.relationship);
   });
 };

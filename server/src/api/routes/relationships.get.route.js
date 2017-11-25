@@ -2,11 +2,13 @@
   - fetch list of Relationship objects
 */
 
+const MongoUtil = require(__server_src_dir + 'utils/mongo-util.js');
+
 module.exports = function(router) {
   router.get('/api/relationships', function(req, res, next) {
-
-    // TODO: implement
-
-    res.status(500).send({ error: 'Unimplemented' });
+    MongoUtil.find(MongoUtil.RELATIONSHIPS_COLLECTION, {})
+      .then((dataSets) => {
+        res.status(200).send({ list: dataSets });
+      }, next);
   });
 };

@@ -10,7 +10,7 @@ const MongoUtil = require(__server_src_dir + 'utils/mongo-util.js');
 module.exports = function(router) {
   router.post('/api/datasets', function(req, res, next) {
     const newDataSet = _.clone(req.body);
-    if (!newDataSet.name) {
+    if (!_.isString(newDataSet.name)) {
       return res.status(400).send('name is required');
     }
     newDataSet.createdAt = newDataSet.updatedAt = new Date();

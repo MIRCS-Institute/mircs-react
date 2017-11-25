@@ -8,12 +8,31 @@ const MONGO_SERVER_URL = Environment.getRequired('MONGO_SERVER_URL');
 const MongoUtil = {};
 
 MongoUtil.DATA_SETS_COLLECTION = 'DataSets';
+MongoUtil.RELATIONSHIPS_COLLECTION = 'Relationships';
 MongoUtil.DATA_SETS_COLLECTION_PREFIX = 'dataset_';
 MongoUtil.DATA_SETS_FIELDS_COLLECTION_SUFFIX = '_fields';
 
 /* the initialize function will create the master collection upon starting the server */
 MongoUtil.initialize = function() {
-  return MongoUtil.createCollection(MongoUtil.DATA_SETS_COLLECTION);
+  return MongoUtil.createCollection(MongoUtil.DATA_SETS_COLLECTION)
+    .then(() => {
+      return MongoUtil.createCollection(MongoUtil.RELATIONSHIPS_COLLECTION);
+    });
+};
+
+MongoUtil.validateRelationship = function(relationship) {
+  if (!_.isString(relationship.name)) {
+    throw new Error('name is required');
+  }
+  if (!_.isArray(relationship.dataSets)) {
+    throw new Error('dataSets array is required');
+  }
+  if (!_.isArray(relationship.joinElements)) {
+    throw new Error('joinElements array is required');
+  }
+  if (relationship.dataSets.length !== relationship.joinElements.length) {
+    throw new Error('joinElements and dataSets arrays must be the same length');
+  }
 };
 
 /*

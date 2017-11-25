@@ -2,11 +2,36 @@
   - create a new Relationship
 */
 
+const _ = require('lodash');
+const MongoUtil = require(__server_src_dir + 'utils/mongo-util.js');
+
 module.exports = function(router) {
   router.post('/api/relationships', function(req, res, next) {
+    const newRelationship = _.clone(req.body);
+    try {
+      MongoUtil.validateRelationship(newRelationship);
+    } catch (exception) {
+      return res.status(400).send(exception.message);
+    }
 
-    // TODO: implement
+    newRelationship.createdAt = newRelationship.updatedAt = new Date();
 
-    res.status(500).send({ error: 'Unimplemented' });
+    let db;
+    let relationshipsCollection;
+    let relationship;
+    MongoUtil.getDb()
+      .then((theDb) => {
+        db = theDb;
+        relationshipsCollection = db.collection(MongoUtil.RELATIONSHIPS_COLLECTION);
+        return relationshipsCollection.insertOne(newRelationship);
+      })
+      .then((result) => {
+        relationship = result.ops[0];
+        res.status(201).send(relationship);
+      })
+      .catch(next)
+      .then(() => {
+        db.close();
+      });
   });
 };
