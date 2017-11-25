@@ -38,7 +38,8 @@ const EditRelationshipDialog = observer(class extends React.Component {
       isCreate: true,
       isSaving: false,
       error: null,
-      showAddJoinElement: false
+      showAddJoinElement: false,
+      newFields: [undefined, undefined],
     });
   }
 
@@ -133,8 +134,17 @@ const EditRelationshipDialog = observer(class extends React.Component {
   })
 
   onAddJoinElementClick = action(() => {
-    console.log('onAddJoinElementClick');
+    console.log('onAddJoinElementClick', this.newFields);
+    this.relationship.joinElements.push([this.newFields[0], this.newFields[1]]);
+    this.newFields[0] = '';
+    this.newFields[1] = '';
   })
+
+  onRemoveJoinElementClick = (index) => {
+    return action((dataSet) => {
+      this.relationship.joinElements.remove(this.relationship.joinElements[index]);
+    });
+  }
 
   render() {
     return (
@@ -155,26 +165,41 @@ const EditRelationshipDialog = observer(class extends React.Component {
               <DataSetChooser label='Data Set 2' dataSetId={_.get(this.relationship, 'dataSets[1]')} onDataSetChanged={this.handleDataSetChanged(1)}/>
             </Grid>
 
-            {this.relationship.joinElements && this.relationship.joinElements.map((joinElement) => (
-              <div>
-                {JSON.stringify(joinElement)}
-              </div>
+            {this.relationship.joinElements && this.relationship.joinElements.map((joinElement, index) => (
+              <Grid container spacing={24} key={index}>
+                <Grid item xs={5}>
+                  {joinElement[0]}
+                </Grid>
+
+                <Grid item xs={1}>=</Grid>
+
+                <Grid item xs={5}>
+                  {joinElement[1]}
+                </Grid>
+
+                <Grid item xs={1}>
+                  <IconButton onClick={this.onRemoveJoinElementClick(index)} color='accent'>
+                    <RemoveCircleIcon/>
+                  </IconButton>
+                </Grid>
+              </Grid>
             ))}
 
             {this.showAddJoinElement &&
               <Grid container spacing={24}>
                 <Grid item xs={4}>
-                  <FieldChooser dataSetId={_.get(this.relationship, 'dataSets[0]')}/>
+                  <FieldChooser dataSetId={_.get(this.relationship, 'dataSets[0]')} field={this.newFields[0]} onChange={action((value) => { this.newFields[0] = value; })}/>
                 </Grid>
                 <Grid item xs={1}>
                   <div>=</div>
                 </Grid>
                 <Grid item xs={4}>
-                  <FieldChooser dataSetId={_.get(this.relationship, 'dataSets[1]')}/>
+                  <FieldChooser dataSetId={_.get(this.relationship, 'dataSets[1]')} field={this.newFields[1]} onChange={action((value) => { this.newFields[1] = value; })}/>
                 </Grid>
 
                 <Grid item xs={2} style={{ ...Layout.row }}>
-                  <IconButton onClick={this.onAddJoinElementClick} color='primary'><AddCircleIcon/></IconButton>
+                  <IconButton onClick={this.onAddJoinElementClick} color='primary'
+                      disabled={!this.newFields[0] || !this.newFields[1]}><AddCircleIcon/></IconButton>
                   <IconButton onClick={this.onCancelJoinElementClick} color='accent'><CancelIcon/></IconButton>
                 </Grid>
               </Grid>}
@@ -217,6 +242,7 @@ const FieldChooser = observer(class extends React.Component {
     extendObservable(this, {
       dataSetId: props.dataSetId,
       fieldId: props.fieldId,
+      field: props.field,
       fields: null,
       isLoading: false,
       error: null,
@@ -228,6 +254,10 @@ const FieldChooser = observer(class extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
+    action(() => {
+      this.field = nextProps.field;
+    })();
+
     if (this.dataSetId !== nextProps.dataSetId) {
       action(() => {
         this.dataSetId = nextProps.dataSetId;
@@ -261,7 +291,8 @@ const FieldChooser = observer(class extends React.Component {
   }
 
   handleSelect = action((event) => {
-    console.log('event.target.value:', event.target.value);
+    this.field = event.target.value;
+    this.props.onChange(this.field);
   });
 
   render() {
@@ -270,7 +301,7 @@ const FieldChooser = observer(class extends React.Component {
         <Select native
                 value={this.field}
                 onChange={this.handleSelect}>
-          <option>
+          <option value={''}>
             None
           </option>
           {this.fields && this.fields.map((field) => (
