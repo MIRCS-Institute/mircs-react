@@ -30,9 +30,11 @@ MongoUtil.validateRelationship = function(relationship) {
   if (!_.isArray(relationship.joinElements)) {
     throw new Error('joinElements array is required');
   }
-  if (relationship.dataSets.length !== relationship.joinElements.length) {
-    throw new Error('joinElements and dataSets arrays must be the same length');
-  }
+  _.each(relationship.joinElements, function(joinElement) {
+    if (relationship.dataSets.length !== joinElement.length) {
+      throw new Error('joinElements arrays must be the same length as dataSets');
+    }
+  });
 };
 
 /*

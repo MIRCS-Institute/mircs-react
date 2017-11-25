@@ -1,17 +1,25 @@
 import _ from 'lodash'
+import AddCircleIcon from 'material-ui-icons/AddCircle'
 import Button from 'material-ui/Button'
 import Card, { CardActions, CardContent, CardHeader } from 'material-ui/Card'
+import ChooseDataSetDialog from './ChooseDataSetDialog'
 import ConfirmDeleteDialog from './ConfirmDeleteDialog'
 import csv from 'csv'
 import Dialog, { DialogActions, DialogContent, DialogTitle} from 'material-ui/Dialog'
 import Dropzone from 'react-dropzone'
 import ErrorSnackbar from './ErrorSnackbar'
+import ExpandMoreIcon from 'material-ui-icons/ExpandMore'
+import Grid from 'material-ui/Grid'
 import http from '../utils/http'
+import IconButton from 'material-ui/IconButton'
+import Layout from '../utils/Layout'
 import LoadingSpinner from './LoadingSpinner'
+import Paper from 'material-ui/Paper'
 import PropTypes from 'prop-types'
 import React from 'react'
+import RemoveCircleIcon from 'material-ui-icons/RemoveCircle'
 import TextField from 'material-ui/TextField'
-import { action, extendObservable } from 'mobx'
+import { action, extendObservable, observable } from 'mobx'
 import { CircularProgress } from 'material-ui/Progress'
 import { observer } from 'mobx-react'
 
@@ -183,12 +191,15 @@ const EditRelationshipDialog = observer(class extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.open) {
-      const relationshipCopy = _.clone(nextProps.relationship) || {
-        dataSets: [],
-        joinElements: []
-      };
+      const relationshipCopy = _.clone(nextProps.relationship) || {};
       ensureString(relationshipCopy, 'name');
       ensureString(relationshipCopy, 'description');
+      if (!relationshipCopy.dataSets) {
+        relationshipCopy.dataSets = [];
+      }
+      while (relationshipCopy.dataSets.length < 2) {
+        relationshipCopy.dataSets.push(null);
+      }
 
       action(() => {
         this.relationship = relationshipCopy;
@@ -242,6 +253,12 @@ const EditRelationshipDialog = observer(class extends React.Component {
     return true;
   }
 
+  handleDataSetChanged = (index) => {
+    return action((dataSet) => {
+      this.relationship.dataSets[index] = dataSet;
+    });
+  }
+
   render() {
     return (
       <Dialog open={this.props.open} fullWidth={true}>
@@ -251,6 +268,19 @@ const EditRelationshipDialog = observer(class extends React.Component {
                 value={this.relationship.name} onChange={this.handleFieldChange('name')}/>
           <TextField margin='dense' label='description' type='text' fullWidth
                 value={this.relationship.description} onChange={this.handleFieldChange('description')}/>
+
+          <div style={{ flexGrow: 1 }}>
+            <Grid container spacing={24}>
+              <Grid item xs={6}>
+                <DataSetChooser label='Data Set 1' dataSet={_.get(this.relationship, 'dataSets[0]')} onDataSetChanged={this.handleDataSetChanged(0)}/>
+              </Grid>
+
+              <Grid item xs={6}>
+                <DataSetChooser label='Data Set 2' dataSet={_.get(this.relationship, 'dataSets[1]')} onDataSetChanged={this.handleDataSetChanged(1)}/>
+              </Grid>
+            </Grid>
+          </div>
+
         </DialogContent>
         <DialogActions>
           <Button onClick={this.props.onCancel} color='primary' disabled={this.isSaving}>
@@ -267,6 +297,60 @@ const EditRelationshipDialog = observer(class extends React.Component {
     );
   }
 })
+
+
+const DataSetChooser = observer(class extends React.Component {
+  static propTypes = {
+    //
+    label: PropTypes.string.isRequired,
+    dataSet: PropTypes.object,
+    // called when the user changes data set
+    onDataSetChanged: PropTypes.func.isRequired,
+  }
+
+  constructor() {
+    super();
+    extendObservable(this, {
+      isLoading: false,
+      isChooseDataSetDialogOpen: false
+    });
+  }
+
+  onRemoveClick = action(() => {
+    this.props.onDataSetChanged(null);
+  })
+
+  onAddClick = action(() => {
+    this.isChooseDataSetDialogOpen = true;
+  })
+
+  handleCancel = action(() => {
+    this.isChooseDataSetDialogOpen = false;
+  })
+
+  handleChoose = action((dataSet) => {
+    this.isChooseDataSetDialogOpen = false;
+    this.dataSet = dataSet;
+    this.props.onDataSetChanged(dataSet);
+  })
+
+  render() {
+    return (
+      <div style={{ ...Layout.row, ...Layout.align('start', 'center') }}>
+        {this.props.dataSet ?
+          <IconButton onClick={this.onRemoveClick}><RemoveCircleIcon/></IconButton>
+          :
+          <IconButton onClick={this.onAddClick}><AddCircleIcon/></IconButton>}
+        <div>
+          {this.props.dataSet ? this.props.dataSet.name : this.props.label}
+        </div>
+
+        <ChooseDataSetDialog open={this.isChooseDataSetDialogOpen} onCancel={this.handleCancel} onChoose={this.handleChoose}/>
+      </div>
+    );
+  }
+})
+
 
 const styles = {
   header: {
