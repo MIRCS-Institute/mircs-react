@@ -59,15 +59,28 @@ const RelationshipCard = observer(class extends React.Component {
           <div>
             <strong>Name:</strong> {this.props.relationship.name}
           </div>
-          <div>
-            <strong>Description:</strong> {this.props.relationship.description}
-          </div>
+          {this.props.relationship.description &&
+            <div>
+              <strong>Description:</strong> {this.props.relationship.description}
+            </div>}
+
           {_.get(this.props.relationship, 'dataSets.length') > 0 &&
               <div>
                 <strong>Data Sets:</strong>
                 {this.props.relationship.dataSets.map((dataSetId, index) => (
                     <div key={index}>
                       {dataSetId && <span>{index+1}: <DataSetName label='' dataSetId={dataSetId}/></span>}
+                    </div>
+                  ))}
+              </div>
+            }
+
+          {_.get(this.props.relationship, 'joinElements.length') > 0 &&
+              <div>
+                <strong>Data Sets:</strong>
+                {this.props.relationship.joinElements.map((joinElement, index) => (
+                    <div key={index}>
+                      {index+1}: (1).[{joinElement[0]}] = (2).[{joinElement[1]}]
                     </div>
                   ))}
               </div>

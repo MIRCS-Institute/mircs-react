@@ -140,9 +140,10 @@ const DataSetCard = observer(class extends React.Component {
             <div>
               <strong>Name:</strong> {this.props.dataSet.name}
             </div>
-            <div>
-              <strong>Description:</strong> {this.props.dataSet.description}
-            </div>
+            {this.props.dataSet.description &&
+              <div>
+                <strong>Description:</strong> {this.props.dataSet.description}
+              </div>}
             {this.stats && <div>
               <strong>Stats:</strong>
               {_.map(this.stats, (value, key) => (
