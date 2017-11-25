@@ -1,6 +1,7 @@
 import blue from 'material-ui/colors/blue'
 import HomeIcon from 'material-ui-icons/Home'
 import ExtensionIcon from 'material-ui-icons/Extension'
+import WeekendIcon from 'material-ui-icons/Weekend'
 import Grid from 'material-ui/Grid'
 import List, { ListItem, ListItemIcon, ListItemText } from 'material-ui/List'
 import React from 'react'
@@ -12,6 +13,7 @@ import { withRouter } from 'react-router-dom'
 
 import DataSets from './DataSets'
 import Records from './Records'
+import Relationships from './Relationships'
 import Unknown404 from './Unknown404'
 
 const theme = createMuiTheme({
@@ -61,6 +63,14 @@ const SideMenu = () => (
         <ListItemText primary="Data Sets"/>
       </ListItem>
     </Link>
+    <Link to="/relationships" style={styles.sideMenuLink}>
+      <ListItem button>
+        <ListItemIcon>
+          <WeekendIcon/>
+        </ListItemIcon>
+        <ListItemText primary="Relationships"/>
+      </ListItem>
+    </Link>
   </List>
 );
 
@@ -73,6 +83,7 @@ const ContentPane = withRouter((props) => (
     <Route exact path="/datasets/:dataSetId" render={({ match }) => (
       <Records dataSetId={match.params.dataSetId}/>
     )}/>
+    <Route exact path="/relationships" component={Relationships}/>
 
     <Route component={Unknown404}/>
   </Switch>
