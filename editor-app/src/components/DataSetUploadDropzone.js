@@ -2,16 +2,16 @@ import _ from 'lodash'
 import csv from 'csv'
 import Dropzone from 'react-dropzone'
 import http from '../utils/http'
+import PropTypes from 'prop-types'
 import React from 'react'
-import { action, extendObservable } from 'mobx'
+import { action } from 'mobx'
 import { observer } from 'mobx-react'
 
 const DataSetUploadDropzone = observer(class extends React.Component {
-  constructor() {
-    super();
-    extendObservable(this, {
-
-    });
+  static propTypes = {
+    dataSet: PropTypes.object.isRequired,
+    onDataSetUpdated: PropTypes.func.isRequired,
+    onError: PropTypes.func.isRequired,
   }
 
   handleDrop = action((acceptedFiles, rejectedFiles) => {

@@ -1,7 +1,8 @@
 import _ from 'lodash'
 import Button from 'material-ui/Button'
 import Card, { CardActions, CardContent } from 'material-ui/Card'
-import ConfirmDeleteDialog from '../components/ConfirmDeleteDialog'
+import ConfirmDeleteDialog from './ConfirmDeleteDialog'
+import EditRecordDialog from './EditRecordDialog'
 import http from '../utils/http'
 import React from 'react'
 import { action, extendObservable } from 'mobx'
@@ -13,8 +14,6 @@ const RecordCard = observer(class extends React.Component {
     extendObservable(this, {
       showEditDialog: false,
       showConfirmDeleteDialog: false,
-      stats: null,
-      fields: null
     });
   }
 
@@ -37,6 +36,19 @@ const RecordCard = observer(class extends React.Component {
       }));
   })
 
+  handleEditClick = action(() => {
+    this.showEditDialog = true;
+  })
+
+  handleEditCancel = action(() => {
+    this.showEditDialog = false;
+  })
+
+  handleEditAfterSave = action(() => {
+    this.showEditDialog = false;
+    this.props.onRefresh();
+  })
+
   render() {
     return (
       <Card style={styles.card}>
@@ -47,12 +59,17 @@ const RecordCard = observer(class extends React.Component {
             </div>
           ))}
 
+          <EditRecordDialog open={this.showEditDialog} dataSetId={this.props.dataSetId} record={this.props.record} onCancel={this.handleEditCancel} afterSave={this.handleEditAfterSave}/>
+
           {this.showConfirmDeleteDialog && <ConfirmDeleteDialog name={this.props.record._id} onConfirm={this.handleDeleteConfirm} onCancel={this.handleDeleteCancel}/>}
 
         </CardContent>
         <CardActions>
           <Button raised color='accent' onClick={this.handleDeleteClick}>
             Delete Record
+          </Button>
+          <Button raised onClick={this.handleEditClick}>
+            Edit Record
           </Button>
         </CardActions>
       </Card>
