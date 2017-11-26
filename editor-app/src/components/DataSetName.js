@@ -1,4 +1,4 @@
-import http from '../utils/http'
+import http from 'utils/http'
 import PropTypes from 'prop-types'
 import React from 'react'
 import { action, extendObservable } from 'mobx'

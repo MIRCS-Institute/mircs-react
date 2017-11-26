@@ -1,9 +1,9 @@
 import * as mobx from 'mobx';
-import App from './components/App';
+import App from 'components/App';
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import './index.css';
+import 'index.css';
 
 mobx.useStrict(true);
 

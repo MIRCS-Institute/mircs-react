@@ -12,14 +12,14 @@ import { Switch } from 'react-router-dom'
 import { withRouter } from 'react-router-dom'
 
 //Components
-import Maps from './Maps.js'
-import Potato from './Potato'
-import Unknown404 from './Unknown404'
-import NavBar from './NavBar.js'
-import TabSelector from './TabSelector.js'
-import {Data} from './Data.js'
+import Maps from 'components/Maps.js'
+import Potato from 'components/Potato'
+import Unknown404 from 'components/Unknown404'
+import NavBar from 'components/NavBar.js'
+import TabSelector from 'components/TabSelector.js'
+import {Data} from 'components/Data.js'
 
-import './App.css';
+import 'components/App.css';
 
 const theme = createMuiTheme({
   palette: {

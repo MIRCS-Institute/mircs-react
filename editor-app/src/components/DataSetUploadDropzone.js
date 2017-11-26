@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import csv from 'csv'
 import Dropzone from 'react-dropzone'
-import http from '../utils/http'
+import http from 'utils/http'
 import PropTypes from 'prop-types'
 import React from 'react'
 import { action } from 'mobx'

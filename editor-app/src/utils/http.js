@@ -1,11 +1,11 @@
 import _ from 'lodash'
-import Environment from '../utils/environment'
+import Environment from 'utils/environment'
 
 const DEBUG = Environment.getRequired('DEBUG');
 
 const http = {};
 
-/* 
+/*
 Convenience function that wraps the window.fetch API to make a JSON request to @url.
 @request can be used to configure the connection, for example to make a PUT request specify { method: 'put' }.
 If request.body is a JS object, it will be converted to a JSON string before being sent in the request.
