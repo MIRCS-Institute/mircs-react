@@ -2,8 +2,7 @@ import _ from 'lodash'
 import Button from 'material-ui/Button'
 import Card, { CardActions, CardContent, CardHeader } from 'material-ui/Card'
 import ConfirmDeleteDialog from './ConfirmDeleteDialog'
-import csv from 'csv'
-import Dropzone from 'react-dropzone'
+import DataSetUploadDropzone from './DataSetUploadDropzone'
 import EditDataSetDialog from './EditDataSetDialog'
 import http from '../utils/http'
 import React from 'react'
@@ -26,7 +25,7 @@ const DataSetCard = observer(class extends React.Component {
     this.refreshStats();
   }
 
-  refreshStats() {
+  refreshStats = () => {
     http.jsonRequest(`/api/datasets/${this.props.dataSet._id}/stats`)
       .then(action((response) => {
         this.stats = _.get(response, 'bodyJson');
@@ -76,66 +75,12 @@ const DataSetCard = observer(class extends React.Component {
     this.props.onRefresh();
   })
 
-  handleDrop = action((acceptedFiles, rejectedFiles) => {
-    if (!acceptedFiles.length) {
-      return;
-    }
-
-    const file = acceptedFiles[0];
-    const reader = new FileReader();
-    reader.onload = () => {
-      csv.parse(reader.result, (error, data) => {
-        if (error) {
-          return this.props.onError(error);
-        }
-        this.handleCsvLoaded(data, file);
-      });
-    };
-    reader.readAsBinaryString(file);
-
-  })
-
-  handleCsvLoaded = (data, file) => {
-    const headers = data[0];
-    const illegalHeaders = [];
-    _.each(headers, function(header) {
-      if (headers[0] === '$' || header.indexOf('.') >= 0) {
-        illegalHeaders.push(header);
-      }
-    });
-    if (illegalHeaders.length) {
-      return this.props.onError(new Error('Headers cannot contain dots (i.e. .) or null characters, and they must not start with a dollar sign (i.e. $). Illegal headers: ' + illegalHeaders.join(', ')));
-    }
-
-    const records = [];
-    _.each(data, function(row, index) {
-      if (index > 0) { // skip header row
-        const record = {};
-        _.each(row, function(value, rowValueIndex) {
-          const key = headers[rowValueIndex];
-          record[key] = value;
-        });
-        records.push(record);
-      }
-    });
-
-    http.jsonRequest(`/api/datasets/${this.props.dataSet._id}/records`, { method: 'post', bodyJson: records })
-      .then(action((response) => {
-        this.refreshStats();
-      }))
-      .catch(action((error) => {
-        this.props.onError(error);
-      }));
-  }
-
   render() {
     return (
       <Card style={styles.card}>
         <CardHeader title={this.props.dataSet.name} />
         <CardContent>
-          <Dropzone onDrop={this.handleDrop} accept="text/csv"
-                    activeStyle={{ backgroundColor: 'lightgray' }}
-                    rejectStyle={{ backgroundColor: 'red', cursor: 'no-drop' }}>
+          <DataSetUploadDropzone dataSet={this.props.dataSet} onDataSetUpdated={this.refreshStats} onError={this.props.onError}>
 
             <div>
               <strong>Name:</strong> {this.props.dataSet.name}
@@ -161,7 +106,7 @@ const DataSetCard = observer(class extends React.Component {
 
             {this.showConfirmDeleteDialog && <ConfirmDeleteDialog name={this.props.dataSet.name} onConfirm={this.handleDeleteConfirm} onCancel={this.handleDeleteCancel}/>}
 
-          </Dropzone>
+          </DataSetUploadDropzone>
         </CardContent>
         <CardActions>
           <Button raised color='accent' onClick={this.handleDeleteClick}>
