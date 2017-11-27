@@ -36,6 +36,9 @@ module.exports = function(router) {
         return dataSetCollection.updateOne({ _id: updatedRecord._id }, updatedRecord);
       })
       .then(() => {
+        return MongoUtil.refreshFields(db, collectionName);
+      })
+      .then(() => {
         res.status(200).send(updatedRecord);
       })
       .catch(next)
