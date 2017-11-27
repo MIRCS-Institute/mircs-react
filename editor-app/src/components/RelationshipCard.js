@@ -46,6 +46,10 @@ const RelationshipCard = observer(class extends React.Component {
     this.showEditDialog = false;
   })
 
+  handleViewClick = action(() => {
+    return http.jsonRequest(`/api/relationships/${this.props.relationship._id}`, {});    
+  })
+
   handleEditAfterSave = action(() => {
     this.showEditDialog = false;
     this.props.onRefresh();
@@ -97,6 +101,9 @@ const RelationshipCard = observer(class extends React.Component {
           </Button>
           <Button raised onClick={this.handleEditClick}>
             Edit Relationship
+          </Button>
+          <Button raised onClick={this.handleViewClick}>
+            View Relationship
           </Button>
         </CardActions>
       </Card>
