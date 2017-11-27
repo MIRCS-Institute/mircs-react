@@ -74,8 +74,6 @@ const EditDataSetDialog = observer(class extends React.Component {
   })
 
   doSave() {
-    // TODO: format this.dataSet.fields
-
     if (this.isCreate) {
       return http.jsonRequest('/api/datasets', { method: 'post', bodyJson: this.dataSet });
     } else {

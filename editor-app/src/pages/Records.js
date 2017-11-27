@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types'
 import _ from 'lodash'
 import Button from 'material-ui/Button'
 import ConfirmDeleteDialog from 'components/ConfirmDeleteDialog'
@@ -5,11 +6,15 @@ import ErrorSnackbar from 'components/ErrorSnackbar'
 import http from 'utils/http'
 import LoadingSpinner from 'components/LoadingSpinner'
 import React from 'react'
-import RecordCard from 'components/RecordCard'
+import RecordsCards from 'components/RecordsCards'
 import { action, extendObservable } from 'mobx'
 import { observer } from 'mobx-react'
 
 const Records = observer(class extends React.Component {
+  static propTypes = {
+    dataSetId: PropTypes.string.isRequired,
+  }
+
   constructor() {
     super();
     extendObservable(this, {
@@ -84,9 +89,7 @@ const Records = observer(class extends React.Component {
 
         {this.isLoading && <LoadingSpinner title='Loading Records...' />}
 
-        {this.records.map((record) => (
-          <RecordCard key={record._id} dataSetId={this.props.dataSetId} record={record} onRefresh={this.refresh} onError={this.handleError}/>
-        ))}
+        <RecordsCards dataSetId={this.props.dataSetId} records={this.records} onRefresh={this.refresh} onError={this.handleError} />
 
         {this.showConfirmDeleteDialog && <ConfirmDeleteDialog name={`all records in ${this.dataSet.name} data set`} onConfirm={this.handleDeleteConfirm} onCancel={this.handleDeleteCancel}/>}
 
