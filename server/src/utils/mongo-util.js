@@ -153,19 +153,19 @@ MongoUtil.joinRecords = function (relationship) {
         let dataSetTwoRecords = dataSetTwo.records;
 
         let keyOneRecords = [], keyTwoRecords = [];
-        let largest = Math.min(dataSetOneRecords.length, dataSetTwoRecords.length);
+        let smallestRecord = Math.min(dataSetOneRecords.length, dataSetTwoRecords.length);
 
         // FIX, how can we copy over the required column (keyOne /keyTwo) on each object
         // without iterating over everything?
         // ... perhaps it can be done using the filters below???
-        for (let i = 0; i < largest; i++) {
+        for (let i = 0; i < smallestRecord; i++) {
           keyOneRecords.push(dataSetOneRecords[i][keyOne]);
           keyTwoRecords.push(dataSetTwoRecords[i][keyTwo]);
         };
 
         // filter to find the intersections of the keyed columns
         function intersect(keysOne, keysTwo) {
-          var t;
+          let t;
           if (keysTwo.length > keysOne.length) t = keysTwo, keysTwo = keysOne, keysOne = t;
           return keysOne
             .filter(function (e) {
