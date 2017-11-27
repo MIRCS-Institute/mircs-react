@@ -1,12 +1,8 @@
 import _ from 'lodash'
-import Button from 'material-ui/Button'
 import Card, { CardActions, CardContent } from 'material-ui/Card'
-import ConfirmDeleteDialog from 'components/ConfirmDeleteDialog'
-import EditRecordDialog from 'components/EditRecordDialog'
 import React from 'react'
 import RecordDeleteButton from 'components/RecordDeleteButton'
 import RecordEditButton from 'components/RecordEditButton'
-import { action, extendObservable } from 'mobx'
 import { observer } from 'mobx-react'
 
 const RecordCard = observer(class extends React.Component {

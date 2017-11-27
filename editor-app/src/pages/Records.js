@@ -1,13 +1,16 @@
-import PropTypes from 'prop-types'
 import _ from 'lodash'
 import Button from 'material-ui/Button'
 import ConfirmDeleteDialog from 'components/ConfirmDeleteDialog'
 import ErrorSnackbar from 'components/ErrorSnackbar'
 import http from 'utils/http'
 import LoadingSpinner from 'components/LoadingSpinner'
+import PropTypes from 'prop-types'
+import Radio, { RadioGroup } from 'material-ui/Radio'
 import React from 'react'
 import RecordsCards from 'components/RecordsCards'
+import RecordsTable from 'components/RecordsTable'
 import { action, extendObservable } from 'mobx'
+import { FormControlLabel } from 'material-ui/Form'
 import { observer } from 'mobx-react'
 
 const Records = observer(class extends React.Component {
@@ -20,6 +23,10 @@ const Records = observer(class extends React.Component {
     extendObservable(this, {
       dataSet: null,
       records: [],
+      fields: [],
+
+      viewMode: 'table',
+
       error: null,
       isLoading: false,
 
@@ -41,6 +48,14 @@ const Records = observer(class extends React.Component {
       }))
       .catch(action((error) => {
         this.isLoading = false;
+        this.error = error;
+      }));
+
+    http.jsonRequest(`/api/datasets/${this.props.dataSetId}/fields`)
+      .then(action((response) => {
+        this.fields = _.get(response, 'bodyJson.fields');
+      }))
+      .catch(action((error) => {
         this.error = error;
       }));
 
@@ -77,6 +92,10 @@ const Records = observer(class extends React.Component {
     this.refresh();
   })
 
+  handleViewModeChange = action((event) => {
+    this.viewMode = event.target.value;
+  })
+
   render() {
     return (
       <div>
@@ -85,11 +104,20 @@ const Records = observer(class extends React.Component {
           <Button raised color='accent' style={styles.headerButton} onClick={this.handleDeleteClick}>
             Delete All Records
           </Button>
+
+          <RadioGroup aria-label="view mode" name="view mode" value={this.viewMode} onChange={this.handleViewModeChange}>
+            <FormControlLabel value="table" control={<Radio/>} label="Table"/>
+            <FormControlLabel value="cards" control={<Radio/>} label="Cards"/>
+          </RadioGroup>
         </header>
 
         {this.isLoading && <LoadingSpinner title='Loading Records...' />}
 
-        <RecordsCards dataSetId={this.props.dataSetId} records={this.records} onRefresh={this.refresh} onError={this.handleError} />
+        {this.viewMode === 'cards' &&
+          <RecordsCards dataSetId={this.props.dataSetId} records={this.records} onRefresh={this.refresh} onError={this.handleError} />}
+
+        {this.viewMode === 'table' &&
+          <RecordsTable dataSetId={this.props.dataSetId} records={this.records} fields={this.fields} onRefresh={this.refresh} onError={this.handleError} />}
 
         {this.showConfirmDeleteDialog && <ConfirmDeleteDialog name={`all records in ${this.dataSet.name} data set`} onConfirm={this.handleDeleteConfirm} onCancel={this.handleDeleteCancel}/>}
 
