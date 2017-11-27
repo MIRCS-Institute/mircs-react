@@ -18,13 +18,31 @@ module.exports = function(router) {
       return res.status(500).send({ error: 'Data Set contains no _collectionName', dataSet: req.dataSet });
     }
 
+    const newRecords = req.body.records;
+
+    const now = new Date();
+    const errors = [];
+    _.each(newRecords, function(newRecord, index) {
+      if (!_.isUndefined(newRecord._createdAt)) {
+        return errors.push(`record at ${index} has _createdAt specified`);
+      }
+      if (!_.isUndefined(newRecord._updatedAt)) {
+        return errors.push(`record at ${index} has _updatedAt specified`);
+      }
+
+      newRecord._createdAt = newRecord._updatedAt = now;
+    });
+    if (errors.length) {
+      return res.status(400).send(errors.join(', '));
+    }
+
     let db;
     let responseJson;
     MongoUtil.getDb()
       .then((theDb) => {
         db = theDb;
 
-        return db.collection(collectionName).insertMany(req.body)
+        return db.collection(collectionName).insertMany(newRecords)
           .then((result) => {
             responseJson = _.pick(result, ['insertedCount', 'insertedIds']);
           });

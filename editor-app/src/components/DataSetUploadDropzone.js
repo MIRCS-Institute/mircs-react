@@ -57,7 +57,12 @@ const DataSetUploadDropzone = observer(class extends React.Component {
       }
     });
 
-    http.jsonRequest(`/api/datasets/${this.props.dataSet._id}/records`, { method: 'post', bodyJson: records })
+    http.jsonRequest(`/api/datasets/${this.props.dataSet._id}/records`, {
+      method: 'post',
+      bodyJson: {
+        records: records
+      }
+    })
       .then(action((response) => {
         this.props.onDataSetUpdated();
       }))
