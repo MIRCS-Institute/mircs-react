@@ -60,8 +60,6 @@ const Relationships = observer(class extends React.Component {
   render() {
     return (
       <div>
-        {!this.isLoading && <header style={styles.header}>Relationships</header>}
-
         <Button raised color='primary' style={{ marginTop: 10 }} onClick={this.handleCreateClick}>
           Create a Relationship
         </Button>
@@ -84,10 +82,6 @@ const Relationships = observer(class extends React.Component {
 });
 
 const styles = {
-  header: {
-    fontSize: '30px',
-    marginBottom: '20px'
-  },
   description: {
     marginBottom: '20px'
   },

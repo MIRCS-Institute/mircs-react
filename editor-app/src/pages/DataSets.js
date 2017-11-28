@@ -60,8 +60,6 @@ const DataSets = observer(class extends React.Component {
   render() {
     return (
       <div>
-        {!this.isLoading && <header style={styles.header}>Data Sets</header>}
-
         <Button raised color='primary' style={{ marginTop: 10 }} onClick={this.handleCreateClick}>
           Create a Data Set
         </Button>
@@ -84,10 +82,6 @@ const DataSets = observer(class extends React.Component {
 });
 
 const styles = {
-  header: {
-    fontSize: '30px',
-    marginBottom: '20px'
-  },
   description: {
     marginBottom: '20px'
   },
