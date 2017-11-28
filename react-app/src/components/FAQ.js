@@ -75,6 +75,8 @@ const Faq = () => (
 <br></br>&#x25cf;Rattray, W. J. (1880). The Scot in British North America, Vol. III. Toronto: MacLear and Company.
 <br></br>&#x25cf;Wilson, Alan. (2015). Highland Shepherd: James MacGregor, Father of the Scottish Enlightenment in Nova Scotia. Toronto: University of Toronto Press.
 	</p>
+	<div className="containerU">
+ 	</div>  
 	</div>
 	</center>
 	<div className="BottomSpace">

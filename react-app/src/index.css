@@ -7,24 +7,19 @@ img{
   height: 200px;
   display: block;
   padding: 0px;
-  margin: 1px;
+  margin: 0px;
 }
-div.tab{
-	width: 7em; 
-   border: 2px solid #000000;
+div.tab{ 
+   border: 2px solid #e6a117;
    word-wrap: break-word;
    display: inline-block;
    text-align: center;
-   padding: 3px;
-   margin: 1px;
+   background-color: white;
+   margin-right: 3px;
+   margin-left: 3px;
+   width: 6em;
 }
 
-div.Tabs{
-	padding-bottom: 20px; 
-	padding-top:10px;
-	margin-top: -7px;
-	margin-bottom: 30px;
-}
 div.Header-Options{
 	text-decoration: underline;
 	padding-left: 40px;
@@ -33,6 +28,8 @@ div.Header-Options{
 div.Header-Name{
 	color: #e6a117;
 	font-size: 150%;
+	padding: 0px;
+	margin: 0px;
 }
 div.App-Footer{
 	background-color: #303338;
@@ -42,7 +39,6 @@ div.App-Footer{
 }
 div.App-Footer-Extension{
 	background-color: #373b41;
-	margin-top: 30px;
 	padding-top: 120px;
 }
 
@@ -51,11 +47,125 @@ div.Halifax-text{
 }
 div.Highlight{
 	color: #e6a117;
-	text-decoration: underline;
 }
 div.Underline{
 	background-color: #303338;
-	padding: 0px;
-	margin-bottom: 0px;
 	color: #303338;
+	padding: 0px;
+	margin: 0px;
+}
+div.Container{
+	width: 80%;
+	background-color: white;
+	padding-top: 18px;
+	margin: 0px;
+	padding-bottom: 30px;
+}
+div.Background{
+	background-color: #eeede8;
+	padding: 0px;
+	margin: 0px;
+}
+div.BottomSpace{
+background-color: #eeede8;
+	padding: 70px;
+}
+div.TopSpace{
+	background-color: #eeede8;
+	padding: 40px;
+}
+div.TopColor{
+	width: 80%;
+	background-color: #e6a117;
+	padding: 3px;
+}
+p{
+	margin: 1.5em;
+	font-family: lusitana,serif;
+    line-height: 1.5;
+    margin-left: 70px;
+    margin-right: 70px;
+    margin-bottom: 0px;
+}
+h2{
+margin: 1.5em;
+    line-height: 1.5;
+    text-decoration: underline;
+}
+div.Landing {
+  text-align: center;
+  margin: 0px;
+}
+
+div.Landing-logo {
+  height: 300px;
+  width: 600px;
+  margin-top: 30px;
+}
+
+div.Landing-header { 
+  font-size: large;
+  padding-bottom: 20px;
+  line-height: 1.5;
+  margin: 1.5em;
+}
+div.Landing-intro {
+  font-size: medium;
+  width: 100%;
+}
+h3{
+	text-align: center;
+}
+div.Landing-intro-left {
+	font-family: lusitana,serif;
+	margin-bottom: 30px;
+	margin-right: 160px;
+	align-content: center;
+	text-align:center;
+	padding-top: 10px;
+	padding-left: 60px;
+	padding-right: 60px;
+	padding-bottom: 10px;
+	width: 20em; 
+   border: 2px solid #000000;
+   word-wrap: break-word;	
+   display: inline-block;
+   background-color: white;
+}
+
+div.Landing-intro-right{
+	font-family: lusitana,serif;
+	margin-top: 10px;
+	text-align: center;
+	padding-top: 10px;
+	padding-left: 60px;
+	padding-right: 60px;
+	padding-bottom: 10px;
+	width: 20em; 
+   border: 2px solid #000000;
+   word-wrap: break-word;
+   display: inline-block;
+   background-color: white;
+}
+div.Landing-intro-button{
+	font-family: lusitana,serif;
+	margin-top: 50px;
+	margin-bottom: 50px;
+   border: 2px solid #e6a117;
+   word-wrap: break-word;
+   display: inline-block;
+   background-color: white;
+text-decoration: none;
+text-align: center;
+}
+button{
+	width: 100%;
+	text-decoration: none;
+	text-align: center;
+}
+div.containerU{
+	padding: 2px;
+	background-color: #7c7d7f;;
+	width: 60%;
+	margin-top: 60px;
 }
