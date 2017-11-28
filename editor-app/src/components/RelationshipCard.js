@@ -51,6 +51,10 @@ const RelationshipCard = observer(class extends React.Component {
     this.props.onRefresh();
   })
 
+  handleViewClick = action(() => {
+    return http.jsonRequest(`/api/relationships/${this.props.relationship._id}`, {});    
+  })
+
   render() {
     return (
       <Card style={styles.card}>
@@ -97,6 +101,9 @@ const RelationshipCard = observer(class extends React.Component {
           </Button>
           <Button raised onClick={this.handleEditClick}>
             Edit Relationship
+          </Button>
+          <Button raised onClick={this.handleViewClick}>
+             View Relationship
           </Button>
         </CardActions>
       </Card>

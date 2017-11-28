@@ -18,6 +18,7 @@ module.exports = function(router) {
 
     MongoUtil.find(collectionName + MongoUtil.DATA_SETS_FIELDS_COLLECTION_SUFFIX, {})
       .then((fields) => {
+        fields[0] = "Address"; // temp
         res.status(200).send({ fields: fields });
       }, next);
   });
