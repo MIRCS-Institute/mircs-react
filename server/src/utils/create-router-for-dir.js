@@ -27,8 +27,6 @@ function createRouterForDir(dir) {
     });
   }
 
-  router.use(bodyParser.json()); // for parsing application/json
-
   (function addMiddleware() {
     FsUtil.forEachFileInDir(__server_src_dir + dir + '/middleware', '.middleware.js', function(filePath, name) {
       unused(name);

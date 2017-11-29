@@ -28,12 +28,13 @@ app.use(cors({ maxAge: MAX_AGE_SECONDS }));
 // expose build output of the react-app
 app.use(express.static(path.join(__server_src_dir, '../../react-app/build')));
 
-// register the api
-app.use(createRouterForDir('api'));
-
 // configure the app the use body-parser for POST requests
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
+// for parsing application/json
+app.use(bodyParser.json({ limit: '50mb' }));
+
+// register the api
+app.use(createRouterForDir('api'));
 
 // return 404 for unknown commands
 app.all('*', function(req, res) {
