@@ -21,15 +21,14 @@ class Maps extends React.Component {
   componentWillUnmount() {
     this.stopMap();
   }
-
   // create the Leaflet map object
   startMap() {
     this.map = L.map(this.refs.mapNode, {
-      center: [40.655769, -73.938503],
+      center: [44.663077,-63.581420],
       zoomControl: false,
       zoom: 13,
       maxZoom: 18,
-      minZoom: 8,
+      minZoom: 3,
       scrollwheel: true,
       legends: false,
       infoControl: false,
@@ -38,14 +37,18 @@ class Maps extends React.Component {
 
     this.setupTileLayer();
 
-    L.marker([51.5, -0.09]).addTo(this.map)
-      .bindPopup('A pretty CSS3 popup.<br> Easily customizable.')
-      .openPopup();
+    this.createPoints();
 
     L.control.zoom({ position: 'bottomleft'}).addTo(this.map);
     L.control.scale({ position: 'bottomleft'}).addTo(this.map);
   }
 
+  createPoints() {  
+	  L.marker([44.7, -63.09]).addTo(this.map)
+      .bindPopup('This point represents..')
+      .openPopup();
+  }
+  
   stopMap() {
     // this destroys the Leaflet map object & related event listeners
     this.map.remove();
@@ -92,7 +95,6 @@ class Maps extends React.Component {
     return (
       <form autoComplete='off'>
         <div ref='mapNode' style={{ height: 600 }} />
-
         <FormControl>
           <InputLabel htmlFor='tile-layer-input'>Tile Layer</InputLabel>
           <Select
@@ -104,7 +106,6 @@ class Maps extends React.Component {
             <MenuItem value='Mapbox'>Mapbox</MenuItem>
           </Select>
         </FormControl>
-
       </form>
     );
   }

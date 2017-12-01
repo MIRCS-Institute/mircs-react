@@ -8,13 +8,13 @@ export default class TabSelector extends Component
 	{
 		return(
 			<div>
-				<Link to="/map">
+				<Link to="/home/explore/map">
 					<Button>
 						Map
 					</Button>
 				</Link>
 				
-				<Link to="/data">
+				<Link to="/home/explore/data">
 					<Button>
 						Data
 					</Button>

@@ -1,3 +1,147 @@
 body {
   font-family: 'Roboto', sans-serif;
+  margin: 0px;
+}
+/*Used for the background image*/
+img{
+	width: 100%;
+  height: 200px;
+  display: block;
+  padding: 0px;
+  margin: 0px;
+}
+/*Used for the navigation between the different pages*/
+div.tab{ 
+   border: 2px solid #e6a117;
+   word-wrap: break-word;
+   display: inline-block;
+   text-align: center;
+   background-color: white;
+   margin-right: 3px;
+   margin-left: 3px;
+   width: 6em;
+}
+
+div.Header-Options{
+	text-decoration: underline;
+	padding-left: 40px;
+	color: #7c7d7f;
+}
+div.Header-Name{
+	color: #e6a117;
+	font-size: 150%;
+	padding: 0px;
+	margin: 0px;
+}
+/*Footer*/
+div.App-Footer{
+	background-color: #303338;
+	text-align: center;
+	padding: 15px;
+	color: #7c7d7f;
+}
+/*Layer on top of footer*/
+div.App-Footer-Extension{
+	background-color: #373b41;
+	padding-top: 120px;
+}
+/*Text highlighter*/
+div.Highlight{
+	color: #e6a117;
+}
+
+div.Underline{
+	background-color: #303338;
+	color: #303338;
+	padding: 0px;
+	margin: 0px;
+}
+/*White container that holds the info/data*/
+div.Container{
+	width: 80%;
+	background-color: white;
+	padding-top: 18px;
+	margin: 0px;
+	padding-bottom: 30px;
+}
+/*Grey background*/
+div.Background{
+	background-color: #eeede8;
+	padding: 0px;
+	margin: 0px;
+}
+/*Background padding for the bottom of the container*/
+div.BottomSpace{
+background-color: #eeede8;
+	padding: 70px;
+}
+/*Background padding for the top of the container*/
+div.TopSpace{
+	background-color: #eeede8;
+	padding: 40px;
+}
+/*Colour used for on top of the container*/
+div.TopColor{
+	width: 80%;
+	background-color: #e6a117;
+	padding: 3px;
+}
+p{
+	margin: 1.5em;
+	font-family: lusitana,serif;
+    line-height: 1.5;
+    margin-left: 70px;
+    margin-right: 70px;
+    margin-bottom: 0px;
+}
+h2{
+margin: 1.5em;
+    line-height: 1.5;
+    text-decoration: underline;
+}
+/*Used to centre the text of the landing page*/
+div.Landing {
+  text-align: center;
+  margin: 0px;
+}
+/*Used for the landing header*/
+div.Landing-header { 
+  font-size: large;
+  padding-bottom: 20px;
+  line-height: 1.5;
+  margin: 1.5em;
+}
+/*Used for the landing introduction*/ 
+div.Landing-intro {
+  font-size: medium;
+  width: 100%;
+}
+h3{
+	text-align: center;
+}
+
+/*Used for the landing page button*/
+div.Landing-intro-button{
+	font-family: lusitana,serif;
+	margin-top: 50px;
+	margin-bottom: 50px;
+   border: 2px solid #e6a117;
+   word-wrap: break-word;
+   display: inline-block;
+   background-color: white;
+text-decoration: none;
+text-align: center;
+}
+/*Used for the buttons on the other pages*/
+button{
+	width: 100%;
+	text-decoration: none;
+	text-align: center;
+}
+/*Gray line at the bottom of the container*/
+div.containerU{
+	padding: 2px;
+	background-color: #7c7d7f;;
+	width: 60%;
+	margin-top: 60px;
 }

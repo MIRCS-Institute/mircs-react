@@ -1,0 +1,76 @@
+body {
+  font-family: 'Roboto', sans-serif;
+  margin: 0px;
+}
+img{
+	width: 100%;
+  height: 200px;
+  display: block;
+  padding: 0px;
+  margin: 1px;
+}
+div.HOME{
+	width: 15em; 
+   border: 2px solid #000000;
+   word-wrap: break-word;
+   display: inline-block;
+   text-align: center;
+   padding: 3px;
+   margin: 1px;
+}
+div.FAQ{
+	width: 15em; 
+   border: 2px solid #000000;
+   word-wrap: break-word;
+   display: inline-block;
+   text-align: center;
+   padding: 3px;
+margin: 1px;
+}
+div.CONTACT{
+	width: 15em; 
+   border: 2px solid #000000;
+   word-wrap: break-word;
+   display: inline-block;
+   text-align: center;
+   padding: 3px;
+   margin: 1px;
+}
+div.ABOUT{
+	width: 15em; 
+   border: 2px solid #000000;
+   word-wrap: break-word;
+   display: inline-block;
+   text-align: center;
+   padding: 3px;
+}
+div.Tabs{
+	padding-bottom: 20px; 
+	padding-top:10px;
+	margin-top: -7px;
+	margin-bottom: 30px;
+	
+}
+div.Header-Options{
+	text-decoration: underline;
+	padding-left: 40px;
+	color: #7c7d7f;
+}
+div.Header-Name{
+	color: #e6a117;
+	font-size: 150%;
+}
+div.App-Footer{
+	background-color: #303338;
+	text-align: center;
+	padding: 15px;
+	color: #7c7d7f;
+}
+div.App-Footer-Extension{
+	background-color: #373b41;
+	margin-top: 30px;
+	padding-top: 120px;
+}
+.App:hover{
+	background-color: #e6a117;
+}
