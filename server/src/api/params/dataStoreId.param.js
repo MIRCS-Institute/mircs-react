@@ -3,7 +3,7 @@ When a route defines :dataSetId in its path this param handler will look up and 
 to the Request object as `req.dataSet`.
 */
 
-const MongoUtil = require(__server_src_dir + 'utils/mongo-util.js');
+const MongoUtil = requireSrc('utils/mongo-util.js');
 const ObjectID = require('mongodb').ObjectID;
 
 module.exports = function(router) {

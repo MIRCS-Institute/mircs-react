@@ -1,5 +1,5 @@
 const _ = require('lodash');
-const log = require(__server_src_dir + 'utils/log.js');
+const log = requireSrc('utils/log.js');
 
 const Environment = {};
 

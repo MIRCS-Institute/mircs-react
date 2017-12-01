@@ -2,18 +2,23 @@
 Starts the MIRCS server
 */
 
+const path = require('path');
+
 // set up __server_src_dir global variable, available to all modules
 global.__server_src_dir = __dirname + '/';
 
+global.requireSrc = function(libName) {
+  return require(path.join(__dirname, libName));
+};
+
 const cors = require('cors');
-const createRouterForDir = require(__server_src_dir + 'utils/create-router-for-dir.js');
-const Environment = require(__server_src_dir + 'utils/environment.js');
+const createRouterForDir = requireSrc('utils/create-router-for-dir.js');
+const Environment = requireSrc('utils/environment.js');
 const express = require('express');
-const log = require(__server_src_dir + 'utils/log.js');
+const log = requireSrc('utils/log.js');
 const logger = require('morgan');
-const path = require('path');
 const bodyParser = require('body-parser');
-const MongoUtil = require(__server_src_dir + 'utils/mongo-util.js');
+const MongoUtil = requireSrc('utils/mongo-util.js');
 
 const app = express();
 

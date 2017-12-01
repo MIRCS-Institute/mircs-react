@@ -1,6 +1,6 @@
 const _ = require('lodash');
-const Environment = require(__server_src_dir + 'utils/environment.js');
-const log = require(__server_src_dir + 'utils/log.js');
+const Environment = requireSrc('utils/environment.js');
+const log = requireSrc('utils/log.js');
 const MongoClient = require('mongodb').MongoClient
 
 const MONGO_SERVER_URL = Environment.getRequired('MONGO_SERVER_URL');

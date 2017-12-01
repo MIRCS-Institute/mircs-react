@@ -2,7 +2,7 @@
   - fetch list of Relationship objects
 */
 
-const MongoUtil = require(__server_src_dir + 'utils/mongo-util.js');
+const MongoUtil = requireSrc('utils/mongo-util.js');
 
 module.exports = function(router) {
   router.get('/api/relationships', function(req, res, next) {

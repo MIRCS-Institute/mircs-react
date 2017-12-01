@@ -5,7 +5,7 @@
 */
 
 const _ = require('lodash');
-const MongoUtil = require(__server_src_dir + 'utils/mongo-util.js');
+const MongoUtil = requireSrc('utils/mongo-util.js');
 
 module.exports = function(router) {
   router.post('/api/datasets/:dataSetId/records', function(req, res, next) {

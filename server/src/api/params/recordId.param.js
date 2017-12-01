@@ -3,7 +3,7 @@ When a route defines :recordId in its path this param handler will look up and a
 to the Request object as `req.record`.
 */
 
-const MongoUtil = require(__server_src_dir + 'utils/mongo-util.js');
+const MongoUtil = requireSrc('utils/mongo-util.js');
 const ObjectID = require('mongodb').ObjectID;
 
 module.exports = function(router) {

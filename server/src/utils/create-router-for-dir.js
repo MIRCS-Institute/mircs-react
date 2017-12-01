@@ -1,9 +1,9 @@
 const _ = require('lodash');
 const bodyParser = require('body-parser');
 const express = require('express');
-const FsUtil = require(__server_src_dir + '/utils/fs-util.js');
-const log = require(__server_src_dir + 'utils/log.js');
-const unused = require(__server_src_dir + 'utils/unused.js');
+const FsUtil = requireSrc('/utils/fs-util.js');
+const log = requireSrc('utils/log.js');
+const unused = requireSrc('utils/unused.js');
 
 /*
 scans the contents of [dir]/param, [dir]/middleware, and [dir]/routes

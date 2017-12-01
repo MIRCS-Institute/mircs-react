@@ -8,7 +8,7 @@
   - later we'll add filter parameters, for example search by DataSet name/description for type-ahead results
 */
 
-const MongoUtil = require(__server_src_dir + 'utils/mongo-util.js');
+const MongoUtil = requireSrc('utils/mongo-util.js');
 
 module.exports = function(router) {
   router.get('/api/datasets', function(req, res, next) {

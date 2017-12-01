@@ -3,7 +3,7 @@
 */
 
 const _ = require('lodash');
-const MongoUtil = require(__server_src_dir + 'utils/mongo-util.js');
+const MongoUtil = requireSrc('utils/mongo-util.js');
 const ObjectID = require('mongodb').ObjectID;
 
 module.exports = function(router) {
