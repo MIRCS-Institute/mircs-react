@@ -23,6 +23,8 @@ import Unknown404 from './Unknown404'
 import {Tabs, Tab} from 'material-ui/Tabs';
 import Button from 'material-ui/Button'
 import About from './About'
+import ProfilePage from './ProfilePage.js'
+
 
 const theme = createMuiTheme({
   palette: {
@@ -100,6 +102,7 @@ const ContentPane = withRouter((props) => (
     <Route exact={true} path="/home" style={styles.appTitle} component={Explore}>
     </Route>
     <Route path="/home/explore" component={Explore}/>
+	<Route path="/home/profile" component={ProfilePage}/>
     <Route path="/home/faq" component={FAQ}/>
     <Route path="/home/about" component={About}/>
     <Route path="/home/buildings" component={Buildings}/>

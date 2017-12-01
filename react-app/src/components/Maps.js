@@ -46,7 +46,7 @@ class Maps extends React.Component {
 
   createPoints() {
 	  L.marker([51.5, -0.09]).addTo(this.map)
-      .bindPopup('A pretty CSS3 popup.<br> Easily customizable.')
+      .bindPopup('<a href = "#/home/profile">Go to fake profile.</a>')
       .openPopup();
 	  
 	  
