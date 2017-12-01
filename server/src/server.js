@@ -1,6 +1,6 @@
-/*
-Starts the MIRCS server
-*/
+//
+// Starts the MIRCS server
+//
 
 // set up __server_src_dir global variable, available to all modules
 global.__server_src_dir = __dirname + '/';
