@@ -1,9 +1,10 @@
 import Input, {InputLabel} from 'material-ui/Input';
 import React from 'react';
 import Select from 'material-ui/Select';
+import Button from 'material-ui/Button'
 import {FormControl} from 'material-ui/Form';
 import {MenuItem} from 'material-ui/Menu';
-import DataSetCardMap from 'components/DataSetCardMap'
+import Card, {CardActions, CardContent, CardHeader} from 'material-ui/Card'
 import http from 'utils/http'
 import {action, extendObservable} from 'mobx'
 import {observer} from 'mobx-react'
@@ -19,19 +20,17 @@ const Maps = observer(class extends React.Component {
     };
     extendObservable(this, {
       dataSets: [],
+      relationships: [],
       records: []
     });
   }
 
   componentDidMount() {
-    this.fetchDataSet();
     this.fetchDataSetRecords();
     this.startMap();
   }
 
-  listMappableDatSets() {
-    
-  }
+  listMappableDataSets() {}
 
   componentWillUnmount() {
     this.stopMap();
@@ -51,9 +50,9 @@ const Maps = observer(class extends React.Component {
       infoControl: false,
       attributionControl: true
     });
-    
+
     this.setupTileLayer();
-    
+
     L
       .control
       .zoom({position: 'bottomleft'})
@@ -62,6 +61,24 @@ const Maps = observer(class extends React.Component {
       .control
       .scale({position: 'bottomleft'})
       .addTo(this.map);
+  })
+
+  // this is called when 'map data' is clicked
+  findDataSetForMap = action((dataSetId) => {
+    this.refreshMap();
+    this.fetchDataSet(`/api/datasets/${dataSetId}/records`, 'bodyJson.list');
+  })
+
+  // this is called when 'map data' is clicked
+  findRelationForMap = action((relationId) => {
+    this.refreshMap();
+    this.fetchDataSet(`/api/relationships/${relationId}`, 'bodyJson.records');
+  })
+
+  // once a new data set is fetched, we want to remove the old one from the map
+  refreshMap = action(() => {
+    this.stopMap();
+    this.startMap();
   })
 
   // loop through the records to map each set of data
@@ -74,13 +91,12 @@ const Maps = observer(class extends React.Component {
     }
   })
 
-  // later, take in a dataset... for now we hard code one
-  fetchDataSet = action(() => {
+  fetchDataSet = action((recordId, where) => {
     http
-      .jsonRequest('/api/datasets/5a206969d9b6a9df1efa1ad4/records')
+      .jsonRequest(recordId)
       .then(action((response) => {
-        this.records = _.get(response, 'bodyJson.list');
-        this.createPoints(this.records.slice());
+        this.records = _.get(response, where);
+        this.createPoints(this.records);
       }))
       .catch(action((error) => {
         this.error = error;
@@ -88,12 +104,24 @@ const Maps = observer(class extends React.Component {
   })
 
   // use this to list all of the datasets on the left
+  // TODO make sure we only request "mappable" datasets
   fetchDataSetRecords = action(() => {
-    // use the http.jsonRequest to create a response object from a URL
     http
       .jsonRequest('/api/datasets')
       .then(action((response) => {
         this.dataSets = _.get(response, 'bodyJson.list');
+        this.fetchRelationshipRecords();
+      }))
+      .catch(action((error) => {
+        this.error = error;
+      }));
+  })
+
+  fetchRelationshipRecords = action(() => {
+    http
+      .jsonRequest('/api/relationships')
+      .then(action((response) => {
+        this.relationships = _.get(response, 'bodyJson.list');
       }))
       .catch(action((error) => {
         this.error = error;
@@ -157,9 +185,101 @@ const Maps = observer(class extends React.Component {
           width: '30%',
           overflow: 'scroll'
         }}>
+
+          {/* dataSets */}
+          <h2>Data Sets</h2>
           {this
             .dataSets
-            .map((dataSet) => (<DataSetCardMap key={dataSet._id} dataSet={dataSet}/>))}
+            .map((dataSet) => (
+              <div key={dataSet._id}>
+                <Card style={styles.card}>
+                  <CardHeader title={dataSet.name}/>
+                  <CardContent>
+                    <div>
+                      <strong>Name:
+                      </strong>
+                      {dataSet.name}
+                    </div>
+                    {dataSet.description && <div>
+                      <strong>Description:
+                      </strong>
+                      {dataSet.description}
+                    </div>}
+                    {dataSet.stats && <div>
+                      <strong>Stats:
+                      </strong>
+                      {_.map(this.stats, (value, key) => (
+                        <div
+                          key={key}
+                          style={{
+                          marginLeft: 10
+                        }}>{key}: {value}</div>
+                      ))}
+                    </div>}
+                    <div style={{
+                      textAlign: "center"
+                    }}>
+                      <Button
+                        style={styles.button}
+                        value={dataSet._id}
+                        raised
+                        color='primary'
+                        onClick={() => {
+                        this.findDataSetForMap(dataSet._id)
+                      }}>Map Data</Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            ))}
+
+          {/* relationships */}
+          <h2>Relationships</h2>
+          {this
+            .relationships
+            .map((relation) => (
+              <div key={relation._id}>
+                <Card style={styles.card}>
+                  <CardHeader title={relation.name}/>
+                  <CardContent>
+                    <div>
+                      <strong>Name:
+                      </strong>
+                      {relation.name}
+                    </div>
+                    {relation.description && <div>
+                      <strong>Description:
+                      </strong>
+                      {relation.description}
+                    </div>}
+                    {relation.stats && <div>
+                      <strong>Stats:
+                      </strong>
+                      {_.map(this.stats, (value, key) => (
+                        <div
+                          key={key}
+                          style={{
+                          marginLeft: 10
+                        }}>{key}: {value}</div>
+                      ))}
+                    </div>}
+                    <div style={{
+                      textAlign: "center"
+                    }}>
+                      <Button
+                        style={styles.button}
+                        value={relation._id}
+                        raised
+                        color='primary'
+                        onClick={() => {
+                        this.findRelationForMap(relation._id)
+                      }}>Map Data</Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            ))}
+
         </div>
         <form autoComplete='off'>
 
@@ -178,14 +298,21 @@ const Maps = observer(class extends React.Component {
     );
   }
 });
-
 const styles = {
   map: {
     position: 'relative',
     height: '700px',
     width: '70%',
     float: "right"
+  },
+  button: {
+    margin: "auto",
+    marginTop: "10px",
+    width: '50%'
+  },
+  card: {
+    margin: "10px"
   }
-};
+}
 
 export default Maps;

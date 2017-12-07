@@ -69,7 +69,7 @@ const DataSetCard = observer(class extends React.Component {
                             style={styles.button}
                             raised
                             color='primary'
-                            onClick={() => { Maps.fetchDataSet(this.props.dataSet._id) }}
+                            onClick={() => { alert(this.props.dataSet._id) }}
                             >
                             Map Data
                         </Button>

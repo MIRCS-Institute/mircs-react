@@ -100,7 +100,7 @@ const SubTitle = withRouter((props) => {
     subtitle = 'About';
   } else if (_.startsWith(props.location.pathname, '/contact')) {
     subtitle = 'Contact';
-  } else if (_.startsWith(props.location.pathname, '/FAQ')) {
+  } else if (_.startsWith(props.location.pathname, '/faq')) {
     subtitle = 'FAQ';
   }
 
