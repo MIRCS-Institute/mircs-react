@@ -1,5 +1,5 @@
 import * as mobx from 'mobx';
-import App from 'components/App';
+import App from 'app/App';
 import React from 'react';
 import ReactDOM from 'react-dom';
 

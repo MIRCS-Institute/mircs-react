@@ -17,6 +17,7 @@ const LoadingSpinner = ({title}) => (
 
 const styles = {
   loadingHeader: {
+    marginTop: 12,
     marginBottom: 24
   }
 };
