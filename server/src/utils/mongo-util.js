@@ -122,185 +122,49 @@ MongoUtil.refreshFields = function (db, collectionName) {
 };
 
 /*
-take in a relationship object and return a relationship object
-with a newly added record containing the requested join
+from a relationship object fetch the set of joined records
  */
-MongoUtil.joinRecords = function (relationship) {
-  return new Promise((resolve, reject) => {
-    collectDataSets() // grab the dataSet records from the database
-      .then(arrayOfDataSets => {
-      handleJoin(arrayOfDataSets) // find matching tuples and merge them, return as a new set of records
-        .then(joinedRecords => {
-        return resolve(joinedRecords);
-      }).catch((e) => {
-        console.log(e); // remove later
-      });
-    }).catch((e) => {
-      console.log(e); // remove later
-    });
-  });
-
-  // return an array of datasets
-  function collectDataSets() {
-    return new Promise((resolve, reject) => {
-
-      // find a collection by name and return it
-      function findDataSets(_collectionName) {
-        return new Promise((resolve, reject) => {
-          // look in the db and return the dataSet
-          MongoUtil
-            .find(_collectionName)
-            .then(dataSet => {
-              resolve(dataSet);
-            });
-        })
-      }
-      /*
-      create a chain of promises using the findDataSets function to
-      find every listed dataSet and return these dataSets in an array
-      ... this is to account for an arbitrary number of dataSets
-      */
-      function returnDataSets() {
-        let dataSetList = _.clone(relationship.dataSets);
-        let dataSetPromiseChain = [];
-
-        for (let i = 0; i < dataSetList.length; i++) {
-          let _collectionName = MongoUtil.DATA_SETS_COLLECTION_PREFIX + "" + relationship.dataSets[i];
-          dataSetPromiseChain.push(findDataSets(_collectionName)); // find dataset and add to chain
-        };
-
-        return Promise
-          .all(dataSetPromiseChain)
-          .then((fullDataSetChain) => {
-            return resolve(fullDataSetChain);
-          })
-          .catch((e) => {
-            console.log(e); // remove later
-          });
-      }
-
-      // once all dataSets have been found, return the array
-      returnDataSets().then(arrayOfDataSets => {
-        return resolve(arrayOfDataSets);
-      });
-    });
+MongoUtil.joinRecords = function(relationship) {
+  if (_.get(relationship, 'dataSets.length') !== 2) {
+    return Promise.reject(new Error('currently limited to relationships with 2 data sets'));
   }
 
-  // join the columns of the datasets determined by the key parameters
-  function handleJoin(arrayOfDataSets) {
-    return new Promise((resolve, reject) => {
+  return collectDataSets() // grab the dataSet records from the database
+    .then(handleJoin); // find matching tuples and merge them, return as a new set of records
 
-      // initialize 2D arrays for the the dataSetRecords
-      let firstKeyColumn = new Array();
-      let secondKeyColumn = new Array();
-      for (let i = 0; i < relationship.joinElements.length; i++) {
-        let arr = new Array();
-        let arr1 = new Array();
-        firstKeyColumn.push(arr);
-        secondKeyColumn.push(arr1);
-      }
-
-      // find the smallest column of data
-      let smallestRecord,
-        largestRecord;
-      if (arrayOfDataSets[1].length < arrayOfDataSets[0].length) {
-        smallestRecord = _.clone(arrayOfDataSets[1]);
-        largestRecord = _.clone(arrayOfDataSets[0]);
-      } else {
-        smallestRecord = _.clone(arrayOfDataSets[0]);
-        largestRecord = _.clone(arrayOfDataSets[1]);
-      }
-
-      /*
-      loop through each record to find the required column, by key,
-      and add that to the key array. we do this for each requested
-      join in the joinElements array
-      */
-      for (let i = 0; i < relationship.joinElements.length; i++) {
-        for (let j = 0; j < smallestRecord.length; j++) {
-          // when i increments we need to make a new array because that's a new column /
-          // field
-          firstKeyColumn[i].push(arrayOfDataSets[0][j][relationship.joinElements[i][0]]);
-          secondKeyColumn[i].push(arrayOfDataSets[1][j][relationship.joinElements[i][1]]);
-        }
-        let action;
-        if (smallestRecord.length == arrayOfDataSets[0].length) {
-          action = 0;
-        } else if (smallestRecord.length == arrayOfDataSets[1].length) {
-          action = 1;
-        }
-        for (let k = smallestRecord.length; k < largestRecord.length; k++) {
-          if (action == 0) {
-            secondKeyColumn[i].push(arrayOfDataSets[1][k][relationship.joinElements[i][1]]);
-          } else {
-            firstKeyColumn[i].push(arrayOfDataSets[0][k][relationship.joinElements[i][0]]);
-          }
-        }
-      }
-      /*
-      take in two 2D arrays that contain the columns of data which will be compared
-      and return an array of objects that have been merged
-
-      Caveats:
-      -for reasons not yet known, when selecting datapoints/field to compare on the application,
-      it is required that 'Address_Number' is added first, then 'Street' second
-      */
-      function columnIntersection(colOne, colTwo) {
-        let joinedRows = [],
-          temp,
-          completeFieldMatch;
-        /*
-        first, we find determine which column is longest and filter with that
-        */
-        if (colTwo[0].length > colOne[0].length) {
-          temp = colTwo,
-          colTwo = colOne,
-          colOne = temp;
-        }
-        /*
-        we iterate over every string in the colOne array and then check if it
-        is anywhere in the colTwo array
-        */
-        colOne[0].filter(current => {
-          if (colTwo[0].indexOf(current) > -1) {
-            let indexOne = colOne[0].indexOf(current);
-            let indexTwo = colTwo[0].indexOf(current);
-            /*
-            if there is an index for the given string somewhere in the colTwo array
-            then we iterate over the remaining fields to check if the rest of them match
-            */
-            if (colOne.length > 1) { // more than one field to compare
-              for (let k = 1; k < colOne.length; k++) {
-                completeFieldMatch = false;
-                if (colOne[k][indexOne] == colTwo[k][indexTwo]) {
-                  completeFieldMatch = true;
-                }
-                if (completeFieldMatch == false) {
-                  break;
-                }
-              }
-            } else { // if there was only one field to compare
-              completeFieldMatch = true;
-            }
-            /*
-            if we leave the loop and completeFieldMatch is true, then we know that we
-            compared every field and merge both respective dataset rows
-            */
-            if (completeFieldMatch) {
-              let mergedRow = _.merge(largestRecord[colOne[0].indexOf(current)], smallestRecord[colTwo[0].indexOf(current)])
-              if (!_.includes(joinedRows, mergedRow)) {
-                joinedRows.push(mergedRow);
-              }
-            }
-          }
-        })
-        return joinedRows; // return the array of joined rows
-      }
-      // clone the relationship object and return a copy with the joined rows
-      let joinedRecords = _.clone(relationship);
-      joinedRecords.records = _.clone(columnIntersection(firstKeyColumn, secondKeyColumn));
-      return resolve(joinedRecords); // remember to reject too
+  // return a promise resolving to an array of arrays of dataset records
+  function collectDataSets() {
+    const promises = [];
+    _.each(relationship.dataSets, function(dataSetId) {
+      const collectionName = MongoUtil.DATA_SETS_COLLECTION_PREFIX + dataSetId;
+      promises.push(MongoUtil.find(collectionName, {}));
     });
+    return Promise.all(promises);
+  }
+
+  // join the columns of the datasets determined by the key parameters described in the Relationship
+  function handleJoin(arrayOfDataSets) {
+    const matches = [];
+    _.each(arrayOfDataSets[0], function(record0) {
+      // dynamically build a search predicate based on the mapping defined in the Relationship object
+      const predicate = {};
+      _.each(relationship.joinElements, function(joinElement) {
+        predicate[joinElement[1]] = record0[joinElement[0]];
+      });
+
+      // scan the second data set for the first matched record
+      const match1 = _.find(arrayOfDataSets[1], predicate);
+
+      if (match1) {
+        matches.push(_.extend(match1, record0));
+      }
+    });
+
+    // clone the relationship object and return a copy with the joined rows
+    const result = _.clone(relationship);
+    result.records = matches;
+
+    return result;
   };
 };
 
