@@ -3,12 +3,8 @@ import TextField from 'material-ui/TextField';
 import Button from 'material-ui/Button'
 
 const Contact = (class extends React.Component {
-constructor() {
-	super();
-}
-
 render() {
-	return (	
+	return (
 	<div className="Halifax-text">
 	<center>
 		<div className="TopSpace"></div>
@@ -45,7 +41,7 @@ render() {
 			<p></p>
 			<br></br>
 			<div style={styles.form}>
-			<form>	
+			<form>
 				<TextField autoFocus margin='dense' label='Name' type='text' fullWidth style={styles.formInput} hintText="Name"/>
 				<br></br>
 				<br></br>
