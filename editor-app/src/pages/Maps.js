@@ -64,15 +64,14 @@ const Maps = observer(class extends React.Component {
   })
 
   // this is called when 'map data' is clicked
-  findDataSetForMap = action((dataSetId) => {
+  fetchDataSetForMap = action((dataSetId) => {
     this.refreshMap();
     this.fetchDataSet(`/api/datasets/${dataSetId}/records`, 'bodyJson.list');
   })
 
-  // this is called when 'map data' is clicked
-  findRelationForMap = action((relationId) => {
+  fetchRelationshipDataForMap = action((relationId) => {
     this.refreshMap();
-    this.fetchDataSet(`/api/relationships/${relationId}`, 'bodyJson.records');
+    this.fetchDataSet(`/api/relationships/${relationId}/join`, 'bodyJson.records');
   })
 
   // once a new data set is fetched, we want to remove the old one from the map
@@ -188,9 +187,7 @@ const Maps = observer(class extends React.Component {
 
           {/* dataSets */}
           <h2>Data Sets</h2>
-          {this
-            .dataSets
-            .map((dataSet) => (
+          {this.dataSets.map((dataSet) => (
               <div key={dataSet._id}>
                 <Card style={styles.card}>
                   <CardHeader title={dataSet.name}/>
@@ -225,7 +222,7 @@ const Maps = observer(class extends React.Component {
                         raised
                         color='primary'
                         onClick={() => {
-                        this.findDataSetForMap(dataSet._id)
+                        this.fetchDataSetForMap(dataSet._id)
                       }}>Map Data</Button>
                     </div>
                   </CardContent>
@@ -235,9 +232,7 @@ const Maps = observer(class extends React.Component {
 
           {/* relationships */}
           <h2>Relationships</h2>
-          {this
-            .relationships
-            .map((relation) => (
+          {this.relationships.map((relation) => (
               <div key={relation._id}>
                 <Card style={styles.card}>
                   <CardHeader title={relation.name}/>
@@ -272,7 +267,7 @@ const Maps = observer(class extends React.Component {
                         raised
                         color='primary'
                         onClick={() => {
-                        this.findRelationForMap(relation._id)
+                        this.fetchRelationshipDataForMap(relation._id)
                       }}>Map Data</Button>
                     </div>
                   </CardContent>
