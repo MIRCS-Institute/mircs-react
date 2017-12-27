@@ -1,25 +1,12 @@
-import blue from 'material-ui/colors/blue'
-import BugReportIcon from 'material-ui-icons/BugReport'
-import CollectionsIcon from 'material-ui-icons/Collections'
-import Grid from 'material-ui/Grid'
-import List, { ListItem, ListItemIcon, ListItemText } from 'material-ui/List'
-import MapIcon from 'material-ui-icons/Map'
 import React from 'react';
+import blue from 'material-ui/colors/blue'
 import { HashRouter } from 'react-router-dom'
-import { Route } from 'react-router-dom'
+import { Link, Route } from 'react-router-dom'
 import { MuiThemeProvider, createMuiTheme } from 'material-ui/styles'
 import { Switch } from 'react-router-dom'
 import { withRouter } from 'react-router-dom'
-
-//Components
-import Maps from 'components/Maps.js'
-import Potato from 'components/Potato'
-import Unknown404 from 'components/Unknown404'
-import NavBar from 'components/NavBar.js'
-import TabSelector from 'components/TabSelector.js'
-import {Data} from 'components/Data.js'
-
-import 'components/App.css';
+import Home from './Home.js'
+import LandingPage from './LandingPage.js'
 
 const theme = createMuiTheme({
   palette: {
@@ -29,122 +16,41 @@ const theme = createMuiTheme({
 
 const App = () => (
 	<HashRouter>
-    <MuiThemeProvider theme={theme}>
-      <div>
-		{/*Title and NavBar*/}
-		<header style={styles.header}>
-			<center>
-				<span style={styles.appTitle}>MIRCS Geogenealogy</span>
-				<NavBar/>
-			</center>
-        </header>
+		<MuiThemeProvider theme={theme}>
+		<div className="Background">
+			<ContentPane/>
+			</div>
+		</MuiThemeProvider>    
+	</HashRouter>
+);	
 
-        <div style={styles.content}>
-          <Grid container spacing={16} direction='row'>
-
-      			{/* Side menu */}
-      			<Grid item xs={12} sm={2}>
-              <DataSetSelector/>
-            </Grid>
-
-      			{/* Content */}
-      			<Grid item xs={12} sm={8}>
-              <ContentPane/>
-            </Grid>
-
-          </Grid>
-        </div>
-      </div>
-    </MuiThemeProvider>
-  </HashRouter>
-);
-
-const DataSetSelector = () => (
-  <div style={styles.dataSetSelector}>
-  <h2>
-	DATA SETS
-  </h2>
-
-  <List>
-
-      <ListItem button>
-        <ListItemIcon>
-          <CollectionsIcon/>
-        </ListItemIcon>
-        <ListItemText primary="Data Set 1"/>
-      </ListItem>
-
-      <ListItem button>
-        <ListItemIcon>
-          <MapIcon/>
-        </ListItemIcon>
-        <ListItemText primary="Data Set 2"/>
-      </ListItem>
-
-      <ListItem button>
-        <ListItemIcon>
-          <BugReportIcon/>
-        </ListItemIcon>
-        <ListItemText primary="Data Set 76"/>
-      </ListItem>
-
-  </List>
-  </div>
-);
-
-
-const ContentPane = () => (
-	<div>
-		<TabSelector/>
-		<ContentDisplay/>
-	</div>
-)
-
-
-
-const ContentDisplay = withRouter((props) => (
-  <Switch key={props.location.key} location={props.location} style={styles.contentDisplay}>
-    <Route exact={true} path="/">
-      <h3>Welcome to the MIRCS Geogenealogy prototype. May the schwartz be with you.</h3>
+const ContentPane = withRouter((props) => (
+  <Switch key={props.location.key} location={props.location}>
+    <Route exact={true} path="/" style={styles.appTitle} component={LandingPage}>
     </Route>
-    <Route path="/map" component={Maps}/>
-    <Route path="/data" component={Data}/>
-    <Route path="/potato" component={Potato}/>
-    <Route component={Unknown404}/>
+    <Route path="/home" component={Home}/>
   </Switch>
 ))
 
 const styles = {
-  header: {
-    padding: '17px',
-	background: 'lime'
-  },
-  logo: {
-    height: '50px',
-    width: '50px'
-  },
   appTitle: {
     fontSize: '1.4em',
     paddingLeft: '15px',
+    marginRight: '0px',
     lineHeight: '2',
-    verticalAlign: 'top'
+    verticalAlign: 'top',
   },
   sideMenuLink: {
     textDecoration: 'none'
   },
+  subHeader: {
+	textDecoration: 'underline'
+  },
   content: {
-    padding: '5px',
+    padding: '0px'
   },
-
-  contentDisplay: {
-	width: '100%',
-	height: '100%',
-  },
-
-  dataSetSelector: {
-    padding: '5px',
-	background: 'orange'
-  },
+  
 };
+
 
 export default App;

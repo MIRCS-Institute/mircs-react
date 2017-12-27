@@ -18,10 +18,10 @@ const RecordCard = observer(class extends React.Component {
 
         </CardContent>
         <CardActions>
+        <RecordEditButton dataSetId={this.props.dataSetId} record={this.props.record}
+              onRefresh={this.props.onRefresh}/>
           <RecordDeleteButton dataSetId={this.props.dataSetId} recordId={this.props.record._id}
               onRefresh={this.props.onRefresh} onError={this.props.onError}/>
-          <RecordEditButton dataSetId={this.props.dataSetId} record={this.props.record}
-              onRefresh={this.props.onRefresh}/>
         </CardActions>
       </Card>
     );

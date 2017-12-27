@@ -1,6 +1,6 @@
-/*
-Starts the MIRCS server
-*/
+//
+// Starts the MIRCS server
+//
 
 const path = require('path');
 
