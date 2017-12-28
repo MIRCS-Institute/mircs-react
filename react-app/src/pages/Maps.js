@@ -1,10 +1,15 @@
-import React from 'react';
+import _ from 'lodash'
+import {action, extendObservable} from 'mobx'
+import {FormControl} from 'material-ui/Form'
+import {MenuItem} from 'material-ui/Menu'
+import {observer} from 'mobx-react'
 import Button from 'material-ui/Button'
 import Card, {CardContent, CardHeader} from 'material-ui/Card'
 import http from 'utils/http'
-import {action, extendObservable} from 'mobx'
-import {observer} from 'mobx-react'
-import _ from 'lodash'
+import Input, {InputLabel} from 'material-ui/Input'
+import Layout from 'utils/Layout'
+import React from 'react'
+import Select from 'material-ui/Select'
 
 const L = window.L;
 
@@ -17,7 +22,8 @@ const Maps = observer(class extends React.Component {
     extendObservable(this, {
       dataSets: [],
       relationships: [],
-      records: []
+      records: [],
+      selectedRecord: null
     });
   }
 
@@ -47,16 +53,10 @@ const Maps = observer(class extends React.Component {
       attributionControl: true
     });
 
-    this.setupTileLayer();
+    L.control.zoom({position: 'bottomleft'}).addTo(this.map);
+    L.control.scale({position: 'bottomleft'}).addTo(this.map);
 
-    L
-      .control
-      .zoom({position: 'bottomleft'})
-      .addTo(this.map);
-    L
-      .control
-      .scale({position: 'bottomleft'})
-      .addTo(this.map);
+    this.setupTileLayer();
   })
 
   // this is called when 'map data' is clicked
@@ -78,17 +78,18 @@ const Maps = observer(class extends React.Component {
 
   // loop through the records to map each set of data
   createPoints = action((records) => {
-    for (let i = 0; i < records.length; i++) {
-      L
-        .marker([records[i].Y, records[i].X])
+    _.each(records, (record) => {
+      L.marker([record.Y, record.X])
         .addTo(this.map)
-        .bindPopup(records[i].Address_Number + " \n " + records[i].Street);
-    }
+        .bindPopup(record.Address_Number + ' ' + record.Street)
+        .on('click', action(() => {
+          this.selectedRecord = record;
+        }));
+    });
   })
 
   fetchDataSet = action((recordId, where) => {
-    http
-      .jsonRequest(recordId)
+    http.jsonRequest(recordId)
       .then(action((response) => {
         this.records = _.get(response, where);
         this.createPoints(this.records);
@@ -101,8 +102,7 @@ const Maps = observer(class extends React.Component {
   // use this to list all of the datasets on the left
   // TODO make sure we only request "mappable" datasets
   fetchDataSetRecords = action(() => {
-    http
-      .jsonRequest('/api/datasets')
+    http.jsonRequest('/api/datasets')
       .then(action((response) => {
         this.dataSets = _.get(response, 'bodyJson.list');
         this.fetchRelationshipRecords();
@@ -113,8 +113,7 @@ const Maps = observer(class extends React.Component {
   })
 
   fetchRelationshipRecords = action(() => {
-    http
-      .jsonRequest('/api/relationships')
+    http.jsonRequest('/api/relationships')
       .then(action((response) => {
         this.relationships = _.get(response, 'bodyJson.list');
       }))
@@ -124,18 +123,17 @@ const Maps = observer(class extends React.Component {
   })
 
   stopMap = action(() => {
-    // destroy the Leaflet map object & related event listeners
-    this
-      .map
-      .remove();
-    this.map = null;
+    if (this.map) {
+      // destroy the Leaflet map object & related event listeners
+      this.map.remove();
+      this.map = null;
+    }
   })
 
   setupTileLayer = action(() => {
     if (this.tileLayer) {
-      this
-        .tileLayer
-        .remove();
+      this.tileLayer.remove();
+      this.tileLayer = null;
     }
 
     switch (this.state.tileLayerName) {
@@ -157,9 +155,7 @@ const Maps = observer(class extends React.Component {
         break;
     }
 
-    this
-      .tileLayer
-      .addTo(this.map);
+    this.tileLayer.addTo(this.map);
   })
 
   componentDidUpdate(prevProps, prevState) {
@@ -172,14 +168,8 @@ const Maps = observer(class extends React.Component {
 
   render() {
     return (
-      <div>
-        <div ref='mapNode' style={styles.map}></div>
-        <div
-          style={{
-          height: '700px',
-          width: '30%',
-          overflow: 'scroll'
-        }}>
+      <div style={{ ...Layout.absoluteFill, ...Layout.row }}>
+        <div style={{ width: '30%', overflow: 'scroll' }}>
 
           {/* dataSets */}
           <h2>Data Sets</h2>
@@ -272,19 +262,33 @@ const Maps = observer(class extends React.Component {
             ))}
 
         </div>
-        <form autoComplete='off'>
 
-          {/* <FormControl>
-            <InputLabel htmlFor='tile-layer-input'>Tile Layer</InputLabel>
-            <Select
-              value={this.state.tileLayerName}
-              onChange={this.handleTileLayerNameChange}
-              input={< Input id = 'tile-layer-input' />}>
-              <MenuItem value='OpenStreetMap'>OpenStreetMap</MenuItem>
-              <MenuItem value='Mapbox'>Mapbox</MenuItem>
-            </Select>
-          </FormControl> */}
-        </form>
+        <div style={{ ...Layout.column, flex: 1 }}>
+
+          <form autoComplete='off'>
+            <FormControl>
+              <InputLabel htmlFor='tile-layer-input'>Tile Layer</InputLabel>
+              <Select
+                value={this.state.tileLayerName}
+                onChange={this.handleTileLayerNameChange}
+                input={< Input id = 'tile-layer-input' />}>
+                <MenuItem value='OpenStreetMap'>OpenStreetMap</MenuItem>
+                <MenuItem value='Mapbox'>Mapbox</MenuItem>
+              </Select>
+            </FormControl>
+          </form>
+
+          <div ref='mapNode' style={styles.map}></div>
+
+          <div style={{ overflow: 'scroll' }}>
+            {_.map(this.selectedRecord, (value, field) => (
+              <div>
+                <strong>{field}:</strong> <span>{value}</span>
+              </div>
+            ))}
+          </div>
+
+        </div>
       </div>
     );
   }
@@ -292,9 +296,7 @@ const Maps = observer(class extends React.Component {
 const styles = {
   map: {
     position: 'relative',
-    height: '700px',
-    width: '70%',
-    float: "right"
+    height: '700px'
   },
   button: {
     margin: "auto",

@@ -6,6 +6,7 @@ import { NavLink, Route } from 'react-router-dom'
 import { observer } from 'mobx-react'
 import { Switch } from 'react-router-dom'
 import { withRouter } from 'react-router-dom'
+import Layout from 'utils/Layout'
 
 import AppBar from 'material-ui/AppBar'
 import blue from 'material-ui/colors/blue'
@@ -77,7 +78,7 @@ const App = observer(class extends React.Component {
               </Toolbar>
             </AppBar>
 
-            <div style={{ marginTop: 66, padding: 5 }}>
+            <div style={{ ...Layout.absoluteFill, marginTop: 66, padding: 5 }}>
               <ContentPane/>
             </div>
 
