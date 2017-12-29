@@ -89,6 +89,7 @@ const Maps = observer(class extends React.Component {
   })
 
   fetchDataSet = action((recordId, where) => {
+    this.selectedRecord = null;
     http.jsonRequest(recordId)
       .then(action((response) => {
         this.records = _.get(response, where);
@@ -102,6 +103,7 @@ const Maps = observer(class extends React.Component {
   // use this to list all of the datasets on the left
   // TODO make sure we only request "mappable" datasets
   fetchDataSetRecords = action(() => {
+    this.selectedRecord = null;
     http.jsonRequest('/api/datasets')
       .then(action((response) => {
         this.dataSets = _.get(response, 'bodyJson.list');
@@ -282,7 +284,7 @@ const Maps = observer(class extends React.Component {
 
           <div style={{ overflow: 'scroll' }}>
             {_.map(this.selectedRecord, (value, field) => (
-              <div>
+              <div key={field}>
                 <strong>{field}:</strong> <span>{value}</span>
               </div>
             ))}
