@@ -21,9 +21,6 @@ import MenuIcon from 'material-ui-icons/Menu'
 import Toolbar from 'material-ui/Toolbar'
 import Typography from 'material-ui/Typography'
 import MapIcon from 'material-ui-icons/Map'
-import HelpIcon from 'material-ui-icons/Help'
-import MailIcon from 'material-ui-icons/Mail'
-import AboutIcon from 'material-ui-icons/LocalActivity'
 import WeekendIcon from 'material-ui-icons/Weekend'
 import { MuiThemeProvider, createMuiTheme } from 'material-ui/styles'
 
@@ -32,29 +29,26 @@ import Records from 'pages/Records'
 import Relationships from 'pages/Relationships'
 import Unknown404 from 'pages/Unknown404'
 import Maps from 'pages/Maps'
-import About from 'pages/About'
-import Contact from 'pages/Contact'
-import FAQ from 'pages/FAQ'
 
 const theme = createMuiTheme({
   palette: {
     primary: orange,
     accent: blue
   }
-});
+})
 
 // so we need to bring in HOME and EXPLORE and LANDING PAGE and the NAV BAR and the TAB SELECTOR
 
 const App = observer(class extends React.Component {
   constructor() {
-    super();
+    super()
     extendObservable(this, {
       isDrawerOpen: false,
-    });
+    })
   }
 
   toggleDrawerOpen = action(() => {
-    this.isDrawerOpen = !this.isDrawerOpen;
+    this.isDrawerOpen = !this.isDrawerOpen
   })
 
   render() {
@@ -85,29 +79,23 @@ const App = observer(class extends React.Component {
           </div>
         </MuiThemeProvider>
       </HashRouter>
-    );
+    )
   }
-});
+})
 
 const SubTitle = withRouter((props) => {
-  let subtitle = 'Data Editor';
+  let subtitle = 'Data Explorer'
   if (_.startsWith(props.location.pathname, '/datasets')) {
-    subtitle = 'Data Sets';
+    subtitle = 'Data Sets'
   } else if (_.startsWith(props.location.pathname, '/relationships')) {
-    subtitle = 'Relationships';
+    subtitle = 'Relationships'
   } else if (_.startsWith(props.location.pathname, '/maps')) {
-    subtitle = 'Maps';
-  } else if (_.startsWith(props.location.pathname, '/about')) {
-    subtitle = 'About';
-  } else if (_.startsWith(props.location.pathname, '/contact')) {
-    subtitle = 'Contact';
-  } else if (_.startsWith(props.location.pathname, '/faq')) {
-    subtitle = 'FAQ';
+    subtitle = 'Maps'
   }
 
   return (
     <span>{subtitle}</span>
-  );
+  )
 })
 
 const SideMenu = (props) => (
@@ -122,21 +110,15 @@ const SideMenu = (props) => (
                   toggleDrawerOpen={props.toggleDrawerOpen}/>
     <NavMenuItem route='/relationships' text='Relationships' icon={<WeekendIcon/>}
                   toggleDrawerOpen={props.toggleDrawerOpen}/>
-    <NavMenuItem route='/contact' text='Contact' icon={<MailIcon/>}
-                  toggleDrawerOpen={props.toggleDrawerOpen}/>
-    <NavMenuItem route='/faq' text='FAQ' icon={<HelpIcon/>}
-                  toggleDrawerOpen={props.toggleDrawerOpen}/>
-    <NavMenuItem route='/about' text='About' icon={<AboutIcon/>}
-                  toggleDrawerOpen={props.toggleDrawerOpen}/>
   </List>
-);
+)
 
 const NavMenuItem = withRouter((props) => {
-  let isSelected;
+  let isSelected
   if (props.exact) {
-    isSelected = props.location.pathname === props.route;
+    isSelected = props.location.pathname === props.route
   } else {
-    isSelected = _.startsWith(props.location.pathname, props.route);
+    isSelected = _.startsWith(props.location.pathname, props.route)
   }
 
   return (
@@ -148,7 +130,7 @@ const NavMenuItem = withRouter((props) => {
         <ListItemText style={isSelected ? {} : styles.navLink} primary={props.text} disableTypography/>
       </ListItem>
     </NavLink>
-  );
+  )
 })
 
 const ContentPane = withRouter((props) => (
@@ -162,9 +144,6 @@ const ContentPane = withRouter((props) => (
     )}/>
     <Route exact path='/relationships' component={Relationships}/>
     <Route exact path='/maps' component={Maps}/>
-    <Route exact path='/about' component={About}/>
-    <Route exact path='/contact' component={Contact}/>
-    <Route exact path='/faq' component={FAQ}/>
     <Route component={Unknown404}/>
   </Switch>
 ))
@@ -177,6 +156,6 @@ const styles = {
   selectedNavLink: {
     color: blue[400]
   },
-};
+}
 
-export default App;
+export default App
