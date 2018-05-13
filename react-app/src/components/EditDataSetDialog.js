@@ -102,7 +102,7 @@ const EditDataSetDialog = observer(class extends React.Component {
           <Button onClick={this.props.onCancel} color='primary' disabled={this.isSaving}>
             Cancel
           </Button>
-          <Button onClick={this.handleSave} color='accent' disabled={!this.canSave()}>
+          <Button onClick={this.handleSave} color='secondary' disabled={!this.canSave()}>
             Save
             {this.isSaving && <ButtonProgress/>}
           </Button>

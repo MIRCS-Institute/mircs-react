@@ -138,13 +138,13 @@ const DataSetCard = observer(class extends React.Component {
           </DataSetUploadDropzone>
         </CardContent>
         <CardActions>
-          <Button raised href={`#/datasets/${this.props.dataSet._id}`}>
+          <Button variant='raised' href={`#/datasets/${this.props.dataSet._id}`}>
             View Records
           </Button>
-          <Button raised onClick={this.handleEditClick}>
+          <Button variant='raised' onClick={this.handleEditClick}>
             Edit Data Set
           </Button>
-          <Button raised color='accent' onClick={this.handleDeleteClick}>
+          <Button variant='raised' color='secondary' onClick={this.handleDeleteClick}>
             Delete Data Set
           </Button>
         </CardActions>

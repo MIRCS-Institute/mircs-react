@@ -35,7 +35,7 @@ const RecordEditButton = observer(class extends React.Component {
 
   render() {
     return (
-      <Button raised onClick={this.handleEditClick}>
+      <Button variant='raised' onClick={this.handleEditClick}>
         Edit Record
 
         <EditRecordDialog open={this.showEditDialog} dataSetId={this.props.dataSetId} record={this.props.record} onCancel={this.handleEditCancel} afterSave={this.handleEditAfterSave}/>

@@ -34,7 +34,7 @@ const ConfirmDeleteDialog = observer(class extends React.Component {
 
   render() {
     return (
-      <Dialog open={true} onRequestClose={this.props.onCancel} ignoreBackdropClick>
+      <Dialog open={true} onClose={this.props.onCancel} disableBackdropClick>
         <DialogTitle>Delete {this.props.name}</DialogTitle>
         <DialogContent>
           <DialogContentText>
@@ -47,7 +47,7 @@ const ConfirmDeleteDialog = observer(class extends React.Component {
           <Button onClick={this.props.onCancel} color='primary'>
             Cancel
           </Button>
-          <Button onClick={this.props.onConfirm} color='accent' disabled={this.isDeleteDisabled()}>
+          <Button onClick={this.props.onConfirm} color='secondary' disabled={this.isDeleteDisabled()}>
             Delete
           </Button>
         </DialogActions>

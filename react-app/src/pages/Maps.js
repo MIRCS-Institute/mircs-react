@@ -207,7 +207,7 @@ const Maps = observer(class extends React.Component {
                       <Button
                         style={styles.button}
                         value={dataSet._id}
-                        raised
+                        variant='raised'
                         color='primary'
                         onClick={() => {
                         this.fetchDataSetForMap(dataSet._id)
@@ -252,7 +252,7 @@ const Maps = observer(class extends React.Component {
                       <Button
                         style={styles.button}
                         value={relation._id}
-                        raised
+                        variant='raised'
                         color='primary'
                         onClick={() => {
                         this.fetchRelationshipDataForMap(relation._id)

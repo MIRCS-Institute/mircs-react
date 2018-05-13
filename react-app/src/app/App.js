@@ -10,7 +10,6 @@ import Layout from 'utils/Layout'
 
 import AppBar from 'material-ui/AppBar'
 import blue from 'material-ui/colors/blue'
-import orange from 'material-ui/colors/orange'
 import ChevronLeftIcon from 'material-ui-icons/ChevronLeft'
 import Drawer from 'material-ui/Drawer'
 import ExtensionIcon from 'material-ui-icons/Extension'
@@ -22,20 +21,12 @@ import Toolbar from 'material-ui/Toolbar'
 import Typography from 'material-ui/Typography'
 import MapIcon from 'material-ui-icons/Map'
 import WeekendIcon from 'material-ui-icons/Weekend'
-import { MuiThemeProvider, createMuiTheme } from 'material-ui/styles'
 
 import DataSets from 'pages/DataSets'
 import Records from 'pages/Records'
 import Relationships from 'pages/Relationships'
 import Unknown404 from 'pages/Unknown404'
 import Maps from 'pages/Maps'
-
-const theme = createMuiTheme({
-  palette: {
-    primary: orange,
-    accent: blue
-  }
-})
 
 // so we need to bring in HOME and EXPLORE and LANDING PAGE and the NAV BAR and the TAB SELECTOR
 
@@ -54,30 +45,29 @@ const App = observer(class extends React.Component {
   render() {
     return (
       <HashRouter>
-        <MuiThemeProvider theme={theme}>
-          <div>
+        <div>
 
-            <Drawer open={this.isDrawerOpen} onRequestClose={this.toggleDrawerOpen}>
-              <SideMenu toggleDrawerOpen={this.toggleDrawerOpen}/>
-            </Drawer>
+          <Drawer open={this.isDrawerOpen} onClose={this.toggleDrawerOpen}>
+            <SideMenu toggleDrawerOpen={this.toggleDrawerOpen}/>
+          </Drawer>
 
-            <AppBar>
-              <Toolbar disableGutters={true}>
-                <IconButton color='contrast' aria-label='open drawer' onClick={this.toggleDrawerOpen}>
-                  <MenuIcon/>
-                </IconButton>
-                <Typography type='title' color='inherit' noWrap>
-                  MIRCS Geogenealogy - <SubTitle/>
-                </Typography>
-              </Toolbar>
-            </AppBar>
+          <AppBar>
+            <Toolbar disableGutters={true}>
+              {/* fix color here... */}
+              <IconButton color='inherit' aria-label='open drawer' onClick={this.toggleDrawerOpen}>
+                <MenuIcon/>
+              </IconButton>
+              <Typography variant='title' color='inherit' noWrap>
+                MIRCS Geogenealogy - <SubTitle/>
+              </Typography>
+            </Toolbar>
+          </AppBar>
 
-            <div style={{ ...Layout.absoluteFill, marginTop: 66, padding: 5 }}>
-              <ContentPane/>
-            </div>
-
+          <div style={{ ...Layout.absoluteFill, marginTop: 66, padding: 5 }}>
+            <ContentPane/>
           </div>
-        </MuiThemeProvider>
+
+        </div>
       </HashRouter>
     )
   }

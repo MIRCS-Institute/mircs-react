@@ -60,7 +60,7 @@ const Relationships = observer(class extends React.Component {
   render() {
     return (
       <div>
-        <Button raised color='primary' style={{ marginTop: 10 }} onClick={this.handleCreateClick}>
+        <Button variant='raised' color='primary' style={{ marginTop: 10 }} onClick={this.handleCreateClick}>
           Create a Relationship
         </Button>
 

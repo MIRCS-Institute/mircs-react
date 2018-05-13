@@ -101,7 +101,7 @@ const Records = observer(class extends React.Component {
       <div>
         <header style={styles.header}>
           <span>{this.dataSet && this.dataSet.name} Records</span>
-          <Button raised color='accent' style={styles.headerButton} onClick={this.handleDeleteClick}>
+          <Button variant='raised' color='secondary' style={styles.headerButton} onClick={this.handleDeleteClick}>
             Delete All Records
           </Button>
 

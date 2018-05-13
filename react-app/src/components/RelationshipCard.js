@@ -116,13 +116,13 @@ const RelationshipCard = observer(class extends React.Component {
 
         </CardContent>
         <CardActions>
-          <Button raised onClick={this.handleViewClick}>
+          <Button variant='raised' onClick={this.handleViewClick}>
             View Relationship
           </Button>
-          <Button raised onClick={this.handleEditClick}>
+          <Button variant='raised' onClick={this.handleEditClick}>
             Edit Relationship
           </Button>
-          <Button raised color='accent' onClick={this.handleDeleteClick}>
+          <Button variant='raised' color='secondary' onClick={this.handleDeleteClick}>
             Delete Relationship
           </Button>
         </CardActions>

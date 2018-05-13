@@ -52,7 +52,7 @@ const ErrorSnackbar = observer(class extends React.Component {
         anchorOrigin={{ vertical: 'bottom', horizontal: 'left', }}
         open={this.open}
         autoHideDuration={30000}
-        onRequestClose={this.handleErrorClose}
+        onClose={this.handleErrorClose}
         SnackbarContentProps={{ 'aria-describedby': 'message-id', }}
         message={<span id="message-id">{'' + this.errorMessage}</span>}
         action={[

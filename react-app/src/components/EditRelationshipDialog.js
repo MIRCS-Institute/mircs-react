@@ -181,7 +181,7 @@ const EditRelationshipDialog = observer(class extends React.Component {
                 </Grid>
 
                 <Grid item xs={1}>
-                  <IconButton onClick={this.onRemoveJoinElementClick(index)} color='accent'>
+                  <IconButton onClick={this.onRemoveJoinElementClick(index)} color='secondary'>
                     <RemoveCircleIcon/>
                   </IconButton>
                 </Grid>
@@ -203,7 +203,7 @@ const EditRelationshipDialog = observer(class extends React.Component {
                 <Grid item xs={2} style={{ ...Layout.row }}>
                   <IconButton onClick={this.onAddJoinElementClick} color='primary'
                       disabled={!this.newJoinElements[0] || !this.newJoinElements[1]}><AddCircleIcon/></IconButton>
-                  <IconButton onClick={this.onCancelJoinElementClick} color='accent'><CancelIcon/></IconButton>
+                  <IconButton onClick={this.onCancelJoinElementClick} color='secondary'><CancelIcon/></IconButton>
                 </Grid>
               </Grid>}
 
@@ -222,7 +222,7 @@ const EditRelationshipDialog = observer(class extends React.Component {
           <Button onClick={this.props.onCancel} color='primary' disabled={this.isSaving}>
             Cancel
           </Button>
-          <Button onClick={this.handleSave} color='accent' disabled={!this.canSave()}>
+          <Button onClick={this.handleSave} color='secondary' disabled={!this.canSave()}>
             Save
             {this.isSaving && <ButtonProgress/>}
           </Button>

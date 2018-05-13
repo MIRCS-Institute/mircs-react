@@ -128,7 +128,7 @@ const EditRecordDialog = observer(class extends React.Component {
           <Button onClick={this.props.onCancel} color='primary' disabled={this.isSaving}>
             Cancel
           </Button>
-          <Button onClick={this.handleSave} color='accent'>
+          <Button onClick={this.handleSave} color='secondary'>
             Save
             {this.isSaving && <ButtonProgress/>}
           </Button>
