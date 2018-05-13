@@ -78,8 +78,9 @@ const Maps = observer(class extends React.Component {
 
   // loop through the records to map each set of data
   createPoints = action((records) => {
+    const icon = L.icon({ iconUrl: 'house.svg' })
     _.each(records, (record) => {
-      L.marker([record.Y, record.X])
+      L.marker([record.Y || record.y || record.latitude, record.X || record.x || record.longitute], { icon })
         .addTo(this.map)
         .bindPopup(record.Address_Number + ' ' + record.Street)
         .on('click', action(() => {
