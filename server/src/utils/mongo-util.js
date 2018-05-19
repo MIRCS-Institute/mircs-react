@@ -108,17 +108,36 @@ MongoUtil.find = function (collectionName, query) {
 update the fields collection associated with a collection
 */
 MongoUtil.refreshFields = function (db, collectionName) {
-  return db
-    .collection(collectionName)
-    .mapReduce(function map() {
-      for (var key in this) {
-        emit(key, typeof this[key]);
+
+  return new Promise(function(resolve, reject) {
+    const cursor = db.collection(collectionName).find();
+    const fields = {};
+    cursor.each(function(err, item) {
+      if (err) {
+        return reject(err);
       }
-    }, function reduce(key, vals) {
-      return vals[0];
-    }, {
-      out: collectionName + MongoUtil.DATA_SETS_FIELDS_COLLECTION_SUFFIX
+
+      if (item === null) {
+        // cursor is exhausted
+        return resolve(fields);
+      }
+
+      _.each(item, function(value, key) {
+        fields[key] = typeof this[key];
+      });
     });
+  })
+  .then(function(fields) {
+    const fieldsCollection = db.collection(collectionName + MongoUtil.DATA_SETS_FIELDS_COLLECTION_SUFFIX)
+    return fieldsCollection.remove({})
+      .then(function() {
+        fieldDocs = [];
+        _.each(fields, function(value, key) {
+          fieldDocs.push({ _id: key, value: value })
+        });
+        return fieldsCollection.insertMany(fieldDocs);
+      });
+  });
 };
 
 /*

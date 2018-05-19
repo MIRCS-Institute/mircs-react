@@ -31,7 +31,7 @@ const MAX_AGE_SECONDS = ONE_HOUR_SECONDS;
 app.use(cors({ maxAge: MAX_AGE_SECONDS }));
 
 // expose build output of the react-app
-app.use(express.static(path.join(__server_src_dir, '../../react-app/build')));
+app.use(express.static(path.resolve(__server_src_dir, '../public')));
 
 // configure the app the use body-parser for POST requests
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -56,7 +56,7 @@ app.all('*', function(req, res) {
 
 MongoUtil.initialize()
   .then(() => {
-    const PORT = Environment.getRequired('SERVER_PORT');
+    const PORT = Environment.getRequired('PORT');
     app.listen(PORT, function() {
       log.info(`expressjs server is listening on port ${PORT}...`);
     });
