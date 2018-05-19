@@ -1,11 +1,11 @@
 import _ from 'lodash'
-import csv from 'csv'
-import Dropzone from 'react-dropzone'
-import http from 'utils/http'
-import PropTypes from 'prop-types'
-import React from 'react'
 import { action } from 'mobx'
 import { observer } from 'mobx-react'
+import Dropzone from 'react-dropzone'
+import http from 'utils/http'
+import papa from 'papaparse'
+import PropTypes from 'prop-types'
+import React from 'react'
 
 const DataSetUploadDropzone = observer(class extends React.Component {
   static propTypes = {
@@ -20,25 +20,24 @@ const DataSetUploadDropzone = observer(class extends React.Component {
     }
 
     const file = acceptedFiles[0];
-    const reader = new FileReader();
-    reader.onload = () => {
-      csv.parse(reader.result, (error, data) => {
-        if (error) {
-          return this.props.onError(error);
-        }
-        this.handleCsvLoaded(data, file);
-      });
-    };
-    reader.readAsBinaryString(file);
-
+    papa.parse(file, {
+      dynamicTyping: true,
+      complete: (results, file) => {
+        this.handleCsvLoaded(results.data, file)
+      },
+      error: (error) => {
+        console.error('error parsing csv:', error)
+        return this.props.onError(error);
+      },
+    })
   })
 
   handleCsvLoaded = (data, file) => {
     const headers = data[0];
     const illegalHeaders = [];
-    _.each(headers, function(header) {
-      if (headers[0] === '$' || header.indexOf('.') >= 0) {
-        illegalHeaders.push(header);
+    _.each(headers, (header, index) => {
+      if (!header || header[0] === '$' || header.indexOf('.') >= 0) {
+        illegalHeaders.push(header || index);
       }
     });
     if (illegalHeaders.length) {
@@ -46,10 +45,10 @@ const DataSetUploadDropzone = observer(class extends React.Component {
     }
 
     const records = [];
-    _.each(data, function(row, index) {
+    _.each(data, (row, index) => {
       if (index > 0) { // skip header row
         const record = {};
-        _.each(row, function(value, rowValueIndex) {
+        _.each(row, (value, rowValueIndex) => {
           const key = headers[rowValueIndex];
           record[key] = value;
         });

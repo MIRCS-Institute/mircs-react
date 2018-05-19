@@ -53,7 +53,6 @@ const ErrorSnackbar = observer(class extends React.Component {
         open={this.open}
         autoHideDuration={30000}
         onClose={this.handleErrorClose}
-        SnackbarContentProps={{ 'aria-describedby': 'message-id', }}
         message={<span id="message-id">{'' + this.errorMessage}</span>}
         action={[
           <IconButton key="close" aria-label="Close" color="inherit" onClick={this.handleErrorClose}>

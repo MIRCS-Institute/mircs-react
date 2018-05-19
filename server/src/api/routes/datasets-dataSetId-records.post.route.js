@@ -19,6 +19,9 @@ module.exports = function(router) {
     }
 
     const newRecords = req.body.records;
+    if (!_.get(newRecords, 'length')) {
+      return res.status(400).send('no records in upload')
+    }
 
     const now = new Date();
     const errors = [];
