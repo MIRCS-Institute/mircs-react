@@ -1,34 +1,32 @@
 import _ from 'lodash'
-import React from 'react'
 import { action, extendObservable } from 'mobx'
 import { HashRouter } from 'react-router-dom'
 import { NavLink, Route } from 'react-router-dom'
 import { observer } from 'mobx-react'
 import { Switch } from 'react-router-dom'
 import { withRouter } from 'react-router-dom'
-import Layout from 'utils/Layout'
-
 import AppBar from 'material-ui/AppBar'
 import blue from 'material-ui/colors/blue'
 import ChevronLeftIcon from 'material-ui-icons/ChevronLeft'
+import DataSetMap from 'pages/DataSetMap'
+import DataSets from 'pages/DataSets'
 import Drawer from 'material-ui/Drawer'
 import ExtensionIcon from 'material-ui-icons/Extension'
+import Home from 'pages/Home'
 import HomeIcon from 'material-ui-icons/Home'
 import IconButton from 'material-ui/IconButton'
+import Layout from 'utils/Layout'
 import List, { ListItem, ListItemIcon, ListItemText } from 'material-ui/List'
+import MapIcon from 'material-ui-icons/Map'
 import MenuIcon from 'material-ui-icons/Menu'
+import React from 'react'
+import Records from 'pages/Records'
+import RelationshipMap from 'pages/RelationshipMap'
+import Relationships from 'pages/Relationships'
 import Toolbar from 'material-ui/Toolbar'
 import Typography from 'material-ui/Typography'
-import MapIcon from 'material-ui-icons/Map'
-import WeekendIcon from 'material-ui-icons/Weekend'
-
-import DataSets from 'pages/DataSets'
-import Records from 'pages/Records'
-import Relationships from 'pages/Relationships'
 import Unknown404 from 'pages/Unknown404'
-import Maps from 'pages/Maps'
-
-// so we need to bring in HOME and EXPLORE and LANDING PAGE and the NAV BAR and the TAB SELECTOR
+import WeekendIcon from 'material-ui-icons/Weekend'
 
 const App = observer(class extends React.Component {
   constructor() {
@@ -53,7 +51,6 @@ const App = observer(class extends React.Component {
 
           <AppBar>
             <Toolbar disableGutters={true}>
-              {/* fix color here... */}
               <IconButton color='inherit' aria-label='open drawer' onClick={this.toggleDrawerOpen}>
                 <MenuIcon/>
               </IconButton>
@@ -79,8 +76,6 @@ const SubTitle = withRouter((props) => {
     subtitle = 'Data Sets'
   } else if (_.startsWith(props.location.pathname, '/relationships')) {
     subtitle = 'Relationships'
-  } else if (_.startsWith(props.location.pathname, '/maps')) {
-    subtitle = 'Maps'
   }
 
   return (
@@ -93,8 +88,6 @@ const SideMenu = (props) => (
     <div><IconButton onClick={props.toggleDrawerOpen}><ChevronLeftIcon/></IconButton></div>
 
     <NavMenuItem route='/' exact text='Home' icon={<HomeIcon/>}
-                  toggleDrawerOpen={props.toggleDrawerOpen}/>
-    <NavMenuItem route='/maps' text='Maps' icon={<MapIcon/>}
                   toggleDrawerOpen={props.toggleDrawerOpen}/>
     <NavMenuItem route='/datasets' text='Data Sets' icon={<ExtensionIcon/>}
                   toggleDrawerOpen={props.toggleDrawerOpen}/>
@@ -125,15 +118,18 @@ const NavMenuItem = withRouter((props) => {
 
 const ContentPane = withRouter((props) => (
   <Switch key={props.location.key} location={props.location}>
-    <Route exact path='/'>
-      <h3>Welcome to the MIRCS Geogenealogy data editor. May the schwartz be with you.</h3>
-    </Route>
+    <Route exact path='/' component={Home}/>
     <Route exact path='/datasets' component={DataSets}/>
     <Route exact path='/datasets/:dataSetId' render={({ match }) => (
       <Records dataSetId={match.params.dataSetId}/>
     )}/>
+    <Route exact path='/datasets/:dataSetId/map' render={({ match }) => (
+      <DataSetMap dataSetId={match.params.dataSetId}/>
+    )}/>
+    <Route exact path='/relationships/:relationshipId/map' render={({ match }) => (
+      <RelationshipMap relationshipId={match.params.relationshipId}/>
+    )}/>
     <Route exact path='/relationships' component={Relationships}/>
-    <Route exact path='/maps' component={Maps}/>
     <Route component={Unknown404}/>
   </Switch>
 ))

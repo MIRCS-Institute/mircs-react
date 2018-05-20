@@ -33,8 +33,8 @@ const Map = observer(class extends React.Component {
       if (this.props.selected && this.props.selected.dataSetId) {
         this.fetchDataSetForMap(this.props.selected.dataSetId)
       }
-      if (this.props.selected && this.props.selected.relationId) {
-        this.fetchRelationshipDataForMap(this.props.selected.relationId)
+      if (this.props.selected && this.props.selected.relationshipId) {
+        this.fetchRelationshipDataForMap(this.props.selected.relationshipId)
       }
     })
   }
@@ -66,9 +66,9 @@ const Map = observer(class extends React.Component {
     this.fetchDataSet(`/api/datasets/${dataSetId}/records`, 'bodyJson.list')
   }
 
-  fetchRelationshipDataForMap = (relationId) => {
+  fetchRelationshipDataForMap = (relationshipId) => {
     this.refreshMap()
-    this.fetchDataSet(`/api/relationships/${relationId}/join`, 'bodyJson.records')
+    this.fetchDataSet(`/api/relationships/${relationshipId}/join`, 'bodyJson.records')
   }
 
   refreshMap = action(() => {
