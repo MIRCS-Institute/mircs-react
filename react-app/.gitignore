@@ -3,9 +3,6 @@
 # node dependencies
 /node_modules
 
-# Temporarily no not include `package-lock.json` while npm has this feature in early development (we don't trust package-lock.json yet)
-/package-lock.json
-
 # testing
 /coverage
 
