@@ -21,12 +21,14 @@
     "react-dom": "^15.6.1",
     "react-dropzone": "^4.2.3",
     "react-router-dom": "^4.2.2",
-    "react-scripts": "^1.0.14",
+    "react-scripts": "^2.1.1",
     "turf": "^3.0.14"
   },
-  "proxy": {
-    "/": {
-      "target": "http://localhost:8001/"
-    }
-  }
+  "proxy": "http://localhost:8001/",
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ]
 }
