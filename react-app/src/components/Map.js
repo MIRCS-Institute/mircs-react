@@ -79,17 +79,18 @@ const Map = observer(class extends React.Component {
   createPoints = action((records) => {
     const icon = L.icon({ iconUrl: 'house.svg' })
     const points = []
+    const hiddenFields = ['_id','_updatedAt','_createdAt'];
 
     _.each(records, (record) => {
-      const point = [record.Y || record.y || record.latitude, record.X || record.x || record.longitute]
+      const point = [record.Y || record.y || record.latitude, record.X || record.x || record.longitude]
       if (point[0]) {
         points.push(point)
         L.marker(point, { icon })
           .addTo(this.map)
           .bindPopup(action(() => {
-            return _.map(record, (value, field) => (
-              `<strong>${field}:</strong> <span>${value}</span>`
-            )).join('<br>')
+            return _.map( _.omit( _.pickBy(record), hiddenFields), (value, field) => (
+                    `<strong>${field}:</strong> <span>${value}</span>`
+                  )).join('<br>')
           }))
       }
     })
@@ -100,7 +101,7 @@ const Map = observer(class extends React.Component {
     this.map.fitBounds([[bbox[0], bbox[1]], [ bbox[2], bbox[3]]])
 
     this.points = points
-  })
+  });
 
   fetchDataSet = action((recordId, where) => {
     http.jsonRequest(recordId)
