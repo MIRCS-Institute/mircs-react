@@ -63,56 +63,87 @@ const Map = observer(class extends React.Component {
 
   fetchDataSetForMap = (dataSetId) => {
     this.refreshMap()
-    this.fetchDataSet(`/api/datasets/${dataSetId}/records`, 'bodyJson.list')
-  }
-
-  fetchRelationshipDataForMap = (relationshipId) => {
-    this.refreshMap()
-    this.fetchDataSet(`/api/relationships/${relationshipId}/join`, 'bodyJson.records')
-  }
-
-  refreshMap = action(() => {
-    this.stopMap()
-    this.startMap()
-  })
-
-  createPoints = action((records) => {
-    const icon = L.icon({ iconUrl: 'house.svg' })
-    const points = []
-    const hiddenFields = ['_id','_updatedAt','_createdAt'];
-
-    _.each(records, (record) => {
-      const point = [record.Y || record.y || record.latitude, record.X || record.x || record.longitude]
-      if (point[0]) {
-        points.push(point)
-        L.marker(point, { icon })
-          .addTo(this.map)
-          .bindPopup(action(() => {
-            return _.map( _.omit( _.pickBy(record), hiddenFields), (value, field) => (
-                    `<strong>${field}:</strong> <span>${value}</span>`
-                  )).join('<br>')
-          }))
-      }
-    })
-
-    // position map
-    const multiPoint = turf.multiPoint(points)
-    const bbox = turf.bbox(multiPoint)
-    this.map.fitBounds([[bbox[0], bbox[1]], [ bbox[2], bbox[3]]])
-
-    this.points = points
-  });
-
-  fetchDataSet = action((recordId, where) => {
-    http.jsonRequest(recordId)
+    http.jsonRequest(`/api/datasets/${dataSetId}/records`)
       .then(action((response) => {
-        this.records = _.get(response, where)
-        this.createPoints(this.records)
+        const icon = L.icon({ iconUrl: 'house.svg' })
+        const points = []
+
+        _.each(_.get(response, 'bodyJson.list'), (record) => {
+          const point = this.makePoint(record)
+          if (point) {
+            points.push(point)
+            L.marker(point, { icon })
+              .addTo(this.map)
+              .bindPopup(() => {
+                return _.map(record, (value, field) => {
+                  if (field[0] === '_') {
+                    return ''
+                  }
+                  return `<strong>${field}:</strong> <span>${value}</span><br>`
+                }).join('')
+              })
+          }
+        })
+
+        this.centerMapOnPoints(points)
+        this.points = points
       }))
       .catch(action((error) => {
         this.error = error
       }))
-  })
+  }
+
+  fetchRelationshipDataForMap = (relationshipId) => {
+    this.refreshMap()
+    http.jsonRequest(`/api/relationships/${relationshipId}/join`)
+      .then(action((response) => {
+        const icon = L.icon({ iconUrl: 'house.svg' })
+        const points = []
+
+        _.each(_.get(response, 'bodyJson.list'), (record) => {
+          // use one side of the join or the other, at this point we don't know which has the geocoordinate
+          const point = this.makePoint(record.data[0][0]) || this.makePoint(record.data[1][0])
+          if (point) {
+            points.push(point)
+            L.marker(point, { icon })
+              .addTo(this.map)
+              .bindPopup(() => {
+                return _.map(record, (value, field) => {
+                  if (field[0] === '_') {
+                    return ''
+                  }
+                  return `<strong>${field}:</strong> <span>${value}</span><br>`
+                }).join('')
+              })
+          }
+        })
+
+        this.centerMapOnPoints(points)
+        this.points = points
+      }))
+      .catch(action((error) => {
+        this.error = error
+      }))
+  }
+
+  makePoint = (record) => {
+    const latitude = record.Y || record.y || record.latitude
+    const longitude = record.X || record.x || record.longitude
+    if (latitude && longitude) {
+      return [latitude, longitude]
+    }
+  }
+
+  centerMapOnPoints = (points) => {
+    const multiPoint = turf.multiPoint(points)
+    const bbox = turf.bbox(multiPoint)
+    this.map.fitBounds([[bbox[0], bbox[1]], [ bbox[2], bbox[3]]])
+  }
+
+  refreshMap = () => {
+    this.stopMap()
+    this.startMap()
+  }
 
   stopMap = action(() => {
     if (this.map) {
