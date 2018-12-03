@@ -162,11 +162,11 @@ MongoUtil.joinRecords = function(relationship) {
 
   // join the columns of the datasets determined by the key parameters described in the Relationship
   function handleJoin(arrayOfDataSets) {
-    console.log(relationship)
     const joinedData = {}
+    let excludedRecordCounts = []
     _.each(arrayOfDataSets, (dataSet, dataSetIndex) => {
-      console.log(dataSetIndex, dataSet.length)
-      _.each(dataSet, (data, dataIndex) => {
+      excludedRecordCounts[dataSetIndex] = 0
+      _.each(dataSet, (data) => {
         // generate a key based on the join field values
         let joinedDataKey = ''
         let exclude = false
@@ -181,6 +181,7 @@ MongoUtil.joinRecords = function(relationship) {
         })
         if (exclude) {
           // skip elements with any missing key values
+          excludedRecordCounts[dataSetIndex]++
           return
         }
 
@@ -204,7 +205,6 @@ MongoUtil.joinRecords = function(relationship) {
 
     const list = []
     _.each(joinedData, (value, key) => {
-      console.log(key, _.get(value, 'data.0.length'), _.get(value, 'data.1.length'), value.dataSetCount, value.dataItemCount)
       if (value.dataSetCount === arrayOfDataSets.length) {
         list.push(value)
       }
@@ -213,6 +213,7 @@ MongoUtil.joinRecords = function(relationship) {
     const result = {
       relationship,
       list,
+      excludedRecordCounts,
     }
 
     return result;
