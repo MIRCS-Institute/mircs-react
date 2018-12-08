@@ -64,56 +64,87 @@ const Map = observer(class extends React.Component {
 
   fetchDataSetForMap = (dataSetId) => {
     this.refreshMap()
-    this.fetchDataSet(`/api/datasets/${dataSetId}/records`, 'bodyJson.list')
-  }
-
-  fetchRelationshipDataForMap = (relationshipId) => {
-    this.refreshMap()
-    this.fetchDataSet(`/api/relationships/${relationshipId}/join`, 'bodyJson.records')
-  }
-
-  refreshMap = action(() => {
-    this.stopMap()
-    this.startMap()
-  })
-
-  createPoints = action((records) => {
-    const icon = L.icon({ iconUrl: 'house.svg' })
-    const points = []
-    const hiddenFields = ['_id','_updatedAt','_createdAt'];
-
-    _.each(records, (record) => {
-      const point = [record.Y || record.y || record.latitude, record.X || record.x || record.longitude]
-      if (point[0]) {
-        points.push(point)
-        L.marker(point, { icon })
-          .addTo(this.map)
-          .bindPopup(action(() => {
-            return _.map( _.omit( _.pickBy(record), hiddenFields), (value, field) => (
-                    `<strong>${field}:</strong> <span>${value}</span>`
-                  )).join('<br>')
-          }))
-      }
-    })
-
-    // position map
-    const multiPoint = turf.multiPoint(points)
-    const bbox = turf.bbox(multiPoint)
-    this.map.fitBounds([[bbox[0], bbox[1]], [ bbox[2], bbox[3]]])
-
-    this.points = points
-  });
-
-  fetchDataSet = action((recordId, where) => {
-    http.jsonRequest(recordId)
+    http.jsonRequest(`/api/datasets/${dataSetId}/records`)
       .then(action((response) => {
-        this.records = _.get(response, where)
-        this.createPoints(this.records)
+        const icon = L.icon({ iconUrl: 'house.svg' })
+        const points = []
+
+        _.each(_.get(response, 'bodyJson.list'), (record) => {
+          const point = this.makePoint(record)
+          if (point) {
+            points.push(point)
+            L.marker(point, { icon })
+              .addTo(this.map)
+              .bindPopup(() => {
+                return _.map(record, (value, field) => {
+                  if (field[0] === '_') {
+                    return ''
+                  }
+                  return `<strong>${field}:</strong> <span>${value}</span><br>`
+                }).join('')
+              })
+          }
+        })
+
+        this.centerMapOnPoints(points)
+        this.points = points
       }))
       .catch(action((error) => {
         this.error = error
       }))
-  })
+  }
+
+  fetchRelationshipDataForMap = (relationshipId) => {
+    this.refreshMap()
+    http.jsonRequest(`/api/relationships/${relationshipId}/join`)
+      .then(action((response) => {
+        const icon = L.icon({ iconUrl: 'house.svg' })
+        const points = []
+
+        _.each(_.get(response, 'bodyJson.list'), (record) => {
+          // use one side of the join or the other, at this point we don't know which has the geocoordinate
+          const point = this.makePoint(record.data[0][0]) || this.makePoint(record.data[1][0])
+          if (point) {
+            points.push(point)
+            L.marker(point, { icon })
+              .addTo(this.map)
+              .bindPopup(() => {
+                return _.map(record, (value, field) => {
+                  if (field[0] === '_') {
+                    return ''
+                  }
+                  return `<strong>${field}:</strong> <span>${value}</span><br>`
+                }).join('')
+              })
+          }
+        })
+
+        this.centerMapOnPoints(points)
+        this.points = points
+      }))
+      .catch(action((error) => {
+        this.error = error
+      }))
+  }
+
+  makePoint = (record) => {
+    const latitude = record.Y || record.y || record.latitude
+    const longitude = record.X || record.x || record.longitude
+    if (latitude && longitude) {
+      return [latitude, longitude]
+    }
+  }
+
+  centerMapOnPoints = (points) => {
+    const multiPoint = turf.multiPoint(points)
+    const bbox = turf.bbox(multiPoint)
+    this.map.fitBounds([[bbox[0], bbox[1]], [ bbox[2], bbox[3]]])
+  }
+
+  refreshMap = () => {
+    this.stopMap()
+    this.startMap()
+  }
 
   stopMap = action(() => {
     if (this.map) {
@@ -132,18 +163,21 @@ const Map = observer(class extends React.Component {
       case 'Mapbox':
         this.tileLayer = L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
           minZoom: 8,
-          attribution: 'Map data &copy; <a href="https://openstreetmap.org">OpenStreetMap</a> contributor' +
-              's, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imager' +
-              'y © <a href="https://mapbox.com">Mapbox</a>',
+          attribution: 'Map data &copy; <a href="https://openstreetmap.org">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://mapbox.com">Mapbox</a>',
           id: 'mapbox.streets',
-          accessToken: 'pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriIS' +
-              'LbB6B5aw'
+          accessToken: 'pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw'
         })
         break
 
       case 'OpenStreetMap':
       default:
-        this.tileLayer = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {attribution: '&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> contributors'})
+        this.tileLayer = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+          attribution: '&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> contributors'
+        })
+        break
+
+      case 'CamsMap':
+        this.tileLayer = L.tileLayer('https://api.mapbox.com/styles/v1/shaunjohansen/cjhichsvu67fe2rnt7z72id2e/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1Ijoic2hhdW5qb2hhbnNlbiIsImEiOiJjamg1OWRmZXIxMmp1MzFtampiZjJoNDV4In0.PgQiDqLUli_GaxB1jmrI2A')
         break
     }
 
@@ -165,6 +199,7 @@ const Map = observer(class extends React.Component {
               value={this.tileLayerName}
               onChange={this.handleTileLayerNameChange}
               input={< Input id = 'tile-layer-input' />}>
+              <MenuItem value='CamsMap'>Cam's Map</MenuItem>
               <MenuItem value='OpenStreetMap'>OpenStreetMap</MenuItem>
               <MenuItem value='Mapbox'>Mapbox</MenuItem>
             </Select>

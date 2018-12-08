@@ -31,12 +31,11 @@ MongoUtil.validateRelationship = function (relationship) {
   if (!_.isArray(relationship.joinElements)) {
     throw new Error('joinElements array is required');
   }
-  _
-    .each(relationship.joinElements, function (joinElement) {
-      if (relationship.dataSets.length !== joinElement.length) {
-        throw new Error('joinElements arrays must be the same length as dataSets');
-      }
-    });
+  _.each(relationship.joinElements, function (joinElement) {
+    if (relationship.dataSets.length !== joinElement.length) {
+      throw new Error('joinElements arrays must be the same length as dataSets');
+    }
+  });
 };
 
 /*
@@ -163,25 +162,59 @@ MongoUtil.joinRecords = function(relationship) {
 
   // join the columns of the datasets determined by the key parameters described in the Relationship
   function handleJoin(arrayOfDataSets) {
-    const matches = [];
-    _.each(arrayOfDataSets[0], function(record0) {
-      // dynamically build a search predicate based on the mapping defined in the Relationship object
-      const predicate = {};
-      _.each(relationship.joinElements, function(joinElement) {
-        predicate[joinElement[1]] = record0[joinElement[0]];
-      });
+    const joinedData = {}
+    let excludedRecordCounts = []
+    _.each(arrayOfDataSets, (dataSet, dataSetIndex) => {
+      excludedRecordCounts[dataSetIndex] = 0
+      _.each(dataSet, (data) => {
+        // generate a key based on the join field values
+        let joinedDataKey = ''
+        let exclude = false
+        _.each(relationship.joinElements, (joinElement) => {
+          const joinElementKey = joinElement[dataSetIndex]
+          const keyValue = data[joinElementKey]
+          if (_.isUndefined(keyValue) || _.isNull(keyValue)) {
+            exclude = true
+          } else {
+            joinedDataKey += '_' + keyValue
+          }
+        })
+        if (exclude) {
+          // skip elements with any missing key values
+          excludedRecordCounts[dataSetIndex]++
+          return
+        }
 
-      // scan the second data set for the first matched record
-      const match1 = _.find(arrayOfDataSets[1], predicate);
+        let joinedDataValue = joinedData[joinedDataKey]
+        if (!joinedDataValue) {
+          joinedData[joinedDataKey] = joinedDataValue = {
+            data: [],
+            dataSetCount: 0,
+            dataItemCount: 0,
+          }
+        }
 
-      if (match1) {
-        matches.push(_.extend(match1, record0));
+        if (!joinedDataValue.data[dataSetIndex]) {
+          joinedDataValue.data[dataSetIndex] = []
+          joinedDataValue.dataSetCount++
+        }
+        joinedDataValue.data[dataSetIndex].push(data)
+        joinedDataValue.dataItemCount++
+      })
+    })
+
+    const list = []
+    _.each(joinedData, (value, key) => {
+      if (value.dataSetCount === arrayOfDataSets.length) {
+        list.push(value)
       }
-    });
+    })
 
-    // clone the relationship object and return a copy with the joined rows
-    const result = _.clone(relationship);
-    result.records = matches;
+    const result = {
+      relationship,
+      list,
+      excludedRecordCounts,
+    }
 
     return result;
   };

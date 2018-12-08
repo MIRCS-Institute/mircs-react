@@ -9,7 +9,7 @@ module.exports = function (router) {
     if (!req.relationship) {
       return res.status(404).send({ error: 'No Relationship found with id ' + req.params.relationshipId });
     }
-    MongoUtil.joinRecords(req.relationship).then(joinedRecords => {
+    MongoUtil.joinRecords(req.relationship).then((joinedRecords) => {
       res.status(200).send(joinedRecords);
     });
   });
