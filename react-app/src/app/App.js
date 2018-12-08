@@ -1,31 +1,39 @@
 import _ from 'lodash'
 import { action, extendObservable } from 'mobx'
+import { fade } from '@material-ui/core/styles/colorManipulator';
 import { HashRouter } from 'react-router-dom'
 import { NavLink, Route } from 'react-router-dom'
 import { observer } from 'mobx-react'
 import { Switch } from 'react-router-dom'
 import { withRouter } from 'react-router-dom'
-import AppBar from 'material-ui/AppBar'
-import blue from 'material-ui/colors/blue'
-import ChevronLeftIcon from 'material-ui-icons/ChevronLeft'
+import { withStyles } from '@material-ui/core/styles';
+import AppBar from '@material-ui/core/AppBar'
+import blue from '@material-ui/core/colors/blue'
+import ChevronLeftIcon from '@material-ui/icons/ChevronLeft'
 import DataSetMap from 'pages/DataSetMap'
 import DataSets from 'pages/DataSets'
-import Drawer from 'material-ui/Drawer'
-import ExtensionIcon from 'material-ui-icons/Extension'
+import Drawer from '@material-ui/core/Drawer'
+import ExtensionIcon from '@material-ui/icons/Extension'
 import Home from 'pages/Home'
 import HomeIcon from 'material-ui-icons/Home'
-import IconButton from 'material-ui/IconButton'
+import IconButton from '@material-ui/core/IconButton'
+import InputBase from '@material-ui/core/InputBase';
 import Layout from 'utils/Layout'
-import List, { ListItem, ListItemIcon, ListItemText } from 'material-ui/List'
-import MenuIcon from 'material-ui-icons/Menu'
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
+import MenuIcon from '@material-ui/icons/Menu';
+import PropTypes from 'prop-types';
 import React from 'react'
 import Records from 'pages/Records'
 import RelationshipMap from 'pages/RelationshipMap'
 import Relationships from 'pages/Relationships'
-import Toolbar from 'material-ui/Toolbar'
-import Typography from 'material-ui/Typography'
+import SearchIcon from '@material-ui/icons/Search';
+import Toolbar from '@material-ui/core/Toolbar'
+import Typography from '@material-ui/core/Typography'
 import Unknown404 from 'pages/Unknown404'
-import WeekendIcon from 'material-ui-icons/Weekend'
+import WeekendIcon from '@material-ui/icons/Weekend'
 
 const App = observer(class extends React.Component {
   constructor() {
@@ -133,7 +141,20 @@ const ContentPane = withRouter((props) => (
   </Switch>
 ))
 
-const styles = {
+const styles = theme => ({
+  root: {
+    width: '100%',
+  },
+  menuButton: {
+    marginLeft: -12,
+    marginRight: 20,
+  },
+  title: {
+    display: 'none',
+    [theme.breakpoints.up('sm')]: {
+      display: 'block',
+    },
+  },
   navLink: {
     textDecoration: 'none',
     color: 'black'
@@ -141,6 +162,54 @@ const styles = {
   selectedNavLink: {
     color: blue[400]
   },
-}
+  grow: {
+    flexGrow: 1,
+  },
+  search: {
+    position: 'relative',
+    borderRadius: theme.shape.borderRadius,
+    backgroundColor: fade(theme.palette.common.white, 0.15),
+    '&:hover': {
+      backgroundColor: fade(theme.palette.common.white, 0.25),
+    },
+    marginLeft: 0,
+    width: '100%',
+    [theme.breakpoints.up('sm')]: {
+      marginLeft: theme.spacing.unit,
+      width: 'auto',
+    },
+  },
+  searchIcon: {
+    width: theme.spacing.unit * 9,
+    height: '100%',
+    position: 'absolute',
+    pointerEvents: 'none',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  inputRoot: {
+    color: 'inherit',
+    width: '100%',
+  },
+  inputInput: {
+    paddingTop: theme.spacing.unit,
+    paddingRight: theme.spacing.unit,
+    paddingBottom: theme.spacing.unit,
+    paddingLeft: theme.spacing.unit * 10,
+    transition: theme.transitions.create('width'),
+    width: '100%',
+    [theme.breakpoints.up('sm')]: {
+      width: 120,
+      '&:focus': {
+        width: 200,
+      },
+    },
+  },
+});
 
-export default App
+App.propTypes = {
+  classes: PropTypes.object.isRequired,
+};
+
+export default withStyles(styles)(App);

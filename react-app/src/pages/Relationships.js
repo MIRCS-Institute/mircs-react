@@ -1,5 +1,5 @@
 import _ from 'lodash'
-import Button from 'material-ui/Button'
+import Button from '@material-ui/core/Button'
 import EditRelationshipDialog from 'components/EditRelationshipDialog'
 import ErrorSnackbar from 'components/ErrorSnackbar'
 import http from 'utils/http'

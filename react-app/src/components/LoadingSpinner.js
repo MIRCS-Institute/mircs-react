@@ -1,6 +1,6 @@
-import Grid from 'material-ui/Grid'
+import Grid from '@material-ui/core/Grid'
 import React from 'react';
-import { CircularProgress } from 'material-ui/Progress'
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 const LoadingSpinner = ({title}) => (
   <div>

@@ -1,14 +1,15 @@
 import _ from 'lodash'
 import {action, autorun, extendObservable} from 'mobx'
-import {FormControl} from 'material-ui/Form'
-import {MenuItem} from 'material-ui/Menu'
+import FormControl from '@material-ui/core/FormControl';
+import MenuItem from '@material-ui/core/MenuItem';
 import {observer} from 'mobx-react'
 import http from 'utils/http'
-import Input, {InputLabel} from 'material-ui/Input'
+import Input from '@material-ui/core/Input';
+import InputLabel from '@material-ui/core/InputLabel';
 import Layout from 'utils/Layout'
 import PropTypes from 'prop-types'
 import React from 'react'
-import Select from 'material-ui/Select'
+import Select from '@material-ui/core/Select'
 import turf from 'turf'
 
 const L = window.L

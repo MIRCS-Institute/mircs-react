@@ -1,12 +1,15 @@
 import _ from 'lodash'
-import Button from 'material-ui/Button'
+import Button from '@material-ui/core/Button'
 import ButtonProgress from 'components/ButtonProgress'
-import Dialog, { DialogActions, DialogContent, DialogTitle} from 'material-ui/Dialog'
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogTitle from '@material-ui/core/DialogTitle';
 import ErrorSnackbar from 'components/ErrorSnackbar'
 import http from 'utils/http'
 import PropTypes from 'prop-types'
 import React from 'react'
-import TextField from 'material-ui/TextField'
+import TextField from '@material-ui/core/TextField'
 import { action, extendObservable } from 'mobx'
 import { observer } from 'mobx-react'
 

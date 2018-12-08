@@ -1,4 +1,4 @@
-import Button from 'material-ui/Button'
+import Button from '@material-ui/core/Button'
 import ConfirmDeleteDialog from 'components/ConfirmDeleteDialog'
 import http from 'utils/http'
 import PropTypes from 'prop-types'

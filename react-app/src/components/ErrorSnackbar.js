@@ -1,8 +1,8 @@
 import _ from 'lodash'
 import CloseIcon from 'material-ui-icons/Close'
-import IconButton from 'material-ui/IconButton'
+import IconButton from '@material-ui/core/IconButton'
 import React from 'react'
-import Snackbar from 'material-ui/Snackbar'
+import Snackbar from '@material-ui/core/Snackbar'
 import { action, extendObservable } from 'mobx'
 import { observer } from 'mobx-react'
 

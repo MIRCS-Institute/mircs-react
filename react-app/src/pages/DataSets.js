@@ -1,5 +1,5 @@
 import _ from 'lodash'
-import Button from 'material-ui/Button'
+import Button from '@material-ui/core/Button'
 import DataSetCard from 'components/DataSetCard'
 import EditDataSetDialog from 'components/EditDataSetDialog'
 import ErrorSnackbar from 'components/ErrorSnackbar'

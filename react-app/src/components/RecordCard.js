@@ -1,5 +1,7 @@
 import _ from 'lodash'
-import Card, { CardActions, CardContent } from 'material-ui/Card'
+import Card from '@material-ui/core/Card';
+import CardActions from '@material-ui/core/CardActions';
+import CardContent from '@material-ui/core/CardContent';
 import React from 'react'
 import RecordDeleteButton from 'components/RecordDeleteButton'
 import RecordEditButton from 'components/RecordEditButton'

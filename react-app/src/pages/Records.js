@@ -1,16 +1,17 @@
 import _ from 'lodash'
-import Button from 'material-ui/Button'
+import Button from '@material-ui/core/Button'
 import ConfirmDeleteDialog from 'components/ConfirmDeleteDialog'
 import ErrorSnackbar from 'components/ErrorSnackbar'
 import http from 'utils/http'
 import LoadingSpinner from 'components/LoadingSpinner'
 import PropTypes from 'prop-types'
-import Radio, { RadioGroup } from 'material-ui/Radio'
+import Radio from '@material-ui/core/Radio';
+import RadioGroup from '@material-ui/core/RadioGroup';
 import React from 'react'
 import RecordsCards from 'components/RecordsCards'
 import RecordsTable from 'components/RecordsTable'
 import { action, extendObservable } from 'mobx'
-import { FormControlLabel } from 'material-ui/Form'
+import FormControlLabel from '@material-ui/core/FormControlLabel';
 import { observer } from 'mobx-react'
 
 const Records = observer(class extends React.Component {

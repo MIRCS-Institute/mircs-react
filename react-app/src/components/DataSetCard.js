@@ -1,6 +1,9 @@
 import _ from 'lodash'
-import Button from 'material-ui/Button'
-import Card, {CardActions, CardContent, CardHeader} from 'material-ui/Card'
+import Button from '@material-ui/core/Button'
+import Card from '@material-ui/core/Card';
+import CardActions from '@material-ui/core/CardActions';
+import CardContent from '@material-ui/core/CardContent';
+import CardHeader from '@material-ui/core/CardHeader';
 import ConfirmDeleteDialog from 'components/ConfirmDeleteDialog'
 import DataSetUploadDropzone from 'components/DataSetUploadDropzone'
 import EditDataSetDialog from 'components/EditDataSetDialog'

@@ -3,7 +3,11 @@ import PropTypes from 'prop-types'
 import React from 'react'
 import RecordDeleteButton from 'components/RecordDeleteButton'
 import RecordEditButton from 'components/RecordEditButton'
-import Table, { TableBody, TableCell, TableHead, TableRow } from 'material-ui/Table'
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
 import { observer } from 'mobx-react'
 
 const RecordsTable = observer(class extends React.Component {
