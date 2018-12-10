@@ -1,5 +1,5 @@
 import _ from 'lodash'
-import CloseIcon from 'material-ui-icons/Close'
+import CloseIcon from '@material-ui/icons/Close'
 import IconButton from '@material-ui/core/IconButton'
 import React from 'react'
 import Snackbar from '@material-ui/core/Snackbar'

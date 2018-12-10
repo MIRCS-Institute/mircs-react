@@ -15,9 +15,8 @@ import DataSets from 'pages/DataSets'
 import Drawer from '@material-ui/core/Drawer'
 import ExtensionIcon from '@material-ui/icons/Extension'
 import Home from 'pages/Home'
-import HomeIcon from 'material-ui-icons/Home'
+import HomeIcon from '@material-ui/icons/Home'
 import IconButton from '@material-ui/core/IconButton'
-import InputBase from '@material-ui/core/InputBase';
 import Layout from 'utils/Layout'
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
@@ -29,7 +28,6 @@ import React from 'react'
 import Records from 'pages/Records'
 import RelationshipMap from 'pages/RelationshipMap'
 import Relationships from 'pages/Relationships'
-import SearchIcon from '@material-ui/icons/Search';
 import Toolbar from '@material-ui/core/Toolbar'
 import Typography from '@material-ui/core/Typography'
 import Unknown404 from 'pages/Unknown404'

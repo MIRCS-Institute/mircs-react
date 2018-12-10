@@ -1,20 +1,19 @@
 import _ from 'lodash'
 import {action, autorun, extendObservable} from 'mobx'
-import FormControl from '@material-ui/core/FormControl';
-import MenuItem from '@material-ui/core/MenuItem';
 import {observer} from 'mobx-react'
+import { withStyles } from '@material-ui/core/styles';
 import http from 'utils/http'
-import Input from '@material-ui/core/Input';
-import InputLabel from '@material-ui/core/InputLabel';
 import Layout from 'utils/Layout'
+import MenuItem from '@material-ui/core/MenuItem';
 import PropTypes from 'prop-types'
 import React from 'react'
-import Select from '@material-ui/core/Select'
+import TextField from '@material-ui/core/TextField';
 import turf from 'turf'
 
 const L = window.L
 
 const Map = observer(class extends React.Component {
+
   static propTypes = {
     selected: PropTypes.object.isRequired,
   }
@@ -46,7 +45,7 @@ const Map = observer(class extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    this.setupTileLayer()
+    // this.setupTileLayer()
   }
 
   startMap = () => {
@@ -189,21 +188,49 @@ const Map = observer(class extends React.Component {
   })
 
   render() {
+    const { classes } = this.props
+
     return (
       <div style={{ ...Layout.column, flex: 1 }}>
 
-        <form autoComplete='off'>
-          <FormControl>
-            <InputLabel htmlFor='tile-layer-input'>Tile Layer</InputLabel>
-            <Select
-              value={this.tileLayerName}
-              onChange={this.handleTileLayerNameChange}
-              input={< Input id = 'tile-layer-input' />}>
-              <MenuItem value='CamsMap'>Cam's Map</MenuItem>
-              <MenuItem value='OpenStreetMap'>OpenStreetMap</MenuItem>
-              <MenuItem value='Mapbox'>Mapbox</MenuItem>
-            </Select>
-          </FormControl>
+        <form className={classes.container} noValidate autoComplete="off">
+
+          <TextField
+            id="standard-select-currency"
+            select
+            label="Tile Layer"
+            className={classes.mapOptions}
+            value={this.tileLayerName}
+            onChange={this.handleTileLayerNameChange}
+            SelectProps={{
+              MenuProps: {
+                className: classes.menu,
+              },
+            }}
+            /* helperText="Please choose the mapping base layer..." */
+            margin="normal"
+            variant="outlined"
+            style={{ marginLeft: 10 }}
+          >
+            <MenuItem value="CamsMap">
+              Cam's Map
+            </MenuItem>
+            <MenuItem value="OpenStreetMap">
+              OpenStreetMap
+            </MenuItem>
+            <MenuItem value="Mapbox">
+              Mapbox
+            </MenuItem>
+          </TextField>
+
+          <TextField
+            id="standard-search"
+            label="Search"
+            type="search"
+            className={classes.mapOptions}
+            margin="normal"
+            variant="outlined"
+          />
         </form>
 
         <div ref='mapNode' style={styles.map}></div>
@@ -222,6 +249,9 @@ const styles = {
     position: 'relative',
     flex: 1,
   },
+  mapOptions: {
+    marginLeft: 10,
+  }
 }
 
-export default Map
+export default withStyles(styles)(Map)
