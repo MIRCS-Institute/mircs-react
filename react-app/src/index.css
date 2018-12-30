@@ -1,3 +1,23 @@
 body {
   font-family: 'Roboto', sans-serif;
 }
+
+.searcha {
+  fill: darkred;
+  opacity: 100;
+}
+.search1 {
+  fill: green;
+  opacity: 50;
+}
+.search2 {
+  fill: deepskyblue;
+  opacity: 50;
+}
+.search3 {
+  fill: orange;
+  opacity: 50;
+}
+.searchx {
+  opacity: 50;
+}
