@@ -2,22 +2,29 @@ body {
   font-family: 'Roboto', sans-serif;
 }
 
-.searcha {
+.search0 {
   fill: darkred;
-  opacity: 100;
 }
 .search1 {
-  fill: green;
-  opacity: 50;
+  fill: orange;
 }
 .search2 {
-  fill: deepskyblue;
-  opacity: 50;
+  fill: yellow;
 }
 .search3 {
-  fill: orange;
-  opacity: 50;
+  fill: chartreuse;
 }
-.searchx {
-  opacity: 50;
+.search4 {
+  fill: green;
+}
+.search5 {
+  fill: deepskyblue;
+}
+.search6 {
+  fill: darkorchid;
+}
+.searchN {
+  fill: #3f51b5; /* Material UI Primary */
+}
+.searchX {
 }

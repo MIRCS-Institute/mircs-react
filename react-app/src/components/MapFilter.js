@@ -65,7 +65,7 @@ const MapFilter = observer(class extends React.Component {
           select
           label="Tile Layer"
           className={classes.mapOptions}
-          value={store.tileLayerName.get()}
+          value={store.tileLayerName}
           onChange={this.handleTileLayerNameChange}
           SelectProps={{
             MenuProps: {
@@ -119,7 +119,6 @@ const MapFilter = observer(class extends React.Component {
                   label={data}
                   onDelete={() => this.handleSearchDelete(data)}
                   className={classes.chip1}
-                  color="primary"
                 />
               );
             } else if (i===2) {
@@ -129,7 +128,6 @@ const MapFilter = observer(class extends React.Component {
                   label={data}
                   onDelete={() => this.handleSearchDelete(data)}
                   className={classes.chip2}
-                  color="primary"
                 />
               );
             } else if (i===3) {
@@ -139,6 +137,36 @@ const MapFilter = observer(class extends React.Component {
                   label={data}
                   onDelete={() => this.handleSearchDelete(data)}
                   className={classes.chip3}
+                  color="primary"
+                />
+              );
+            } else if (i===4) {
+              return (
+                <Chip
+                  key={data}
+                  label={data}
+                  onDelete={() => this.handleSearchDelete(data)}
+                  className={classes.chip4}
+                  color="primary"
+                />
+              );
+            } else if (i===5) {
+              return (
+                <Chip
+                  key={data}
+                  label={data}
+                  onDelete={() => this.handleSearchDelete(data)}
+                  className={classes.chip5}
+                />
+              );
+            } else if (i===6) {
+              return (
+                <Chip
+                  key={data}
+                  label={data}
+                  onDelete={() => this.handleSearchDelete(data)}
+                  className={classes.chip6}
+                  color="primary"
                 />
               );
             }
@@ -148,6 +176,7 @@ const MapFilter = observer(class extends React.Component {
                 label={data}
                 onDelete={() => this.handleSearchDelete(data)}
                 className={classes.chipx}
+                color="primary"
               />
             );
           })}
@@ -175,15 +204,27 @@ const styles = {
   },
   chip1: {
     margin: 5,
-    backgroundColor: 'green',
+    backgroundColor: 'orange',
   },
   chip2: {
     margin: 5,
-    backgroundColor: 'deepskyblue',
+    backgroundColor: 'yellow',
   },
   chip3: {
     margin: 5,
-    backgroundColor: 'orange',
+    backgroundColor: 'chartreuse',
+  },
+  chip4: {
+    margin: 5,
+    backgroundColor: 'green',
+  },
+  chip5: {
+    margin: 5,
+    backgroundColor: 'deepskyblue',
+  },
+  chip6: {
+    margin: 5,
+    backgroundColor: 'darkorchid',
   },
   chipx: {
     margin: 5,

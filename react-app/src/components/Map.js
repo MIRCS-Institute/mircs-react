@@ -21,7 +21,7 @@ const Map = observer(class extends React.Component {
     this.startMap()
     this.autorunDisposer = autorun(() => {
       if (this.props.store) {
-        this.setupTileLayer(this.props.store.tileLayerName.get());
+        this.setupTileLayer(this.props.store.tileLayerName);
       }
     })
     this.autorunDisposer2 = autorun(() => {
@@ -63,7 +63,7 @@ const Map = observer(class extends React.Component {
 
     L.control.scale({position: 'bottomleft'}).addTo(this.map)
 
-    this.setupTileLayer(this.props.store.tileLayerName.get())
+    this.setupTileLayer(this.props.store.tileLayerName)
   }
 
   fetchDataSetForMap = (dataSetId) => {
@@ -99,34 +99,63 @@ const Map = observer(class extends React.Component {
     }).join('')
   }
 
-  mapPoints = () => {
-    // Had to go with two SVG's to get the opacity to work.  CSS wouldn't do that part, just the colour.
-    const svgx = '<svg width="18px" height="18px" viewBox="0 0 1024 1024"><polygon points="512,9 0,521 128,521 128,905 448,905 448,649 576,649 576,905 896,905 896,521 1024,521 " fill-opacity="0.5"/></svg>';
-    const svg = '<svg width="18px" height="18px" viewBox="0 0 1024 1024"><polygon points="512,9 0,521 128,521 128,905 448,905 448,649 576,649 576,905 896,905 896,521 1024,521 "/></svg>';
+  getIcon(opacity, size) {
+    return '<svg width="' + ( size ? size : '18' ) + 'px" height="' + ( size ? size : '18' ) + 'px" viewBox="0 0 1024 1024"><polygon points="512,9 0,521 128,521 128,905 448,905 448,649 576,649 576,905 896,905 896,521 1024,521 "' + ( opacity ? 'fill-opacity="' + opacity + '"' : '' ) + '/></svg>'
+  }
 
-    // Set up different icons for each search term
-    const icon0 = L.divIcon({
-      html: svg,
-      className: 'searcha'
+  mapPoints = () => {
+
+    // Set up different icons for each search term, colouring is through CSS where it is also used for text and chips
+    const icons = []
+    icons[0] = L.divIcon({
+      html: this.getIcon(1, 34),
+      className: 'search0',
+      iconAnchor: [17, 17]
+    })
+    icons[1] = L.divIcon({
+      html: this.getIcon(1, 30),
+      className: 'search1',
+      iconAnchor: [15, 15]
+    })
+    icons[2] = L.divIcon({
+      html: this.getIcon(0.9, 26),
+      className: 'search2',
+      iconAnchor: [13, 13]
+    })
+    icons[3] = L.divIcon({
+      html: this.getIcon(0.85, 22),
+      className: 'search3',
+      iconAnchor: [11, 11]
     });
-    const icon1 = L.divIcon({
-      html: svg,
-      className: 'search1'
+    icons[4] = L.divIcon({
+      html: this.getIcon(0.8, 22),
+      className: 'search4',
+      iconAnchor: [11, 11]
+    })
+    icons[5] = L.divIcon({
+      html: this.getIcon(0.75, 22),
+      className: 'search5',
+      iconAnchor: [11, 11]
+    })
+    icons[6] = L.divIcon({
+      html: this.getIcon(0.7, 22),
+      className: 'search6',
+      iconAnchor: [11, 11]
+    })
+    icons[7] = L.divIcon({
+      html: this.getIcon(0.65, 22),
+      className: 'searchN',
+      iconAnchor: [11, 11]
     });
-    const icon2 = L.divIcon({
-      html: svg,
-      className: 'search2'
-    });
-    const icon3 = L.divIcon({
-      html: svg,
-      className: 'search3'
-    });
-    const iconx = L.divIcon({
-      html: svgx,
-      className: 'searchx'
+    // standard icon
+    const iconX = L.divIcon({
+      html: this.getIcon(0.4),
+      className: 'searchX',
+      iconAnchor: [9, 9]
     });
 
     const points = []
+    const foundPoints = []
 
     // Clear any existing markers
     if (this.markers) {
@@ -139,44 +168,44 @@ const Map = observer(class extends React.Component {
       const point = this.makePoint(record)
       if (point) {
         points.push(point)
+        let found = false
 
         // Look for search terms, and use appropriate marker if term found
-        if (this.props.store.searchStrings.length > 0 && JSON.stringify(record).toLowerCase().includes(this.props.store.searchStrings[0].toLowerCase())) {
-          L.marker(point, {icon: icon0, zIndexOffset: 1000})
-            .bindPopup(this.buildPopupHTML(record))
-            .addTo(this.markers);
+        if (this.props.store.searchStrings.length > 0) {
+          this.props.store.searchStrings.forEach((element, index) => {
+            if (JSON.stringify(record).toLowerCase().includes(element.toLowerCase())) {
+              L.marker(point, {icon: icons[index < 7 ? index : 7], zIndexOffset: (index * 100) + 500})
+                .bindPopup(this.buildPopupHTML(record))
+                .addTo(this.markers)
+              //.on('click', function() { /* update side map drawer here */ })
+              found = true
+            }
+          })
+        }
 
-        } else if (this.props.store.searchStrings.length > 1 && JSON.stringify(record).toLowerCase().includes(this.props.store.searchStrings[1].toLowerCase())) {
-          L.marker(point, {icon: icon1, zIndexOffset: 900})
-            .bindPopup(this.buildPopupHTML(record))
-            .addTo(this.markers);
-
-        } else if (this.props.store.searchStrings.length > 2 && JSON.stringify(record).toLowerCase().includes(this.props.store.searchStrings[2].toLowerCase())) {
-          L.marker(point, {icon: icon2, zIndexOffset: 800})
-            .bindPopup(this.buildPopupHTML(record))
-            .addTo(this.markers);
-
-        } else if (this.props.store.searchStrings.length > 3 && JSON.stringify(record).toLowerCase().includes(this.props.store.searchStrings[3].toLowerCase())) {
-          L.marker(point, {icon: icon3, zIndexOffset: 700})
-            .bindPopup(this.buildPopupHTML(record))
-            .addTo(this.markers);
-
-        } else {
-          L.marker(point, {icon: iconx})
+        if (!found) {
+          L.marker(point, {icon: iconX})
             .bindPopup(this.buildPopupHTML(record))
             .addTo(this.markers);
         }
 
+        if (found)
+          foundPoints.push(point)
+
       }
     })
-    this.markers.addTo(this.map);
 
-    this.centerMapOnPoints(points)
-    this.updatePoints(points);
+    this.markers.addTo(this.map)
+
+    if (foundPoints.length > 0)
+      this.centerMapOnPoints(foundPoints)
+    else
+      this.centerMapOnPoints(points)
+    this.updatePoints(points)
   }
 
   updatePoints = action((points) => {
-    this.props.store.points.replace(points);
+    this.props.store.points = points
   });
 
   makePoint = (record) => {
@@ -194,6 +223,16 @@ const Map = observer(class extends React.Component {
     const longitude = record.X || record.x || record.longitude
     if (latitude && longitude) {
       return [latitude, longitude]
+    }
+  }
+
+  select = (record) => {
+    this.props.store.selected = []
+    if (record.data) { // This is a relationship record
+      this.props.store.selected[0] = record.data[0][0]
+      this.props.store.selected[1] = record.data[0][1]
+    } else {
+      this.props.store.selected[0] = record
     }
   }
 
