@@ -32,12 +32,27 @@ import Toolbar from '@material-ui/core/Toolbar'
 import Typography from '@material-ui/core/Typography'
 import Unknown404 from 'pages/Unknown404'
 import WeekendIcon from '@material-ui/icons/Weekend'
+import UiStore from "./UiStore";
 
 const App = observer(class extends React.Component {
   constructor() {
     super()
     extendObservable(this, {
       isDrawerOpen: false,
+    })
+  }
+
+  componentDidMount(): void {
+    window.store = new UiStore();
+
+    window.updateSelected = action((record) => {
+      window.store.selected = []
+      if (record.data) { // This is a relationship record
+        window.store.selected.push(record.data[0][0])
+        window.store.selected.push(record.data[0][1])
+      } else {
+        window.store.selected.push(record)
+      }
     })
   }
 

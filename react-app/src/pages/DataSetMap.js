@@ -6,7 +6,6 @@ import MapFilter from 'components/MapFilter'
 import MapStatus from 'components/MapStatus'
 import PropTypes from 'prop-types'
 import React from 'react'
-import UiStore from "../app/UiStore";
 
 const DataSetMap = observer(class extends React.Component {
   static propTypes = {
@@ -15,7 +14,7 @@ const DataSetMap = observer(class extends React.Component {
 
   constructor() {
     super();
-    this.store = new UiStore();
+    this.store = window.store
   }
 
   render() {

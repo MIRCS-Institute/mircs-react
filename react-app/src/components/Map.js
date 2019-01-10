@@ -61,6 +61,10 @@ const Map = observer(class extends React.Component {
       zoom: 13,
     })
 
+    this.map.on('click', action(() => {
+      this.props.store.selected = []
+    }))
+
     L.control.scale({position: 'bottomleft'}).addTo(this.map)
 
     this.setupTileLayer(this.props.store.tileLayerName)
@@ -175,9 +179,9 @@ const Map = observer(class extends React.Component {
           this.props.store.searchStrings.forEach((element, index) => {
             if (JSON.stringify(record).toLowerCase().includes(element.toLowerCase())) {
               L.marker(point, {icon: icons[index < 7 ? index : 7], zIndexOffset: (index * 100) + 500})
-                .bindPopup(this.buildPopupHTML(record))
+                //.bindPopup(this.buildPopupHTML(record))
                 .addTo(this.markers)
-              //.on('click', function() { /* update side map drawer here */ })
+                .on('click', function(){ window.updateSelected(record); })
               found = true
             }
           })
@@ -185,8 +189,9 @@ const Map = observer(class extends React.Component {
 
         if (!found) {
           L.marker(point, {icon: iconX})
-            .bindPopup(this.buildPopupHTML(record))
-            .addTo(this.markers);
+            //.bindPopup(this.buildPopupHTML(record))
+            .addTo(this.markers)
+            .on('click', function(){ window.updateSelected(record); })
         }
 
         if (found)

@@ -44,36 +44,61 @@ const MapDrawer = observer(class extends React.Component {
   render() {
     const { classes, theme } = this.props;
     const { open } = this.state;
-    return (
-      <Paper
-        className={classes.drawer}
-        variant="persistent"
-        anchor="left"
-        open={open}
-        classes={{
-          paper: classes.drawerPaper,
-        }}
-      >
 
-        <div className={classes.drawerHeader}>
-          <IconButton onClick={this.handleDrawerClose}>
-            {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
-          </IconButton>
-        </div>
-        <Divider />
+    if (this.props.store.selected.length > 0) {
+      return (
+        <Paper
+          className={classes.drawer}
+          variant="persistent"
+          anchor="left"
+          open={open}
+          classes={{
+            paper: classes.drawerPaper,
+          }}
+        >
+          <div className={classes.drawerHeader}>
+            <IconButton onClick={this.handleDrawerClose}>
+              {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
+            </IconButton>
+          </div>
+          <Divider />
 
-        {this.props.store.selected.map((record) => (
-          <Card className={classes.card}>
-            <CardContent>
-              <Typography component="p">
-                {this.buildRecordHTML(record)}
-              </Typography>
-            </CardContent>
-          </Card>
-        ))}
+          {this.props.store.selected.map((record) => (
+            <Card className={classes.card}>
+              <CardContent>
+                <Typography component="p" dangerouslySetInnerHTML={{__html: this.buildRecordHTML(record)}}>
+                </Typography>
+              </CardContent>
+            </Card>
+          ))}
 
-      </Paper>
-    );
+        </Paper>
+      )
+    } else {
+      return (
+        <Paper
+          className={classes.drawer}
+          variant="persistent"
+          anchor="left"
+          open={open}
+          classes={{
+            paper: classes.drawerPaper,
+          }}
+          square={true}
+        >
+          <div className={classes.drawerHeader}>
+            <IconButton onClick={this.handleDrawerClose}>
+              {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
+            </IconButton>
+          </div>
+          <Divider />
+          <Typography component="i" variant="h6">
+            Select a location for more detail.
+          </Typography>
+        </Paper>
+      )
+
+    }
   }
 });
 
@@ -83,6 +108,10 @@ const styles = theme => ({
   },
   card: {
     margin: 8,
+  },
+  drawer: {
+    backgroundColor: 'azure',
+    width: 350,
   }
 });
 
