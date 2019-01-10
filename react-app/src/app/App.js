@@ -49,7 +49,7 @@ const App = observer(class extends React.Component {
       window.store.selected = []
       if (record.data) { // This is a relationship record
         window.store.selected.push(record.data[0][0])
-        window.store.selected.push(record.data[0][1])
+        window.store.selected.push(record.data[1][0])
       } else {
         window.store.selected.push(record)
       }
