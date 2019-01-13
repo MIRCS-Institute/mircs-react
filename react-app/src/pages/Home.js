@@ -65,7 +65,7 @@ const Home = observer(class extends React.Component {
                 <Button
                   style={styles.button}
                   value={dataSet._id}
-                  variant='raised'
+                  variant='contained'
                   color='primary'
                   href={`#/datasets/${dataSet._id}/map`}
                 >
@@ -90,7 +90,7 @@ const Home = observer(class extends React.Component {
                 }}>
                   <Button
                     style={styles.button}
-                    variant='raised'
+                    variant='contained'
                     color='primary'
                     href={`#/relationships/${relation._id}/map`}
                   >

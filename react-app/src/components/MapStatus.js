@@ -1,13 +1,9 @@
 import { observer } from 'mobx-react'
 import { withStyles } from '@material-ui/core/styles';
-import PropTypes from 'prop-types'
 import React from 'react'
+import UiStore from '../app/UiStore'
 
 const MapStatus = observer(class extends React.Component {
-
-  static propTypes = {
-    store: PropTypes.object.isRequired,
-  }
 
   componentDidMount() {
   }
@@ -21,7 +17,7 @@ const MapStatus = observer(class extends React.Component {
   render() {
     return (
       <center>
-        {this.props.store.points.length} properties
+        {UiStore.points.length} properties
       </center>
     )
   }

@@ -1,23 +1,19 @@
 import _ from 'lodash'
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import React from 'react'
 import { observer } from 'mobx-react'
 import {withStyles} from "@material-ui/core";
-import IconButton from "@material-ui/core/IconButton";
-import Divider from "@material-ui/core/Divider";
 import Paper from "@material-ui/core/Paper";
 import PropTypes from "prop-types";
 import Typography from "@material-ui/core/Typography";
+import UiStore from "../app/UiStore";
 
 const MapDrawer = observer(class extends React.Component {
 
   static propTypes = {
     classes: PropTypes.object.isRequired,
     theme: PropTypes.object.isRequired,
-    store: PropTypes.object.isRequired,
   };
 
   state = {
@@ -37,34 +33,32 @@ const MapDrawer = observer(class extends React.Component {
       if (field[0] === '_') {
         return ''
       }
+      if (!value) {
+        return ''
+      }
       return `<strong>${field}:</strong> <span>${value}</span><br>`
     }).join('')
   }
 
   render() {
-    const { classes, theme } = this.props;
+    const { classes } = this.props;
     const { open } = this.state;
 
-    if (this.props.store.selected.length > 0) {
+    if (UiStore.selected.length > 0) {
       return (
         <Paper
-          className={classes.drawer}
-          variant="persistent"
           anchor="left"
           open={open}
+          className={classes.drawer}
           classes={{
             paper: classes.drawerPaper,
           }}
+          square={true}
         >
-          <div className={classes.drawerHeader}>
-            <IconButton onClick={this.handleDrawerClose}>
-              {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
-            </IconButton>
-          </div>
-          <Divider />
+          <Typography variant="h6" align="center">{UiStore.selected.length} records.</Typography>
 
-          {this.props.store.selected.map((record) => (
-            <Card className={classes.card}>
+          {UiStore.selected.map((record, i) => (
+            <Card className={classes.card} key={i}>
               <CardContent>
                 <Typography component="p" dangerouslySetInnerHTML={{__html: this.buildRecordHTML(record)}}>
                 </Typography>
@@ -77,22 +71,15 @@ const MapDrawer = observer(class extends React.Component {
     } else {
       return (
         <Paper
-          className={classes.drawer}
-          variant="persistent"
           anchor="left"
           open={open}
+          className={classes.drawer}
           classes={{
             paper: classes.drawerPaper,
           }}
           square={true}
         >
-          <div className={classes.drawerHeader}>
-            <IconButton onClick={this.handleDrawerClose}>
-              {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
-            </IconButton>
-          </div>
-          <Divider />
-          <Typography component="i" variant="h6">
+          <Typography component="i" variant="h6" align="center">
             Select a location for more detail.
           </Typography>
         </Paper>
@@ -110,9 +97,10 @@ const styles = theme => ({
     margin: 8,
   },
   drawer: {
-    backgroundColor: 'azure',
+    backgroundColor: '#f8f8f8',
     width: 350,
-  }
+    overflowY: 'auto',
+  },
 });
 
 export default withStyles(styles, { withTheme: true })(MapDrawer)

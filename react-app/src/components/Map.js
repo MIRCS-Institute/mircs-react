@@ -7,6 +7,7 @@ import Layout from 'utils/Layout'
 import PropTypes from 'prop-types'
 import React from 'react'
 import turf from 'turf'
+import UiStore from '../app/UiStore'
 
 const L = window.L
 
@@ -14,14 +15,13 @@ const Map = observer(class extends React.Component {
 
   static propTypes = {
     selected: PropTypes.object.isRequired,
-    store: PropTypes.object.isRequired,
   }
 
   componentDidMount() {
     this.startMap()
     this.autorunDisposer = autorun(() => {
-      if (this.props.store) {
-        this.setupTileLayer(this.props.store.tileLayerName);
+      if (UiStore) {
+        this.setupTileLayer(UiStore.tileLayerName);
       }
     })
     this.autorunDisposer2 = autorun(() => {
@@ -35,7 +35,7 @@ const Map = observer(class extends React.Component {
       }
     })
     this.autorunDisposer4 = autorun(() => {
-      if (this.props.store.records.length > 0) {
+      if (UiStore.records.length > 0) {
         this.mapPoints();
       }
     })
@@ -62,19 +62,19 @@ const Map = observer(class extends React.Component {
     })
 
     this.map.on('click', action(() => {
-      this.props.store.selected = []
+      UiStore.selected = []
     }))
 
     L.control.scale({position: 'bottomleft'}).addTo(this.map)
 
-    this.setupTileLayer(this.props.store.tileLayerName)
+    this.setupTileLayer(UiStore.tileLayerName)
   }
 
   fetchDataSetForMap = (dataSetId) => {
     this.refreshMap()
     http.jsonRequest(`/api/datasets/${dataSetId}/records`)
       .then(action((response) => {
-        this.props.store.records.replace(_.get(response, 'bodyJson.list'))
+        UiStore.records.replace(_.get(response, 'bodyJson.list'))
         this.mapPoints();
       }))
       .catch(action((error) => {
@@ -86,7 +86,7 @@ const Map = observer(class extends React.Component {
     this.refreshMap()
     http.jsonRequest(`/api/relationships/${relationshipId}/join`)
       .then(action((response) => {
-        this.props.store.records.replace(_.get(response, 'bodyJson.list'));
+        UiStore.records.replace(_.get(response, 'bodyJson.list'));
         this.mapPoints();
       }))
       .catch(action((error) => {
@@ -167,7 +167,7 @@ const Map = observer(class extends React.Component {
     }
     this.markers = L.layerGroup();
 
-    _.each(this.props.store.records, (record) => {
+    _.each(UiStore.records, (record) => {
       // use one side of the join or the other, at this point we don't know which has the geocoordinate
       const point = this.makePoint(record)
       if (point) {
@@ -175,13 +175,12 @@ const Map = observer(class extends React.Component {
         let found = false
 
         // Look for search terms, and use appropriate marker if term found
-        if (this.props.store.searchStrings.length > 0) {
-          this.props.store.searchStrings.forEach((element, index) => {
+        if (UiStore.searchStrings.length > 0) {
+          UiStore.searchStrings.forEach((element, index) => {
             if (JSON.stringify(record).toLowerCase().includes(element.toLowerCase())) {
               L.marker(point, {icon: icons[index < 7 ? index : 7], zIndexOffset: (index * 100) + 500})
-                //.bindPopup(this.buildPopupHTML(record))
                 .addTo(this.markers)
-                .on('click', function(){ window.updateSelected(record); })
+                .on('click', () => { this.updateSelected(record) })
               found = true
             }
           })
@@ -189,9 +188,8 @@ const Map = observer(class extends React.Component {
 
         if (!found) {
           L.marker(point, {icon: iconX})
-            //.bindPopup(this.buildPopupHTML(record))
             .addTo(this.markers)
-            .on('click', function(){ window.updateSelected(record); })
+            .on('click', () => { this.updateSelected(record) })
         }
 
         if (found)
@@ -209,8 +207,22 @@ const Map = observer(class extends React.Component {
     this.updatePoints(points)
   }
 
+  updateSelected = action((record) => {
+    UiStore.selected = []
+    if (record.data) { // This is a relationship record
+      record.data[0].forEach((d, i) => {
+        UiStore.selected.push(d)
+      })
+      record.data[1].forEach((d, i) => {
+        UiStore.selected.push(d)
+      })
+    } else {
+      UiStore.selected.push(record)
+    }
+  })
+
   updatePoints = action((points) => {
-    this.props.store.points = points
+    UiStore.points = points
   });
 
   makePoint = (record) => {
@@ -228,16 +240,6 @@ const Map = observer(class extends React.Component {
     const longitude = record.X || record.x || record.longitude
     if (latitude && longitude) {
       return [latitude, longitude]
-    }
-  }
-
-  select = (record) => {
-    this.props.store.selected = []
-    if (record.data) { // This is a relationship record
-      this.props.store.selected[0] = record.data[0][0]
-      this.props.store.selected[1] = record.data[0][1]
-    } else {
-      this.props.store.selected[0] = record
     }
   }
 

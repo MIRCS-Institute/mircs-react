@@ -13,4 +13,4 @@ class UiStore {
 
 }
 
-export default UiStore;
+export default new UiStore();

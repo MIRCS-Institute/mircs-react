@@ -12,19 +12,14 @@ const DataSetMap = observer(class extends React.Component {
     dataSetId: PropTypes.string.isRequired,
   }
 
-  constructor() {
-    super();
-    this.store = window.store
-  }
-
   render() {
     return (
       <div style={{ ...Layout.absoluteFill, ...Layout.row }}>
-        <MapDrawer store={this.store} />
+        <MapDrawer />
         <div style={{ ...Layout.column, flex: 1 }}>
-          <MapFilter store={this.store} />
-          <Map store={this.store} selected={{ dataSetId: this.props.dataSetId }}/>
-          <MapStatus store={this.store} />
+          <MapFilter />
+          <Map selected={{ dataSetId: this.props.dataSetId }}/>
+          <MapStatus />
         </div>
       </div>
     )

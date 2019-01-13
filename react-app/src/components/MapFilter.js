@@ -3,15 +3,11 @@ import { observer } from 'mobx-react'
 import { withStyles } from '@material-ui/core/styles';
 import Chip from '@material-ui/core/Chip';
 import MenuItem from '@material-ui/core/MenuItem';
-import PropTypes from 'prop-types'
 import React from 'react'
 import TextField from '@material-ui/core/TextField';
+import UiStore from "../app/UiStore";
 
 const MapFilter = observer(class extends React.Component {
-
-  static propTypes = {
-    store: PropTypes.object.isRequired,
-  };
 
   componentDidMount() {
   }
@@ -31,14 +27,14 @@ const MapFilter = observer(class extends React.Component {
   };
 
   handleTileLayerNameChange = action((event) => {
-    this.props.store.tileLayerName.set(event.target.value);
+    UiStore.tileLayerName = event.target.value;
   });
 
   handleSearchSubmit = action( (event) => {
     if (event.target.value) {
-      if (this.props.store.searchStrings) {
-        if (!this.props.store.searchStrings.includes(event.target.value)) {
-          this.props.store.searchStrings.push(event.target.value);
+      if (UiStore.searchStrings) {
+        if (!UiStore.searchStrings.includes(event.target.value)) {
+          UiStore.searchStrings.push(event.target.value);
         }
         event.target.value = '';
       }
@@ -48,14 +44,14 @@ const MapFilter = observer(class extends React.Component {
   handleSearchDelete =
     action(
       (data) => {
-        if (this.props.store.searchStrings) {
-          this.props.store.searchStrings.splice(this.props.store.searchStrings.indexOf(data), 1);
+        if (UiStore.searchStrings) {
+          UiStore.searchStrings.splice(UiStore.searchStrings.indexOf(data), 1);
         }
       });
 
   render() {
     const { classes } = this.props;
-    const store = this.props.store;
+    const store = UiStore;
 
     return (
       <form className={classes.container} noValidate autoComplete="off">

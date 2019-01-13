@@ -12,19 +12,14 @@ const RelationshipMap = observer(class extends React.Component {
     relationshipId: PropTypes.string.isRequired,
   }
 
-  constructor() {
-    super();
-    this.store = window.store
-  }
-
   render() {
     return (
       <div style={{ ...Layout.absoluteFill, ...Layout.row }}>
-        <MapDrawer store={this.store} />
+        <MapDrawer />
         <div style={{ ...Layout.column, flex: 1 }}>
-          <MapFilter store={this.store} />
-          <Map store={this.store} selected={{ relationshipId: this.props.relationshipId }}/>
-          <MapStatus store={this.store} />
+          <MapFilter />
+          <Map selected={{ relationshipId: this.props.relationshipId }}/>
+          <MapStatus />
         </div>
       </div>
     )
