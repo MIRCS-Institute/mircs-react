@@ -34,9 +34,10 @@ const MapFilter = observer(class extends React.Component {
     if (event.target.value) {
       if (UiStore.searchStrings) {
         if (!UiStore.searchStrings.includes(event.target.value)) {
-          UiStore.searchStrings.push(event.target.value);
+          UiStore.searchStrings.push(event.target.value)
+          UiStore.foundRecords.push([])
         }
-        event.target.value = '';
+        event.target.value = ''
       }
     }
   });
@@ -45,7 +46,9 @@ const MapFilter = observer(class extends React.Component {
     action(
       (data) => {
         if (UiStore.searchStrings) {
-          UiStore.searchStrings.splice(UiStore.searchStrings.indexOf(data), 1);
+          const deletedIndex = UiStore.searchStrings.indexOf(data)
+          UiStore.searchStrings.splice(deletedIndex, 1)
+          UiStore.foundRecords.splice(deletedIndex, 1)
         }
       });
 
@@ -98,11 +101,12 @@ const MapFilter = observer(class extends React.Component {
 
         <div className={classes.root}>
           {store.searchStrings.map( (data, i) => {
+            const labelValue = data + ' (' + UiStore.foundRecords[i].length + ')'
             if (i===0) {
               return (
                 <Chip
                   key={data}
-                  label={data}
+                  label={labelValue}
                   onDelete={() => this.handleSearchDelete(data)}
                   className={classes.chip0}
                   color="primary"
@@ -112,7 +116,7 @@ const MapFilter = observer(class extends React.Component {
               return (
                 <Chip
                   key={data}
-                  label={data}
+                  label={labelValue}
                   onDelete={() => this.handleSearchDelete(data)}
                   className={classes.chip1}
                 />
@@ -121,7 +125,7 @@ const MapFilter = observer(class extends React.Component {
               return (
                 <Chip
                   key={data}
-                  label={data}
+                  label={labelValue}
                   onDelete={() => this.handleSearchDelete(data)}
                   className={classes.chip2}
                 />
@@ -130,7 +134,7 @@ const MapFilter = observer(class extends React.Component {
               return (
                 <Chip
                   key={data}
-                  label={data}
+                  label={labelValue}
                   onDelete={() => this.handleSearchDelete(data)}
                   className={classes.chip3}
                   color="primary"
@@ -140,7 +144,7 @@ const MapFilter = observer(class extends React.Component {
               return (
                 <Chip
                   key={data}
-                  label={data}
+                  label={labelValue}
                   onDelete={() => this.handleSearchDelete(data)}
                   className={classes.chip4}
                   color="primary"
@@ -150,7 +154,7 @@ const MapFilter = observer(class extends React.Component {
               return (
                 <Chip
                   key={data}
-                  label={data}
+                  label={labelValue}
                   onDelete={() => this.handleSearchDelete(data)}
                   className={classes.chip5}
                 />
@@ -159,7 +163,7 @@ const MapFilter = observer(class extends React.Component {
               return (
                 <Chip
                   key={data}
-                  label={data}
+                  label={labelValue}
                   onDelete={() => this.handleSearchDelete(data)}
                   className={classes.chip6}
                   color="primary"
@@ -169,7 +173,7 @@ const MapFilter = observer(class extends React.Component {
             return (
               <Chip
                 key={data}
-                label={data}
+                label={labelValue}
                 onDelete={() => this.handleSearchDelete(data)}
                 className={classes.chipx}
                 color="primary"

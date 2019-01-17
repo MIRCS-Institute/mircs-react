@@ -3,24 +3,59 @@ body {
 }
 
 .search0 {
+  color: darkred;
+  background-color: lightgoldenrodyellow;
+  font-weight: bold;
+}
+.searchIcon0 {
   fill: darkred;
 }
 .search1 {
+  color: orange;
+  background-color: lightgoldenrodyellow;
+  font-weight: bold;
+}
+.searchIcon1 {
   fill: orange;
 }
 .search2 {
+  color: yellow;
+  background-color: slategray;
+  font-weight: bold;
+}
+.searchIcon2 {
   fill: yellow;
 }
 .search3 {
+  color: chartreuse;
+  background-color: lightgoldenrodyellow;
+  font-weight: bold;
+}
+.searchIcon3 {
   fill: chartreuse;
 }
 .search4 {
+  color: green;
+  background-color: lightgoldenrodyellow;
+  font-weight: bold;
+}
+.searchIcon4 {
   fill: green;
 }
 .search5 {
+  color: deepskyblue;
+  background-color: lightgoldenrodyellow;
+  font-weight: bold;
+}
+.searchIcon5 {
   fill: deepskyblue;
 }
 .search6 {
+  color: darkorchid;
+  background-color: lightgoldenrodyellow;
+  font-weight: bold;
+}
+.searchIcon6 {
   fill: darkorchid;
 }
 .searchN {

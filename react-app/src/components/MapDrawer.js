@@ -36,7 +36,18 @@ const MapDrawer = observer(class extends React.Component {
       if (!value) {
         return ''
       }
-      return `<strong>${field}:</strong> <span>${value}</span><br>`
+
+      let highlightedValue = value
+      UiStore.searchStrings.forEach((s, i) => {
+        const regex = new RegExp(UiStore.searchStrings[i], 'giy')
+        while (regex.test(highlightedValue)) {
+          highlightedValue = highlightedValue.substring(0, regex.lastIndex - RegExp.lastMatch.length)
+            + '<span class="search'+i+'">' + RegExp.lastMatch + '</span>'
+            + highlightedValue.substring(regex.lastIndex)
+        }
+      })
+
+      return `<strong>${field}:</strong> <span>${highlightedValue}</span><br>`
     }).join('')
   }
 

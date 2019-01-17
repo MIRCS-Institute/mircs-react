@@ -113,53 +113,54 @@ const Map = observer(class extends React.Component {
     const icons = []
     icons[0] = L.divIcon({
       html: this.getIcon(1, 34),
-      className: 'search0',
+      className: 'searchIcon0',
       iconAnchor: [17, 17]
     })
     icons[1] = L.divIcon({
       html: this.getIcon(1, 30),
-      className: 'search1',
+      className: 'searchIcon1',
       iconAnchor: [15, 15]
     })
     icons[2] = L.divIcon({
       html: this.getIcon(0.9, 26),
-      className: 'search2',
+      className: 'searchIcon2',
       iconAnchor: [13, 13]
     })
     icons[3] = L.divIcon({
       html: this.getIcon(0.85, 22),
-      className: 'search3',
+      className: 'searchIcon3',
       iconAnchor: [11, 11]
     });
     icons[4] = L.divIcon({
       html: this.getIcon(0.8, 22),
-      className: 'search4',
+      className: 'searchIcon4',
       iconAnchor: [11, 11]
     })
     icons[5] = L.divIcon({
       html: this.getIcon(0.75, 22),
-      className: 'search5',
+      className: 'searchIcon5',
       iconAnchor: [11, 11]
     })
     icons[6] = L.divIcon({
       html: this.getIcon(0.7, 22),
-      className: 'search6',
+      className: 'searchIcon6',
       iconAnchor: [11, 11]
     })
     icons[7] = L.divIcon({
       html: this.getIcon(0.65, 22),
-      className: 'searchN',
+      className: 'searchIconN',
       iconAnchor: [11, 11]
     });
     // standard icon
     const iconX = L.divIcon({
       html: this.getIcon(0.4),
-      className: 'searchX',
+      className: 'searchIconX',
       iconAnchor: [9, 9]
     });
 
     const points = []
     const foundPoints = []
+    this.resetFoundRecords()
 
     // Clear any existing markers
     if (this.markers) {
@@ -175,13 +176,16 @@ const Map = observer(class extends React.Component {
         let found = false
 
         // Look for search terms, and use appropriate marker if term found
+        // TODO: get smarter about how we search to improve performance.  Only search for latest search term, and don't reset the existing markers.  etc.
         if (UiStore.searchStrings.length > 0) {
+          const recordString = JSON.stringify(record).toLowerCase()
           UiStore.searchStrings.forEach((element, index) => {
-            if (JSON.stringify(record).toLowerCase().includes(element.toLowerCase())) {
+            if (recordString.includes(element.toLowerCase())) {
               L.marker(point, {icon: icons[index < 7 ? index : 7], zIndexOffset: (index * 100) + 500})
                 .addTo(this.markers)
                 .on('click', () => { this.updateSelected(record) })
               found = true
+              this.addFoundRecord(record, index)
             }
           })
         }
@@ -223,7 +227,18 @@ const Map = observer(class extends React.Component {
 
   updatePoints = action((points) => {
     UiStore.points = points
-  });
+  })
+
+  addFoundRecord = action( (record, index) => {
+    UiStore.foundRecords[index].push(record)
+  })
+
+  resetFoundRecords = action( () => {
+    UiStore.foundRecords = []
+    UiStore.searchStrings.forEach((s, i) => {
+      UiStore.foundRecords.push([])
+    })
+  })
 
   makePoint = (record) => {
     // first try to make a point through the relationships
