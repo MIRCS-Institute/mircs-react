@@ -45,7 +45,7 @@ const MapStatus = observer(class extends React.Component {
             return (
               <span key={i} className={classes.found5}> - {records.length} "{UiStore.searchStrings[i]}"s </span>
             )
-          } else if (i === 6) {
+          } else { // for i == 6 or greater
             return (
               <span key={i} className={classes.found6}> - {records.length} "{UiStore.searchStrings[i]}"s </span>
             )

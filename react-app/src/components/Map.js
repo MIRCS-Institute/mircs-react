@@ -183,7 +183,7 @@ const Map = observer(class extends React.Component {
             if (recordString.includes(element.toLowerCase())) {
               L.marker(point, {icon: icons[index < 7 ? index : 7], zIndexOffset: (index * 100) + 500})
                 .addTo(this.markers)
-                .on('click', () => { this.updateSelected(record) })
+                .on('click', () => { this.updateSelected(point, record) })
               found = true
               this.addFoundRecord(record, index)
             }
@@ -193,7 +193,7 @@ const Map = observer(class extends React.Component {
         if (!found) {
           L.marker(point, {icon: iconX})
             .addTo(this.markers)
-            .on('click', () => { this.updateSelected(record) })
+            .on('click', () => { this.updateSelected(point, record) })
         }
 
         if (found)
@@ -211,18 +211,22 @@ const Map = observer(class extends React.Component {
     this.updatePoints(points)
   }
 
-  updateSelected = action((record) => {
-    UiStore.selected = []
+  updateSelected = action((point, record) => {
+    const newSelected = {
+      point: point,
+      records: []
+    }
     if (record.data) { // This is a relationship record
       record.data[0].forEach((d, i) => {
-        UiStore.selected.push(d)
+        newSelected.records.push(d)
       })
       record.data[1].forEach((d, i) => {
-        UiStore.selected.push(d)
+        newSelected.records.push(d)
       })
     } else {
-      UiStore.selected.push(record)
+      newSelected.records.push(record)
     }
+    UiStore.selected = newSelected
   })
 
   updatePoints = action((points) => {

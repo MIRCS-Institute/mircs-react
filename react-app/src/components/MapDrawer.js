@@ -1,11 +1,12 @@
 import _ from 'lodash'
+import { observer } from 'mobx-react'
+import { withStyles } from "@material-ui/core";
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
-import React from 'react'
-import { observer } from 'mobx-react'
-import {withStyles} from "@material-ui/core";
 import Paper from "@material-ui/core/Paper";
 import PropTypes from "prop-types";
+import React from 'react'
+import StreetviewCard from "./StreetviewCard";
 import Typography from "@material-ui/core/Typography";
 import UiStore from "../app/UiStore";
 
@@ -18,15 +19,15 @@ const MapDrawer = observer(class extends React.Component {
 
   state = {
     open: true,
-  };
+  }
 
   handleDrawerOpen = () => {
-    this.setState({ open: true });
-  };
+    this.setState({ open: true })
+  }
 
   handleDrawerClose = () => {
-    this.setState({ open: false });
-  };
+    this.setState({ open: false })
+  }
 
   buildRecordHTML(record) {
     return _.map(record, (value, field) => {
@@ -55,7 +56,7 @@ const MapDrawer = observer(class extends React.Component {
     const { classes } = this.props;
     const { open } = this.state;
 
-    if (UiStore.selected.length > 0) {
+    if (UiStore.selected.records) {
       return (
         <Paper
           anchor="left"
@@ -66,9 +67,9 @@ const MapDrawer = observer(class extends React.Component {
           }}
           square={true}
         >
-          <Typography variant="h6" align="center">{UiStore.selected.length} records.</Typography>
+          <Typography variant="h6" align="center">{UiStore.selected.records.length} records.</Typography>
 
-          {UiStore.selected.map((record, i) => (
+          {UiStore.selected.records.map((record, i) => (
             <Card className={classes.card} key={i}>
               <CardContent>
                 <Typography component="p" dangerouslySetInnerHTML={{__html: this.buildRecordHTML(record)}}>
@@ -77,8 +78,11 @@ const MapDrawer = observer(class extends React.Component {
             </Card>
           ))}
 
+          <StreetviewCard></StreetviewCard>
+
         </Paper>
       )
+
     } else {
       return (
         <Paper
@@ -98,7 +102,7 @@ const MapDrawer = observer(class extends React.Component {
 
     }
   }
-});
+})
 
 const styles = theme => ({
   root: {
