@@ -5,38 +5,38 @@
   - response body contains the fully populated DataSet object with the updated values
 */
 
-const _ = require('lodash');
-const MongoUtil = requireSrc('utils/mongo-util.js');
+const _ = require('lodash')
+const MongoUtil = require('../../utils/mongo-util.js')
 
 module.exports = function(router) {
   router.put('/api/datasets/:dataSetId', function(req, res, next) {
     if (!req.dataSet) {
-      return res.status(404).send({ error: 'No Data Set found with id ' + req.params.dataSetId });
+      return res.status(404).send({ error: 'No Data Set found with id ' + req.params.dataSetId })
     }
 
-    const updatedDataSet = _.clone(req.body);
+    const updatedDataSet = _.clone(req.body)
 
     // overwrite system fields from existing record
-    updatedDataSet._id = req.dataSet._id;
-    updatedDataSet.createdAt = req.dataSet.createdAt;
-    updatedDataSet.updatedAt = new Date();
-    updatedDataSet._collectionName = req.dataSet._collectionName;
+    updatedDataSet._id = req.dataSet._id
+    updatedDataSet.createdAt = req.dataSet.createdAt
+    updatedDataSet.updatedAt = new Date()
+    updatedDataSet._collectionName = req.dataSet._collectionName
 
-    let db;
-    let dataSetCollection;
+    let db
+    let dataSetCollection
     MongoUtil.getDb()
       .then((theDb) => {
-        db = theDb;
+        db = theDb
         dataSetCollection = db.collection(MongoUtil.DATA_SETS_COLLECTION)
 
-        return dataSetCollection.updateOne({ _id: updatedDataSet._id }, updatedDataSet);
+        return dataSetCollection.updateOne({ _id: updatedDataSet._id }, updatedDataSet)
       })
       .then(() => {
-        res.status(200).send(updatedDataSet);
+        res.status(200).send(updatedDataSet)
       })
       .catch(next)
       .then(() => {
-        db.close();
-      });
-  });
-};
+        db.close()
+      })
+  })
+}

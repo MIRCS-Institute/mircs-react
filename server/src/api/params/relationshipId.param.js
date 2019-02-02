@@ -3,21 +3,21 @@ When a route defines :relationshipId in its path this param handler will look up
 to the Request object as `req.dataSet`.
 */
 
-const MongoUtil = requireSrc('utils/mongo-util.js');
-const ObjectID = require('mongodb').ObjectID;
+const MongoUtil = require('../../utils/mongo-util.js')
+const ObjectID = require('mongodb').ObjectID
 
 module.exports = function(router) {
   router.param('relationshipId', function(req, res, next, relationshipId) {
     try {
-      relationshipId = ObjectID(relationshipId);
+      relationshipId = ObjectID(relationshipId)
     } catch (exception) {
-      return next(exception);
+      return next(exception)
     }
 
     MongoUtil.find(MongoUtil.RELATIONSHIPS_COLLECTION, { _id: relationshipId })
       .then((dataSets) => {
-        req.relationship = dataSets[0];
-        next();
-      }, next);
-  });
-};
+        req.relationship = dataSets[0]
+        next()
+      }, next)
+  })
+}

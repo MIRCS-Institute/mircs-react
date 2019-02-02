@@ -2,36 +2,36 @@
   - create a new Relationship
 */
 
-const _ = require('lodash');
-const MongoUtil = requireSrc('utils/mongo-util.js');
+const _ = require('lodash')
+const MongoUtil = require('../../utils/mongo-util.js')
 
 module.exports = function(router) {
   router.post('/api/relationships', function(req, res, next) {
-    const newRelationship = _.clone(req.body);
+    const newRelationship = _.clone(req.body)
     try {
-      MongoUtil.validateRelationship(newRelationship);
+      MongoUtil.validateRelationship(newRelationship)
     } catch (exception) {
-      return res.status(400).send(exception.message);
+      return res.status(400).send(exception.message)
     }
 
-    newRelationship.createdAt = newRelationship.updatedAt = new Date();
+    newRelationship.createdAt = newRelationship.updatedAt = new Date()
 
-    let db;
-    let relationshipsCollection;
-    let relationship;
+    let db
+    let relationshipsCollection
+    let relationship
     MongoUtil.getDb()
       .then((theDb) => {
-        db = theDb;
-        relationshipsCollection = db.collection(MongoUtil.RELATIONSHIPS_COLLECTION);
-        return relationshipsCollection.insertOne(newRelationship);
+        db = theDb
+        relationshipsCollection = db.collection(MongoUtil.RELATIONSHIPS_COLLECTION)
+        return relationshipsCollection.insertOne(newRelationship)
       })
       .then((result) => {
-        relationship = result.ops[0];
-        res.status(201).send(relationship);
+        relationship = result.ops[0]
+        res.status(201).send(relationship)
       })
       .catch(next)
       .then(() => {
-        db.close();
-      });
-  });
-};
+        db.close()
+      })
+  })
+}
