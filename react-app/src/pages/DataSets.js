@@ -2,11 +2,12 @@ import { action, extendObservable } from 'mobx'
 import { observer } from 'mobx-react'
 import _ from 'lodash'
 import Button from '@material-ui/core/Button'
-import DataSetCard from 'components/DataSetCard'
-import EditDataSetDialog from 'components/EditDataSetDialog'
-import ErrorSnackbar from 'components/ErrorSnackbar'
-import http from 'utils/http'
-import LoadingSpinner from 'components/LoadingSpinner'
+import DataSetCard from '../components/DataSetCard'
+import EditDataSetDialog from '../components/EditDataSetDialog'
+import ErrorSnackbar from '../components/ErrorSnackbar'
+import http from '../utils/http'
+import LoadingSpinner from '../components/LoadingSpinner'
+import PageSkeleton from '../components/PageSkeleton'
 import React from 'react'
 
 const DataSets = observer(class extends React.Component {
@@ -58,7 +59,7 @@ const DataSets = observer(class extends React.Component {
   })
 
   render() {
-    return (
+    return (<PageSkeleton>
       <div>
         <Button variant='contained' color='primary' style={{ marginTop: 10 }} onClick={this.handleCreateClick}>
           Create a Data Set
@@ -77,7 +78,7 @@ const DataSets = observer(class extends React.Component {
 
         <ErrorSnackbar error={this.error} />
       </div>
-    )
+    </PageSkeleton>)
   }
 })
 

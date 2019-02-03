@@ -5,7 +5,7 @@ import Chip from '@material-ui/core/Chip'
 import MenuItem from '@material-ui/core/MenuItem'
 import React from 'react'
 import TextField from '@material-ui/core/TextField'
-import UiStore from '../app/UiStore'
+import UiStore from '../states/UiStore'
 
 const MapFilter = observer(class extends React.Component {
   handleKeyDown = (event) => {

@@ -1,11 +1,13 @@
 import {observer} from 'mobx-react'
-import Layout from 'utils/Layout'
-import Map from 'components/Map'
-import MapDrawer from 'components/MapDrawer'
-import MapFilter from 'components/MapFilter'
-import MapStatus from 'components/MapStatus'
+import Layout from '../utils/Layout'
+import Map from '../components/Map'
+import MapDrawer from '../components/MapDrawer'
+import MapFilter from '../components/MapFilter'
+import MapStatus from '../components/MapStatus'
+import PageSkeleton from '../components/PageSkeleton'
 import PropTypes from 'prop-types'
 import React from 'react'
+import UrlParams from '../states/UrlParams'
 
 const DataSetMap = observer(class extends React.Component {
   static propTypes = {
@@ -13,16 +15,18 @@ const DataSetMap = observer(class extends React.Component {
   }
 
   render() {
-    return (
+    const dataSetId = UrlParams.get('dataSetId')
+
+    return (<PageSkeleton>
       <div style={{ ...Layout.absoluteFill, ...Layout.row }}>
         <MapDrawer />
         <div style={{ ...Layout.column, flex: 1 }}>
           <MapFilter />
-          <Map selected={{ dataSetId: this.props.dataSetId }}/>
+          <Map selected={{ dataSetId }}/>
           <MapStatus />
         </div>
       </div>
-    )
+    </PageSkeleton>)
   }
 })
 

@@ -40,7 +40,12 @@ module.exports = {
       memberSyntaxSortOrder: ['all', 'multiple', 'single', 'none']
     }],
     'react/display-name': 'off',
-    'react/prop-types': [ 'error', { ignore: [ 'classes' ] } ],
+    'react/prop-types': [ 'error', {
+      ignore: [
+        'children',
+        'classes',
+      ],
+  }],
     'react/no-unescaped-entities': ['error', {'forbid': [ '>', '}' ]}],
   }
-};
+}

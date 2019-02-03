@@ -1,5 +1,5 @@
 import _ from 'lodash'
-import Environment from 'utils/Environment'
+import Environment from '../utils/Environment'
 
 const DEBUG = Environment.getRequired('DEBUG')
 

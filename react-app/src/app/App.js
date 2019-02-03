@@ -1,211 +1,125 @@
-import { action, extendObservable } from 'mobx'
-import { fade } from '@material-ui/core/styles/colorManipulator'
 import { HashRouter } from 'react-router-dom'
-import { NavLink, Route } from 'react-router-dom'
 import { observer } from 'mobx-react'
+import { Route } from 'react-router-dom'
 import { Switch } from 'react-router-dom'
-import { withRouter } from 'react-router-dom'
-import { withStyles } from '@material-ui/core/styles'
+import { toJS } from 'mobx'
 import _ from 'lodash'
-import AppBar from '@material-ui/core/AppBar'
-import blue from '@material-ui/core/colors/blue'
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft'
-import DataSetMap from 'pages/DataSetMap'
-import DataSets from 'pages/DataSets'
-import Drawer from '@material-ui/core/Drawer'
-import ExtensionIcon from '@material-ui/icons/Extension'
-import Home from 'pages/Home'
-import HomeIcon from '@material-ui/icons/Home'
-import IconButton from '@material-ui/core/IconButton'
-import Layout from 'utils/Layout'
-import List from '@material-ui/core/List'
-import ListItem from '@material-ui/core/ListItem'
-import ListItemIcon from '@material-ui/core/ListItemIcon'
-import ListItemText from '@material-ui/core/ListItemText'
-import MenuIcon from '@material-ui/icons/Menu'
-import PropTypes from 'prop-types'
+import Button from '@material-ui/core/Button'
+import createBrowserHistory from 'history/createBrowserHistory'
+import DataSetMap from '../pages/DataSetMap'
+import DataSets from '../pages/DataSets'
+import Home from '../pages/Home'
+import pathReplace from '../utils/pathReplace'
 import React from 'react'
-import Records from 'pages/Records'
-import RelationshipMap from 'pages/RelationshipMap'
-import Relationships from 'pages/Relationships'
-import Toolbar from '@material-ui/core/Toolbar'
-import Typography from '@material-ui/core/Typography'
-import Unknown404 from 'pages/Unknown404'
-import WeekendIcon from '@material-ui/icons/Weekend'
+import Records from '../pages/Records'
+import RelationshipMap from '../pages/RelationshipMap'
+import Relationships from '../pages/Relationships'
+import Unknown404 from '../pages/Unknown404'
+import UrlParams from '../states/UrlParams'
+
+class PathClass {
+  home = (params) => { return appPathReplace('/', params) }
+  dataSets = (params) => { return appPathReplace('/datasets', params) }
+  dataSetRecords = (params) => { return appPathReplace('/datasets/:dataSetId', params) }
+  dataSetMap = (params) => { return appPathReplace('/datasets/:dataSetId/map', params) }
+  relationships = (params) => { return appPathReplace('/relationships', params) }
+  relationshipMap = (params) => { return appPathReplace('/relationships/:relationshipId/map', params) }
+}
+export const Path = new PathClass()
+
+const _history = createBrowserHistory()
+
+export const goToPath = (path, replace) => {
+  if (replace) {
+    _history.replace(path)
+  } else {
+    _history.push(path)
+  }
+}
+
+export const isAtPath = (path) => {
+  return _history.location.pathname === path
+}
+
+// defaults param values to their current values, allows overriding in the params values
+function appPathReplace(path, params) {
+  // special-case no replacement when params === false - used in route definitions in App.js
+  if (params === false) {
+    return path
+  }
+  params = _.extend({ pageId: 'index' }, toJS(UrlParams.get()), params)
+  return pathReplace(path, params)
+}
 
 const App = observer(class extends React.Component {
-  constructor() {
-    super()
-    extendObservable(this, {
-      isDrawerOpen: false,
-    })
-  }
-
-  toggleDrawerOpen = action(() => {
-    this.isDrawerOpen = !this.isDrawerOpen
-  })
-
   render() {
     return (
       <HashRouter>
-        <div>
-
-          <Drawer open={this.isDrawerOpen} onClose={this.toggleDrawerOpen}>
-            <SideMenu toggleDrawerOpen={this.toggleDrawerOpen}/>
-          </Drawer>
-
-          <AppBar>
-            <Toolbar disableGutters={true}>
-              <IconButton color='inherit' aria-label='open drawer' onClick={this.toggleDrawerOpen}>
-                <MenuIcon/>
-              </IconButton>
-              <Typography variant='title' color='inherit' noWrap>
-                MIRCS Geogenealogy - <SubTitle/>
-              </Typography>
-            </Toolbar>
-          </AppBar>
-
-          <div style={{ ...Layout.absoluteFill, marginTop: 66, padding: 5 }}>
-            <ContentPane/>
-          </div>
-
-        </div>
+        <ErrorBoundary>
+          <Switch>
+            <AppRoute exact path={Path.home(false)} component={Home}/>
+            <AppRoute exact path={Path.dataSets(false)} component={DataSets}/>
+            <AppRoute exact path={Path.dataSetRecords(false)} component={Records}/>
+            <AppRoute exact path={Path.dataSetMap(false)} component={DataSetMap}/>
+            <AppRoute exact path={Path.relationships(false)} component={Relationships}/>
+            <AppRoute exact path={Path.relationshipMap(false)} component={RelationshipMap}/>
+            <AppRoute component={Unknown404}/>
+          </Switch>
+        </ErrorBoundary>
       </HashRouter>
     )
   }
 })
 
-const SubTitle = withRouter((props) => {
-  let subtitle = 'Data Explorer'
-  if (_.startsWith(props.location.pathname, '/datasets')) {
-    subtitle = 'Data Sets'
-  } else if (_.startsWith(props.location.pathname, '/relationships')) {
-    subtitle = 'Relationships'
+// eslint-disable-next-line react/prop-types
+const AppRoute = ({ path, component, exact }) => (
+  <Route exact={exact} path={path} component={setUrlParams(component)}/>
+)
+
+/** Sets app states based on parsed URL parameters. Returns the passed React.Component as JSX. */
+const setUrlParams = (Component) => {
+  // eslint-disable-next-line react/prop-types
+  return ({ match }) => {
+    UrlParams.set(_.clone(match.params))
+    return (<Component/>)
   }
-
-  return (
-    <span>{subtitle}</span>
-  )
-})
-
-const SideMenu = ({ toggleDrawerOpen }) => (<List>
-  <div><IconButton onClick={toggleDrawerOpen}><ChevronLeftIcon /></IconButton></div>
-
-  <NavMenuItem route='/' exact text='Home' icon={<HomeIcon />} toggleDrawerOpen={toggleDrawerOpen} />
-  <NavMenuItem route='/datasets' text='Data Sets' icon={<ExtensionIcon />} toggleDrawerOpen={toggleDrawerOpen} />
-  <NavMenuItem route='/relationships' text='Relationships' icon={<WeekendIcon />} toggleDrawerOpen={toggleDrawerOpen} />
-</List>)
-
-SideMenu.propTypes = {
-  toggleDrawerOpen: PropTypes.func,
 }
 
-const NavMenuItem = withRouter(({ exact, location, route, text, toggleDrawerOpen, icon }) => {
-  let isSelected
-  if (exact) {
-    isSelected = location.pathname === route
-  } else {
-    isSelected = _.startsWith(location.pathname, route)
+// see https://reactjs.org/docs/error-boundaries.html
+class ErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = { hasError: false }
   }
+  componentDidCatch(error, info) {
+    console.error('ErrorBoundary error:', error)
+    console.error('ErrorBoundary info:', info)
+    this.setState({
+      error: errorToString(error),
+      info: errorToString(info),
+      hasError: true,
+    })
 
-  const style = {
-    navLink: {
-      textDecoration: 'none',
-      color: 'black',
-    },
-    selectedNavLink: {
-      color: blue[400],
-    },
+    function errorToString(errorObject) {
+      if (errorObject) {
+        return errorObject.message || errorObject.toString() || errorObject
+      }
+    }
   }
+  restart = () => {
+    window.location.reload()
+  }
+  render() {
+    if (this.state.hasError) {
+      return <div>
+        <h1>We are sorry - you have discovered a crashing bug in the app. Our apologies for any lost data.</h1>
+        <Button onClick={this.restart}>Restart the app</Button>
+        {this.state.error && <div>Error: {`${this.state.error}`}</div>}
+        {this.state.info && <div>Info: {`${this.state.info}`}</div>}
+      </div>
+    }
+    return this.props.children
+  }
+}
 
-  return (
-    <NavLink to={route} style={style.navLink} activeStyle={style.selectedNavLink}>
-      <ListItem button onClick={toggleDrawerOpen}>
-        <ListItemIcon style={ isSelected ? style.selectedNavLink : {} }>
-          {icon}
-        </ListItemIcon>
-        <ListItemText style={isSelected ? {} : style.navLink} primary={text} disableTypography/>
-      </ListItem>
-    </NavLink>
-  )
-})
-
-const ContentPane = withRouter((props) => (
-  <Switch key={props.location.key} location={props.location}>
-    <Route exact path='/' component={Home}/>
-    <Route exact path='/datasets' component={DataSets}/>
-    <Route exact path='/datasets/:dataSetId' render={({ match }) => (
-      <Records dataSetId={match.params.dataSetId}/>
-    )}/>
-    <Route exact path='/datasets/:dataSetId/map' render={({ match }) => (
-      <DataSetMap dataSetId={match.params.dataSetId}/>
-    )}/>
-    <Route exact path='/relationships/:relationshipId/map' render={({ match }) => (
-      <RelationshipMap relationshipId={match.params.relationshipId}/>
-    )}/>
-    <Route exact path='/relationships' component={Relationships}/>
-    <Route component={Unknown404}/>
-  </Switch>
-))
-
-const styles = theme => ({
-  root: {
-    width: '100%',
-  },
-  menuButton: {
-    marginLeft: -12,
-    marginRight: 20,
-  },
-  title: {
-    display: 'none',
-    [theme.breakpoints.up('sm')]: {
-      display: 'block',
-    },
-  },
-  grow: {
-    flexGrow: 1,
-  },
-  search: {
-    position: 'relative',
-    borderRadius: theme.shape.borderRadius,
-    backgroundColor: fade(theme.palette.common.white, 0.15),
-    '&:hover': {
-      backgroundColor: fade(theme.palette.common.white, 0.25),
-    },
-    marginLeft: 0,
-    width: '100%',
-    [theme.breakpoints.up('sm')]: {
-      marginLeft: theme.spacing.unit,
-      width: 'auto',
-    },
-  },
-  searchIcon: {
-    width: theme.spacing.unit * 9,
-    height: '100%',
-    position: 'absolute',
-    pointerEvents: 'none',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  inputRoot: {
-    color: 'inherit',
-    width: '100%',
-  },
-  inputInput: {
-    paddingTop: theme.spacing.unit,
-    paddingRight: theme.spacing.unit,
-    paddingBottom: theme.spacing.unit,
-    paddingLeft: theme.spacing.unit * 10,
-    transition: theme.transitions.create('width'),
-    width: '100%',
-    [theme.breakpoints.up('sm')]: {
-      width: 120,
-      '&:focus': {
-        width: 200,
-      },
-    },
-  },
-})
-
-export default withStyles(styles)(App)
+export default App

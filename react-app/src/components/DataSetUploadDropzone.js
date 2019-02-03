@@ -2,7 +2,7 @@ import { action } from 'mobx'
 import { observer } from 'mobx-react'
 import _ from 'lodash'
 import Dropzone from 'react-dropzone'
-import http from 'utils/http'
+import http from '../utils/http'
 import papa from 'papaparse'
 import PropTypes from 'prop-types'
 import React from 'react'
@@ -12,7 +12,6 @@ const DataSetUploadDropzone = observer(class extends React.Component {
     dataSet: PropTypes.object.isRequired,
     onDataSetUpdated: PropTypes.func.isRequired,
     onError: PropTypes.func.isRequired,
-    children: PropTypes.array,
   }
 
   handleDrop = action((acceptedFiles) => {

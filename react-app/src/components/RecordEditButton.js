@@ -1,7 +1,7 @@
 import { action, extendObservable } from 'mobx'
 import { observer } from 'mobx-react'
 import Button from '@material-ui/core/Button'
-import EditRecordDialog from 'components/EditRecordDialog'
+import EditRecordDialog from '../components/EditRecordDialog'
 import PropTypes from 'prop-types'
 import React from 'react'
 

@@ -6,7 +6,8 @@ import Card from '@material-ui/core/Card'
 import CardContent from '@material-ui/core/CardContent'
 import CardHeader from '@material-ui/core/CardHeader'
 import Grid from '@material-ui/core/Grid'
-import http from 'utils/http'
+import http from '../utils/http'
+import PageSkeleton from '../components/PageSkeleton'
 import React from 'react'
 import Typography from '@material-ui/core/Typography'
 
@@ -47,7 +48,7 @@ const Home = observer(class extends React.Component {
   })
 
   render() {
-    return (
+    return (<PageSkeleton>
       <Grid container spacing={16}>
         {this.dataSets.map((dataSet) => (
           <Grid key={dataSet._id} item xs={6} md={4}>
@@ -102,7 +103,7 @@ const Home = observer(class extends React.Component {
           </Grid>
         ))}
       </Grid>
-    )
+    </PageSkeleton>)
   }
 })
 

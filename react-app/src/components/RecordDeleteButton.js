@@ -1,8 +1,8 @@
 import { action, extendObservable } from 'mobx'
 import { observer } from 'mobx-react'
 import Button from '@material-ui/core/Button'
-import ConfirmDeleteDialog from 'components/ConfirmDeleteDialog'
-import http from 'utils/http'
+import ConfirmDeleteDialog from '../components/ConfirmDeleteDialog'
+import http from '../utils/http'
 import PropTypes from 'prop-types'
 import React from 'react'
 

@@ -4,11 +4,11 @@ import { withStyles } from '@material-ui/core'
 import _ from 'lodash'
 import Card from '@material-ui/core/Card'
 import CardContent from '@material-ui/core/CardContent'
-import http from 'utils/http'
+import http from '../utils/http'
 import OpenInNew from '@material-ui/icons/OpenInNew'
 import React from 'react'
 import Typography from '@material-ui/core/Typography'
-import UiStore from '../app/UiStore'
+import UiStore from '../states/UiStore'
 
 const StreetviewCard = observer(class extends React.Component {
   state = {

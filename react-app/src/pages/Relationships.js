@@ -2,12 +2,13 @@ import { action, extendObservable } from 'mobx'
 import { observer } from 'mobx-react'
 import _ from 'lodash'
 import Button from '@material-ui/core/Button'
-import EditRelationshipDialog from 'components/EditRelationshipDialog'
-import ErrorSnackbar from 'components/ErrorSnackbar'
-import http from 'utils/http'
-import LoadingSpinner from 'components/LoadingSpinner'
+import EditRelationshipDialog from '../components/EditRelationshipDialog'
+import ErrorSnackbar from '../components/ErrorSnackbar'
+import http from '../utils/http'
+import LoadingSpinner from '../components/LoadingSpinner'
+import PageSkeleton from '../components/PageSkeleton'
 import React from 'react'
-import RelationshipCard from 'components/RelationshipCard'
+import RelationshipCard from '../components/RelationshipCard'
 
 const Relationships = observer(class extends React.Component {
   constructor() {
@@ -58,7 +59,7 @@ const Relationships = observer(class extends React.Component {
   })
 
   render() {
-    return (
+    return (<PageSkeleton>
       <div>
         <Button variant='contained' color='primary' style={{ marginTop: 10 }} onClick={this.handleCreateClick}>
           Create a Relationship
@@ -77,7 +78,7 @@ const Relationships = observer(class extends React.Component {
 
         <ErrorSnackbar error={this.error} />
       </div>
-    )
+    </PageSkeleton>)
   }
 })
 

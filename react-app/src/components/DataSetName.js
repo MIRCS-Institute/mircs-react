@@ -1,6 +1,6 @@
 import { action, extendObservable } from 'mobx'
 import { observer } from 'mobx-react'
-import http from 'utils/http'
+import http from '../utils/http'
 import PropTypes from 'prop-types'
 import React from 'react'
 

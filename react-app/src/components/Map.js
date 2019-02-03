@@ -2,12 +2,12 @@ import {action, autorun} from 'mobx'
 import { observer } from 'mobx-react'
 import { withStyles } from '@material-ui/core/styles'
 import _ from 'lodash'
-import http from 'utils/http'
-import Layout from 'utils/Layout'
+import http from '../utils/http'
+import Layout from '../utils/Layout'
 import PropTypes from 'prop-types'
 import React from 'react'
 import turf from 'turf'
-import UiStore from '../app/UiStore'
+import UiStore from '../states/UiStore'
 
 const L = window.L
 

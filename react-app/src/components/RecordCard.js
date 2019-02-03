@@ -5,8 +5,8 @@ import CardActions from '@material-ui/core/CardActions'
 import CardContent from '@material-ui/core/CardContent'
 import PropTypes from 'prop-types'
 import React from 'react'
-import RecordDeleteButton from 'components/RecordDeleteButton'
-import RecordEditButton from 'components/RecordEditButton'
+import RecordDeleteButton from '../components/RecordDeleteButton'
+import RecordEditButton from '../components/RecordEditButton'
 
 const RecordCard = observer(class extends React.Component {
   static propTypes = {

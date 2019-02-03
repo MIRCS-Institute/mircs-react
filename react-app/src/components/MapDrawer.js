@@ -8,7 +8,7 @@ import PropTypes from 'prop-types'
 import React from 'react'
 import StreetviewCard from './StreetviewCard'
 import Typography from '@material-ui/core/Typography'
-import UiStore from '../app/UiStore'
+import UiStore from '../states/UiStore'
 
 const MapDrawer = observer(class extends React.Component {
 
