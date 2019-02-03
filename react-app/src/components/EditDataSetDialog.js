@@ -1,5 +1,6 @@
 import { action, extendObservable } from 'mobx'
 import { observer } from 'mobx-react'
+import { showSnackbarMessage } from '../components/SnackbarMessages'
 import _ from 'lodash'
 import Button from '@material-ui/core/Button'
 import ButtonProgress from '../components/ButtonProgress'
@@ -7,7 +8,6 @@ import Dialog from '@material-ui/core/Dialog'
 import DialogActions from '@material-ui/core/DialogActions'
 import DialogContent from '@material-ui/core/DialogContent'
 import DialogTitle from '@material-ui/core/DialogTitle'
-import ErrorSnackbar from '../components/ErrorSnackbar'
 import http from '../utils/http'
 import PropTypes from 'prop-types'
 import React from 'react'
@@ -30,7 +30,6 @@ const EditDataSetDialog = observer(class extends React.Component {
       dataSet: {},
       isCreate: true,
       isSaving: false,
-      error: null,
     })
   }
 
@@ -45,7 +44,6 @@ const EditDataSetDialog = observer(class extends React.Component {
         this.isCreate = !this.dataSet._id
 
         this.isSaving = false
-        this.error = null
       })()
     }
 
@@ -70,9 +68,9 @@ const EditDataSetDialog = observer(class extends React.Component {
         this.isSaving = false
         this.props.afterSave(response.bodyJson)
       }))
-      .catch(action((error) => {
+      .catch(showSnackbarMessage)
+      .then(action(() => {
         this.isSaving = false
-        this.error = error
       }))
 
   })
@@ -111,8 +109,6 @@ const EditDataSetDialog = observer(class extends React.Component {
             {this.isSaving && <ButtonProgress/>}
           </Button>
         </DialogActions>
-
-        <ErrorSnackbar error={this.error}/>
       </Dialog>
     )
   }

@@ -1,5 +1,6 @@
 import { autorun } from 'mobx'
 import { observer } from 'mobx-react'
+import { showSnackbarMessage } from './SnackbarMessages'
 import { withStyles } from '@material-ui/core'
 import _ from 'lodash'
 import Card from '@material-ui/core/Card'
@@ -48,10 +49,8 @@ const StreetviewCard = observer(class extends React.Component {
           }
         }
         )
-        .catch((error) => {
-          this.error = error
-        })
-        .finally(() => {
+        .catch(showSnackbarMessage)
+        .then(() => {
           // Trigger a refresh
           this.setState(() => {
             return { loading: false }

@@ -1,10 +1,10 @@
 import { action, extendObservable } from 'mobx'
 import { observer } from 'mobx-react'
+import { showSnackbarMessage } from '../components/SnackbarMessages'
 import _ from 'lodash'
 import Button from '@material-ui/core/Button'
 import DataSetCard from '../components/DataSetCard'
 import EditDataSetDialog from '../components/EditDataSetDialog'
-import ErrorSnackbar from '../components/ErrorSnackbar'
 import http from '../utils/http'
 import LoadingSpinner from '../components/LoadingSpinner'
 import PageSkeleton from '../components/PageSkeleton'
@@ -15,7 +15,6 @@ const DataSets = observer(class extends React.Component {
     super()
     extendObservable(this, {
       dataSets: [],
-      error: null,
       isLoading: false,
 
       showCreateDialog: false,
@@ -34,9 +33,9 @@ const DataSets = observer(class extends React.Component {
         this.isLoading = false
         this.dataSets = _.get(response, 'bodyJson.list')
       }))
-      .catch(action((error) => {
+      .catch(showSnackbarMessage)
+      .catch(action(() => {
         this.isLoading = false
-        this.error = error
       }))
   })
 
@@ -54,7 +53,7 @@ const DataSets = observer(class extends React.Component {
   })
 
   handleError = action((error) => {
-    this.error = error
+    showSnackbarMessage(error)
     this.refresh()
   })
 
@@ -75,8 +74,6 @@ const DataSets = observer(class extends React.Component {
         {this.dataSets.map((dataSet) => (
           <DataSetCard key={dataSet._id} dataSet={dataSet} onRefresh={this.refresh} onError={this.handleError}/>
         ))}
-
-        <ErrorSnackbar error={this.error} />
       </div>
     </PageSkeleton>)
   }

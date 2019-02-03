@@ -1,5 +1,6 @@
 import { action, extendObservable } from 'mobx'
 import { observer } from 'mobx-react'
+import { showSnackbarMessage } from './SnackbarMessages'
 import http from '../utils/http'
 import PropTypes from 'prop-types'
 import React from 'react'
@@ -15,7 +16,6 @@ const DataSetName = observer(class extends React.Component {
     extendObservable(this, {
       dataSetId: props.dataSetId,
       isLoading: false,
-      error: null,
       dataSet: null,
     })
   }
@@ -41,7 +41,7 @@ const DataSetName = observer(class extends React.Component {
           }))
           .catch(action((error) => {
             console.error('Error fetching DataSet', fetchingDataSetId, error)
-            this.error = error
+            showSnackbarMessage(error)
           }))
           .then(action(() => {
             this.isLoading = false

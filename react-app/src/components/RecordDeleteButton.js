@@ -34,12 +34,8 @@ const RecordDeleteButton = observer(class extends React.Component {
   handleDeleteConfirm = action(() => {
     this.showConfirmDeleteDialog = false
     http.jsonRequest(`/api/datasets/${this.props.dataSetId}/records/${this.props.record._id}`, { method: 'delete' })
-      .then(action(() => {
-        this.props.onRefresh()
-      }))
-      .catch(action((error) => {
-        this.props.onError(error)
-      }))
+      .then(this.props.onRefresh)
+      .catch(this.props.onError)
   })
 
   render() {

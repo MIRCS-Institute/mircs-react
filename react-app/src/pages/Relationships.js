@@ -1,9 +1,9 @@
 import { action, extendObservable } from 'mobx'
 import { observer } from 'mobx-react'
+import { showSnackbarMessage } from '../components/SnackbarMessages'
 import _ from 'lodash'
 import Button from '@material-ui/core/Button'
 import EditRelationshipDialog from '../components/EditRelationshipDialog'
-import ErrorSnackbar from '../components/ErrorSnackbar'
 import http from '../utils/http'
 import LoadingSpinner from '../components/LoadingSpinner'
 import PageSkeleton from '../components/PageSkeleton'
@@ -15,7 +15,6 @@ const Relationships = observer(class extends React.Component {
     super()
     extendObservable(this, {
       relationships: [],
-      error: null,
       isLoading: false,
 
       showCreateDialog: false,
@@ -34,9 +33,9 @@ const Relationships = observer(class extends React.Component {
         this.isLoading = false
         this.relationships = _.get(response, 'bodyJson.list')
       }))
-      .catch(action((error) => {
+      .catch(showSnackbarMessage)
+      .then(action(() => {
         this.isLoading = false
-        this.error = error
       }))
   })
 
@@ -54,7 +53,7 @@ const Relationships = observer(class extends React.Component {
   })
 
   handleError = action((error) => {
-    this.error = error
+    showSnackbarMessage(error)
     this.refresh()
   })
 
@@ -75,8 +74,6 @@ const Relationships = observer(class extends React.Component {
         {this.relationships.map((relationship) => (
           <RelationshipCard key={relationship._id} relationship={relationship} onRefresh={this.refresh} onError={this.handleError}/>
         ))}
-
-        <ErrorSnackbar error={this.error} />
       </div>
     </PageSkeleton>)
   }

@@ -1,3 +1,4 @@
+import { clearSnackbarMessages } from '../components/SnackbarMessages'
 import { HashRouter } from 'react-router-dom'
 import { observer } from 'mobx-react'
 import { Route } from 'react-router-dom'
@@ -14,6 +15,7 @@ import React from 'react'
 import Records from '../pages/Records'
 import RelationshipMap from '../pages/RelationshipMap'
 import Relationships from '../pages/Relationships'
+import SnackbarMessages from '../components/SnackbarMessages'
 import Unknown404 from '../pages/Unknown404'
 import UrlParams from '../states/UrlParams'
 
@@ -28,6 +30,10 @@ class PathClass {
 export const Path = new PathClass()
 
 const _history = createBrowserHistory()
+
+_history.listen(() => {
+  clearSnackbarMessages()
+})
 
 export const goToPath = (path, replace) => {
   if (replace) {
@@ -65,6 +71,8 @@ const App = observer(class extends React.Component {
             <AppRoute exact path={Path.relationshipMap(false)} component={RelationshipMap}/>
             <AppRoute component={Unknown404}/>
           </Switch>
+
+          <SnackbarMessages/>
         </ErrorBoundary>
       </HashRouter>
     )

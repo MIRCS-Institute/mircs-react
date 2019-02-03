@@ -1,5 +1,6 @@
 import {action, autorun} from 'mobx'
 import { observer } from 'mobx-react'
+import { showSnackbarMessage } from './SnackbarMessages'
 import { withStyles } from '@material-ui/core/styles'
 import _ from 'lodash'
 import http from '../utils/http'
@@ -82,9 +83,7 @@ const Map = observer(class extends React.Component {
         UiStore.records.replace(_.get(response, 'bodyJson.list'))
         this.mapPoints()
       }))
-      .catch(action((error) => {
-        this.error = error
-      }))
+      .catch(showSnackbarMessage)
   }
 
   fetchRelationshipDataForMap = (relationshipId) => {
@@ -94,9 +93,7 @@ const Map = observer(class extends React.Component {
         UiStore.records.replace(_.get(response, 'bodyJson.list'))
         this.mapPoints()
       }))
-      .catch(action((error) => {
-        this.error = error
-      }))
+      .catch(showSnackbarMessage)
   }
 
   buildPopupHTML(record) {

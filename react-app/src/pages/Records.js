@@ -1,9 +1,9 @@
 import { action, extendObservable } from 'mobx'
 import { observer } from 'mobx-react'
+import { showSnackbarMessage } from '../components/SnackbarMessages'
 import _ from 'lodash'
 import Button from '@material-ui/core/Button'
 import ConfirmDeleteDialog from '../components/ConfirmDeleteDialog'
-import ErrorSnackbar from '../components/ErrorSnackbar'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
 import http from '../utils/http'
 import LoadingSpinner from '../components/LoadingSpinner'
@@ -25,7 +25,6 @@ const Records = observer(class extends React.Component {
 
       viewMode: 'table',
 
-      error: null,
       isLoading: false,
 
       showCreateDialog: false,
@@ -45,26 +44,22 @@ const Records = observer(class extends React.Component {
         this.isLoading = false
         this.records = _.get(response, 'bodyJson.list')
       }))
-      .catch(action((error) => {
+      .catch(showSnackbarMessage)
+      .then(action(() => {
         this.isLoading = false
-        this.error = error
       }))
 
     http.jsonRequest(`/api/datasets/${dataSetId}/fields`)
       .then(action((response) => {
         this.fields = _.get(response, 'bodyJson.fields')
       }))
-      .catch(action((error) => {
-        this.error = error
-      }))
+      .catch(showSnackbarMessage)
 
     http.jsonRequest(`/api/datasets/${dataSetId}`)
       .then(action((response) => {
         this.dataSet = _.get(response, 'bodyJson')
       }))
-      .catch(action((error) => {
-        this.error = error
-      }))
+      .catch(showSnackbarMessage)
   })
 
   handleDeleteClick = action(() => {
@@ -82,13 +77,11 @@ const Records = observer(class extends React.Component {
       .then(action(() => {
         this.refresh()
       }))
-      .catch(action((error) => {
-        this.handleError(error)
-      }))
+      .catch(this.handleError)
   })
 
   handleError = action((error) => {
-    this.error = error
+    showSnackbarMessage(error)
     this.refresh()
   })
 
@@ -121,8 +114,6 @@ const Records = observer(class extends React.Component {
         <RecordsTable dataSetId={dataSetId} records={this.records} fields={this.fields} onRefresh={this.refresh} onError={this.handleError} />}
 
       {this.showConfirmDeleteDialog && <ConfirmDeleteDialog name={`all records in ${this.dataSet.name} data set`} onConfirm={this.handleDeleteConfirm} onCancel={this.handleDeleteCancel}/>}
-
-      <ErrorSnackbar error={this.error} />
     </PageSkeleton>)
   }
 })

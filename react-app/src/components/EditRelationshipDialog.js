@@ -1,5 +1,6 @@
 import { action, extendObservable } from 'mobx'
 import { observer } from 'mobx-react'
+import { showSnackbarMessage } from '../components/SnackbarMessages'
 import _ from 'lodash'
 import AddCircleIcon from '@material-ui/icons/AddCircle'
 import Button from '@material-ui/core/Button'
@@ -11,7 +12,6 @@ import Dialog from '@material-ui/core/Dialog'
 import DialogActions from '@material-ui/core/DialogActions'
 import DialogContent from '@material-ui/core/DialogContent'
 import DialogTitle from '@material-ui/core/DialogTitle'
-import ErrorSnackbar from '../components/ErrorSnackbar'
 import FormControl from '@material-ui/core/FormControl'
 import ForwardIcon from '@material-ui/icons/Forward'
 import Grid from '@material-ui/core/Grid'
@@ -41,7 +41,6 @@ const EditRelationshipDialog = observer(class extends React.Component {
       relationship: {},
       isCreate: true,
       isSaving: false,
-      error: null,
       showNewJoinElements: false,
       newJoinElements: [undefined, undefined],
     })
@@ -71,7 +70,6 @@ const EditRelationshipDialog = observer(class extends React.Component {
         this.isCreate = !this.relationship._id
 
         this.isSaving = false
-        this.error = null
       })()
     }
 
@@ -96,9 +94,9 @@ const EditRelationshipDialog = observer(class extends React.Component {
         this.isSaving = false
         this.props.afterSave(response.bodyJson)
       }))
-      .catch(action((error) => {
+      .catch(showSnackbarMessage)
+      .then(action(() => {
         this.isSaving = false
-        this.error = error
       }))
 
   })
@@ -232,7 +230,6 @@ const EditRelationshipDialog = observer(class extends React.Component {
           </Button>
         </DialogActions>
 
-        <ErrorSnackbar error={this.error}/>
       </Dialog>
     )
   }
@@ -255,7 +252,6 @@ const FieldChooser = observer(class extends React.Component {
       field: props.field,
       fields: null,
       isLoading: false,
-      error: null,
     })
   }
 
@@ -292,7 +288,7 @@ const FieldChooser = observer(class extends React.Component {
         }))
         .catch(action((error) => {
           console.error('Error fetching fields for DataSet', fetchingDataSetId, error)
-          this.error = error
+          showSnackbarMessage(error)
         }))
         .then(action(() => {
           this.isLoading = false
@@ -337,7 +333,6 @@ const DataSetChooser = observer(class extends React.Component {
     super()
     extendObservable(this, {
       isChooseDataSetDialogOpen: false,
-      error: null,
     })
   }
 

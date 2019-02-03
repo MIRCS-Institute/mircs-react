@@ -21,10 +21,15 @@ module.exports = {
     'react',
     'sort-imports-es6-autofix'
   ],
+  "settings": {
+    "react": {
+      "version": "detect",
+    },
+  },
   'rules': {
     'max-lines': ['error', {'max': 500, 'skipBlankLines': true}],
     'jsx-quotes': ['warn', 'prefer-single'],
-    'no-console': 'warn',
+    'no-console': 'off',
     'indent': [ 'error', 2 ],
     'linebreak-style': [ 'error', 'unix' ],
     'quotes': [ 'error', 'single' ],

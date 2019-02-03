@@ -1,5 +1,6 @@
 import {action, extendObservable} from 'mobx'
 import {observer} from 'mobx-react'
+import { showSnackbarMessage } from '../components/SnackbarMessages'
 import _ from 'lodash'
 import Button from '@material-ui/core/Button'
 import Card from '@material-ui/core/Card'
@@ -18,7 +19,6 @@ const Home = observer(class extends React.Component {
       dataSets: [],
       relationships: [],
       selected: {},
-      error: null,
     })
   }
 
@@ -32,9 +32,7 @@ const Home = observer(class extends React.Component {
       .then(action((response) => {
         this.dataSets = _.get(response, 'bodyJson.list')
       }))
-      .catch(action((error) => {
-        this.error = error
-      }))
+      .catch(showSnackbarMessage)
   })
 
   fetchRelationshipRecords = action(() => {
@@ -42,9 +40,7 @@ const Home = observer(class extends React.Component {
       .then(action((response) => {
         this.relationships = _.get(response, 'bodyJson.list')
       }))
-      .catch(action((error) => {
-        this.error = error
-      }))
+      .catch(showSnackbarMessage)
   })
 
   render() {
