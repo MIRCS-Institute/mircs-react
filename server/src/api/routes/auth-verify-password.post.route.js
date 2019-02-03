@@ -7,8 +7,8 @@ const _ = require('lodash')
 const bcrypt = require('bcrypt')
 const Environment = require('../../utils/environment.js')
 const HttpErrors = require('../../utils/http-errors.js')
-const MongoUtil = require('../../utils/mongo-util.js')
 const jwt = require('jsonwebtoken')
+const MongoUtil = require('../../utils/mongo-util.js')
 
 const JWT_SECRET_KEY = Environment.getRequired('JWT_SECRET_KEY')
 
@@ -33,7 +33,7 @@ module.exports = (router) => {
 
       const result = await bcrypt.compare(password, authDoc.hash)
       if (!result) {
-        return next(HttpErrors.badRequest400('wrong password'))
+        return next(HttpErrors.unauthorized401('wrong password'))
       }
 
       const payload = {

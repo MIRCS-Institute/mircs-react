@@ -6,18 +6,16 @@ to the Request object as `req.dataSet`.
 const MongoUtil = require('../../utils/mongo-util.js')
 const ObjectID = require('mongodb').ObjectID
 
-module.exports = function(router) {
-  router.param('dataSetId', function(req, res, next, dataSetId) {
+module.exports = (router) => {
+  router.param('dataSetId', async (req, res, next, dataSetId) => {
     try {
       dataSetId = ObjectID(dataSetId)
+
+      const dataSet = await MongoUtil.findOne(MongoUtil.DATA_SETS_COLLECTION, { _id: dataSetId })
+      req.dataSet = dataSet
+      next()
     } catch (exception) {
       return next(exception)
     }
-
-    MongoUtil.find(MongoUtil.DATA_SETS_COLLECTION, { _id: dataSetId })
-      .then((dataSets) => {
-        req.dataSet = dataSets[0]
-        next()
-      }, next)
   })
 }

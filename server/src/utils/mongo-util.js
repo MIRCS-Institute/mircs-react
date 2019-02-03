@@ -53,59 +53,29 @@ Note: the returned db instance should be closed when finished.
 
 @see http://mongodb.github.io/node-mongodb-native/2.2/api/Db.html
 */
-MongoUtil.getDb = () => {
-  return new Promise((resolve, reject) => {
-    MongoClient
-      .connect(MONGO_SERVER_URL, (error, db) => {
-        if (error) {
-          return reject(error)
-        }
-        resolve(db)
-      })
-  })
+MongoUtil.getDb = async () => {
+  return MongoClient.connect(MONGO_SERVER_URL)
 }
 
 /*
 creates a new collection in the database
 @see http://mongodb.github.io/node-mongodb-native/2.2/api/Db.html#createCollection
  */
-MongoUtil.createCollection = (collectionName, options) => {
-  return MongoUtil
-    .getDb()
-    .then((db) => {
-      return db.createCollection(collectionName, options, (error) => {
-        db.close()
-        if (error) {
-          throw error
-        }
-      })
-    })
+MongoUtil.createCollection = async (collectionName, options) => {
+  const db = await MongoUtil.getDb()
+  await db.createCollection(collectionName, options)
+  await db.close()
 }
 
 /*
 finds and returns documents in a collection matching the passed query
 @see http://mongodb.github.io/node-mongodb-native/2.2/api/Collection.html#find
 */
-MongoUtil.find = (collectionName, query) => {
-  let db
-  return MongoUtil
-    .getDb()
-    .then((theDb) => {
-      db = theDb
-
-      return new Promise((resolve, reject) => {
-        db
-          .collection(collectionName)
-          .find(query)
-          .toArray((error, result) => {
-            db.close()
-            if (error) {
-              return reject(error)
-            }
-            return resolve(result)
-          })
-      })
-    })
+MongoUtil.find = async (collectionName, query) => {
+  const db = await MongoUtil.getDb()
+  const result = await db.collection(collectionName).find(query).toArray()
+  await db.close()
+  return result
 }
 
 /*

@@ -17,16 +17,10 @@ const app = express()
 app.use(logger('dev'))
 
 // set up CORS with a max-age header, to save browser re-requests of OPTIONS for each route
-const ONE_HOUR_SECONDS = 60 * 60
-const MAX_AGE_SECONDS = ONE_HOUR_SECONDS
+const MAX_AGE_SECONDS = 24 * 60 * 60
 app.use(cors({ maxAge: MAX_AGE_SECONDS }))
 
-// expose build output of the react-app
-app.use(express.static(path.join(__dirname, '../public')))
-
-// configure the app the use body-parser for POST requests
-app.use(express.urlencoded({ extended: false }))
-// for parsing application/json
+// for parsing application/json in request body
 app.use(express.json({ limit: '50mb' }))
 
 // register the api
