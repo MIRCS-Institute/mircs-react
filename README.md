@@ -1,10 +1,8 @@
-# MIRCS React
+# MIRCS Geogenealogy
 
-This repository contains the mircs-geogenealogy service prototype, built as a React web app connected to an ExpressJS server backed by MongoDB.
+This repository contains the mircs-geogenealogy service prototype, built as a React web app connected to an ExpressJS server backed by MongoDB. For more information on the project see the [MIRCS website](https://www.mircs.ca/geo-genealogy/).
 
-# Dev Setup
-
-## Environment
+## Development Environment
 
 ### Node.js
 
@@ -16,18 +14,22 @@ Node.js ships with a tool called Node Package Manager (npm) - https://www.npmjs.
 
 You'll need to run two shells, one for the client UI and one for the server.
 
-### Server:
+### Server
 
-```bash
-$ cd server
-$ npm install
-$ npm start
+```sh
+cd server
+npm install
+npm start
 ```
 
-### Client UI:
+For more information, see the [Server readme](./server/README.md).
 
-```bash
-$ cd react-app
-$ npm install
-$ npm start
+### Client UI
+
+```sh
+cd react-app
+npm install
+npm start
 ```
+
+For more information, see the [React App readme](./react-app/README.md).
