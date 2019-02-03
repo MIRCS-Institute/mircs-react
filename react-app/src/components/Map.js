@@ -1,7 +1,7 @@
-import _ from 'lodash'
 import {action, autorun} from 'mobx'
 import { observer } from 'mobx-react'
-import { withStyles } from '@material-ui/core/styles';
+import { withStyles } from '@material-ui/core/styles'
+import _ from 'lodash'
 import http from 'utils/http'
 import Layout from 'utils/Layout'
 import PropTypes from 'prop-types'
@@ -17,11 +17,16 @@ const Map = observer(class extends React.Component {
     selected: PropTypes.object.isRequired,
   }
 
+  constructor() {
+    super()
+    this.mapNodeRef = React.createRef()
+  }
+
   componentDidMount() {
     this.startMap()
     this.autorunDisposer = autorun(() => {
       if (UiStore) {
-        this.setupTileLayer(UiStore.tileLayerName);
+        this.setupTileLayer(UiStore.tileLayerName)
       }
     })
     this.autorunDisposer2 = autorun(() => {
@@ -36,7 +41,7 @@ const Map = observer(class extends React.Component {
     })
     this.autorunDisposer4 = autorun(() => {
       if (UiStore.records.length > 0) {
-        this.mapPoints();
+        this.mapPoints()
       }
     })
   }
@@ -44,19 +49,19 @@ const Map = observer(class extends React.Component {
   componentWillUnmount() {
     this.stopMap()
     this.autorunDisposer()
-    this.autorunDisposer2();
-    this.autorunDisposer3();
-    this.autorunDisposer4();
+    this.autorunDisposer2()
+    this.autorunDisposer3()
+    this.autorunDisposer4()
   }
 
-  componentDidUpdate(prevProps, prevState) {
+  componentDidUpdate() {
     // this.setupTileLayer()
   }
 
   startMap = () => {
-    this.map = L.map(this.refs.mapNode, {
+    this.map = L.map(this.mapNodeRef.current, {
       center: [
-        44.6458, -63.5778
+        44.6458, -63.5778,
       ],
       zoom: 13,
     })
@@ -75,7 +80,7 @@ const Map = observer(class extends React.Component {
     http.jsonRequest(`/api/datasets/${dataSetId}/records`)
       .then(action((response) => {
         UiStore.records.replace(_.get(response, 'bodyJson.list'))
-        this.mapPoints();
+        this.mapPoints()
       }))
       .catch(action((error) => {
         this.error = error
@@ -86,8 +91,8 @@ const Map = observer(class extends React.Component {
     this.refreshMap()
     http.jsonRequest(`/api/relationships/${relationshipId}/join`)
       .then(action((response) => {
-        UiStore.records.replace(_.get(response, 'bodyJson.list'));
-        this.mapPoints();
+        UiStore.records.replace(_.get(response, 'bodyJson.list'))
+        this.mapPoints()
       }))
       .catch(action((error) => {
         this.error = error
@@ -114,49 +119,49 @@ const Map = observer(class extends React.Component {
     icons[0] = L.divIcon({
       html: this.getIcon(1, 34),
       className: 'searchIcon0',
-      iconAnchor: [17, 17]
+      iconAnchor: [17, 17],
     })
     icons[1] = L.divIcon({
       html: this.getIcon(1, 30),
       className: 'searchIcon1',
-      iconAnchor: [15, 15]
+      iconAnchor: [15, 15],
     })
     icons[2] = L.divIcon({
       html: this.getIcon(0.9, 26),
       className: 'searchIcon2',
-      iconAnchor: [13, 13]
+      iconAnchor: [13, 13],
     })
     icons[3] = L.divIcon({
       html: this.getIcon(0.85, 22),
       className: 'searchIcon3',
-      iconAnchor: [11, 11]
-    });
+      iconAnchor: [11, 11],
+    })
     icons[4] = L.divIcon({
       html: this.getIcon(0.8, 22),
       className: 'searchIcon4',
-      iconAnchor: [11, 11]
+      iconAnchor: [11, 11],
     })
     icons[5] = L.divIcon({
       html: this.getIcon(0.75, 22),
       className: 'searchIcon5',
-      iconAnchor: [11, 11]
+      iconAnchor: [11, 11],
     })
     icons[6] = L.divIcon({
       html: this.getIcon(0.7, 22),
       className: 'searchIcon6',
-      iconAnchor: [11, 11]
+      iconAnchor: [11, 11],
     })
     icons[7] = L.divIcon({
       html: this.getIcon(0.65, 22),
       className: 'searchIconN',
-      iconAnchor: [11, 11]
-    });
+      iconAnchor: [11, 11],
+    })
     // standard icon
     const iconX = L.divIcon({
       html: this.getIcon(0.4),
       className: 'searchIconX',
-      iconAnchor: [9, 9]
-    });
+      iconAnchor: [9, 9],
+    })
 
     const points = []
     const foundPoints = []
@@ -164,9 +169,9 @@ const Map = observer(class extends React.Component {
 
     // Clear any existing markers
     if (this.markers) {
-      this.markers.clearLayers();
+      this.markers.clearLayers()
     }
-    this.markers = L.layerGroup();
+    this.markers = L.layerGroup()
 
     _.each(UiStore.records, (record) => {
       // use one side of the join or the other, at this point we don't know which has the geocoordinate
@@ -214,13 +219,13 @@ const Map = observer(class extends React.Component {
   updateSelected = action((point, record) => {
     const newSelected = {
       point: point,
-      records: []
+      records: [],
     }
     if (record.data) { // This is a relationship record
-      record.data[0].forEach((d, i) => {
+      record.data[0].forEach((d) => {
         newSelected.records.push(d)
       })
-      record.data[1].forEach((d, i) => {
+      record.data[1].forEach((d) => {
         newSelected.records.push(d)
       })
     } else {
@@ -239,7 +244,7 @@ const Map = observer(class extends React.Component {
 
   resetFoundRecords = action( () => {
     UiStore.foundRecords = []
-    UiStore.searchStrings.forEach((s, i) => {
+    UiStore.searchStrings.forEach(() => {
       UiStore.foundRecords.push([])
     })
   })
@@ -247,11 +252,11 @@ const Map = observer(class extends React.Component {
   makePoint = (record) => {
     // first try to make a point through the relationships
     if (record.data) {
-      const point = this.makePoint(record.data[0][0]);
+      const point = this.makePoint(record.data[0][0])
       if (point) {
-        return point;
+        return point
       } else {
-        return this.makePoint(record.data[1][0]);
+        return this.makePoint(record.data[1][0])
       }
     }
     // Make a point using the coordinates
@@ -292,14 +297,14 @@ const Map = observer(class extends React.Component {
           minZoom: 8,
           attribution: 'Map data &copy; <a href="https://openstreetmap.org">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://mapbox.com">Mapbox</a>',
           id: 'mapbox.streets',
-          accessToken: 'pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw'
+          accessToken: 'pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw',
         })
         break
 
       case 'OpenStreetMap':
       default:
         this.tileLayer = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
-          attribution: '&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> contributors'
+          attribution: '&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> contributors',
         })
         break
 
@@ -315,7 +320,7 @@ const Map = observer(class extends React.Component {
     return (
       <div style={{ ...Layout.column, flex: 1 }}>
 
-        <div ref='mapNode' style={styles.map}></div>
+        <div ref={this.mapNodeRef} style={styles.map}></div>
 
       </div>
     )
@@ -326,7 +331,7 @@ const styles = {
   map: {
     position: 'relative',
     flex: 1,
-  }
+  },
 }
 
 export default withStyles(styles)(Map)

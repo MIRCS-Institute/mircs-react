@@ -1,14 +1,14 @@
-import _ from 'lodash'
 import {action, extendObservable} from 'mobx'
 import {observer} from 'mobx-react'
+import _ from 'lodash'
 import Button from '@material-ui/core/Button'
+import Card from '@material-ui/core/Card'
+import CardContent from '@material-ui/core/CardContent'
+import CardHeader from '@material-ui/core/CardHeader'
 import Grid from '@material-ui/core/Grid'
-import Typography from '@material-ui/core/Typography'
-import Card from '@material-ui/core/Card';
-import CardContent from '@material-ui/core/CardContent';
-import CardHeader from '@material-ui/core/CardHeader';
 import http from 'utils/http'
 import React from 'react'
+import Typography from '@material-ui/core/Typography'
 
 const Home = observer(class extends React.Component {
   constructor(props) {
@@ -53,24 +53,24 @@ const Home = observer(class extends React.Component {
           <Grid key={dataSet._id} item xs={6} md={4}>
             <Card style={styles.card}>
               <CardContent>
-                <Typography gutterBottom variant="headline">
+                <Typography gutterBottom variant='headline'>
                   {dataSet.name}
                 </Typography>
                 {dataSet.description && <Typography>
                   {dataSet.description}
                 </Typography>}
                 <div style={{
-                  textAlign: "center"
+                  textAlign: 'center',
                 }}>
-                <Button
-                  style={styles.button}
-                  value={dataSet._id}
-                  variant='contained'
-                  color='primary'
-                  href={`#/datasets/${dataSet._id}/map`}
-                >
-                  Map
-                </Button>
+                  <Button
+                    style={styles.button}
+                    value={dataSet._id}
+                    variant='contained'
+                    color='primary'
+                    href={`#/datasets/${dataSet._id}/map`}
+                  >
+                    Map
+                  </Button>
                 </div>
               </CardContent>
             </Card>
@@ -86,7 +86,7 @@ const Home = observer(class extends React.Component {
                   {relation.description}
                 </div>}
                 <div style={{
-                  textAlign: "center"
+                  textAlign: 'center',
                 }}>
                   <Button
                     style={styles.button}
@@ -108,12 +108,12 @@ const Home = observer(class extends React.Component {
 
 const styles = {
   button: {
-    margin: "auto",
-    marginTop: "10px",
-    width: '50%'
+    margin: 'auto',
+    marginTop: '10px',
+    width: '50%',
   },
   card: {
-    margin: "10px"
+    margin: '10px',
   },
 }
 

@@ -1,7 +1,7 @@
+import { observer } from 'mobx-react'
 import PropTypes from 'prop-types'
 import React from 'react'
 import RecordCard from 'components/RecordCard'
-import { observer } from 'mobx-react'
 
 const RecordsCards = observer(class extends React.Component {
   static propTypes = {
@@ -16,11 +16,11 @@ const RecordsCards = observer(class extends React.Component {
       <div>
         {this.props.records.map((record) => (
           <RecordCard key={record._id} dataSetId={this.props.dataSetId} record={record}
-              onRefresh={this.props.onRefresh} onError={this.props.onError}/>
+            onRefresh={this.props.onRefresh} onError={this.props.onError}/>
         ))}
       </div>
-    );
+    )
   }
-});
+})
 
-export default RecordsCards;
+export default RecordsCards

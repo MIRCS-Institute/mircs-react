@@ -1,14 +1,14 @@
+import { action, extendObservable } from 'mobx'
+import { observer } from 'mobx-react'
 import Button from '@material-ui/core/Button'
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
+import Dialog from '@material-ui/core/Dialog'
+import DialogActions from '@material-ui/core/DialogActions'
+import DialogContent from '@material-ui/core/DialogContent'
+import DialogContentText from '@material-ui/core/DialogContentText'
+import DialogTitle from '@material-ui/core/DialogTitle'
 import PropTypes from 'prop-types'
 import React from 'react'
 import TextField from '@material-ui/core/TextField'
-import { action, extendObservable } from 'mobx'
-import { observer } from 'mobx-react'
 
 //
 // Displays a confirmation dialog for a deletion, requiring the user to type 'delete' as confirmation
@@ -20,18 +20,18 @@ const ConfirmDeleteDialog = observer(class extends React.Component {
     // called when the dialog is dismissed
     onCancel: PropTypes.func.isRequired,
     // called once the confirmation string has been entered and the user clicks the Delete button
-    onConfirm: PropTypes.func.isRequired
+    onConfirm: PropTypes.func.isRequired,
   }
 
   constructor() {
-    super();
+    super()
     extendObservable(this, {
-      confirmFieldValue: ''
-    });
+      confirmFieldValue: '',
+    })
   }
 
   handleTextChange = action((event) => {
-    this.confirmFieldValue = event.target.value;
+    this.confirmFieldValue = event.target.value
   })
 
   isDeleteDisabled = () => (this.confirmFieldValue !== 'delete')
@@ -42,10 +42,10 @@ const ConfirmDeleteDialog = observer(class extends React.Component {
         <DialogTitle>Delete {this.props.name}</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            To delete {this.props.name} enter "delete" below:
+            To delete {this.props.name} enter &quote;delete&quote; below:
           </DialogContentText>
           <TextField autoFocus margin='dense' id='delete' label='enter "delete"' type='text' fullWidth
-                value={this.confirmFieldValue} onChange={this.handleTextChange}/>
+            value={this.confirmFieldValue} onChange={this.handleTextChange}/>
         </DialogContent>
         <DialogActions>
           <Button onClick={this.props.onCancel} color='primary'>
@@ -56,8 +56,8 @@ const ConfirmDeleteDialog = observer(class extends React.Component {
           </Button>
         </DialogActions>
       </Dialog>
-    );
+    )
   }
 })
 
-export default ConfirmDeleteDialog;
+export default ConfirmDeleteDialog

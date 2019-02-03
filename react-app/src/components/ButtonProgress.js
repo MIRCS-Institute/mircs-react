@@ -1,9 +1,9 @@
+import CircularProgress from '@material-ui/core/CircularProgress'
 import React from 'react'
-import CircularProgress from '@material-ui/core/CircularProgress';
 
 const ButtonProgress = () => (
   <CircularProgress size={24} style={styles.buttonProgress}/>
-);
+)
 
 const styles = {
   buttonProgress: {
@@ -13,6 +13,6 @@ const styles = {
     marginTop: -12,
     marginLeft: -12,
   },
-};
+}
 
-export default ButtonProgress;
+export default ButtonProgress

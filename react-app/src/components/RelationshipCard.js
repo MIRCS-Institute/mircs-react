@@ -1,68 +1,67 @@
+import {action, extendObservable} from 'mobx'
+import {observer} from 'mobx-react'
 import _ from 'lodash'
 import Button from '@material-ui/core/Button'
-import Card from '@material-ui/core/Card';
-import CardActions from '@material-ui/core/CardActions';
-import CardContent from '@material-ui/core/CardContent';
-import CardHeader from '@material-ui/core/CardHeader';
+import Card from '@material-ui/core/Card'
+import CardActions from '@material-ui/core/CardActions'
+import CardContent from '@material-ui/core/CardContent'
+import CardHeader from '@material-ui/core/CardHeader'
 import ConfirmDeleteDialog from 'components/ConfirmDeleteDialog'
 import DataSetName from 'components/DataSetName'
 import EditRelationshipDialog from 'components/EditRelationshipDialog'
 import http from 'utils/http'
+import PropTypes from 'prop-types'
 import React from 'react'
-import {action, extendObservable} from 'mobx'
-import {observer} from 'mobx-react'
 
 /* each individual card will represent a single Relationship */
 const RelationshipCard = observer(class extends React.Component {
+  static propTypes = {
+    relationship: PropTypes.object,
+    onRefresh: PropTypes.func.isRequired,
+    onError: PropTypes.func.isRequired,
+  }
+
   constructor() {
-    super();
+    super()
     extendObservable(this, {
       showEditDialog: false,
-      showConfirmDeleteDialog: false
-    });
+      showConfirmDeleteDialog: false,
+    })
   }
 
   handleDeleteClick = action(() => {
-    this.showConfirmDeleteDialog = true;
+    this.showConfirmDeleteDialog = true
   })
 
   handleDeleteCancel = action(() => {
-    this.showConfirmDeleteDialog = false;
+    this.showConfirmDeleteDialog = false
   })
 
   handleDeleteConfirm = action(() => {
-    this.showConfirmDeleteDialog = false;
+    this.showConfirmDeleteDialog = false
     http
       .jsonRequest(`/api/relationships/${this.props.relationship._id}`, {method: 'delete'})
-      .then(action((response) => {
-        this
-          .props
-          .onRefresh();
-      }))
-      .catch(action((error) => {
-        this
-          .props
-          .onError(error);
-      }));
+      .then(this.props.onRefresh)
+      .catch(this.props.onError)
   })
 
   handleEditClick = action(() => {
-    this.showEditDialog = true;
+    this.showEditDialog = true
   })
 
   handleEditCancel = action(() => {
-    this.showEditDialog = false;
+    this.showEditDialog = false
   })
 
   handleEditAfterSave = action(() => {
-    this.showEditDialog = false;
+    this.showEditDialog = false
     this
       .props
-      .onRefresh();
+      .onRefresh()
   })
 
   handleViewClick = action(() => {
-    return http.jsonRequest(`/api/relationships/${this.props.relationship._id}`, {});
+    return http.jsonRequest(`/api/relationships/${this.props.relationship._id}`, {})
   })
 
   render() {
@@ -92,7 +91,7 @@ const RelationshipCard = observer(class extends React.Component {
                 </div>
               ))}
           </div>
-}
+          }
 
           {_.get(this.props.relationship, 'joinElements.length') > 0 && <div>
             <strong>Data Sets:</strong>
@@ -106,7 +105,7 @@ const RelationshipCard = observer(class extends React.Component {
                 </div>
               ))}
           </div>
-}
+          }
 
           <EditRelationshipDialog
             open={this.showEditDialog}
@@ -119,25 +118,25 @@ const RelationshipCard = observer(class extends React.Component {
 
         </CardContent>
         <CardActions>
-          <Button variant='raised' onClick={this.handleViewClick}>
+          <Button variant='contained' onClick={this.handleViewClick}>
             View Relationship
           </Button>
-          <Button variant='raised' onClick={this.handleEditClick}>
+          <Button variant='contained' onClick={this.handleEditClick}>
             Edit Relationship
           </Button>
-          <Button variant='raised' color='secondary' onClick={this.handleDeleteClick}>
+          <Button variant='contained' color='secondary' onClick={this.handleDeleteClick}>
             Delete Relationship
           </Button>
         </CardActions>
       </Card>
-    );
+    )
   }
-});
+})
 
 const styles = {
   card: {
-    marginBottom: '15px'
-  }
-};
+    marginBottom: '15px',
+  },
+}
 
-export default RelationshipCard;
+export default RelationshipCard

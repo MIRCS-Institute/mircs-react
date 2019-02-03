@@ -1,19 +1,9 @@
 import { observer } from 'mobx-react'
-import { withStyles } from '@material-ui/core/styles';
+import { withStyles } from '@material-ui/core/styles'
 import React from 'react'
 import UiStore from '../app/UiStore'
 
 const MapStatus = observer(class extends React.Component {
-
-  componentDidMount() {
-  }
-
-  componentWillUnmount() {
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-  }
-
   render() {
     const { classes } = this.props
     return (

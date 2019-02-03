@@ -1,9 +1,9 @@
-import {extendObservable} from 'mobx';
+import {extendObservable} from 'mobx'
 
 class UiStore {
   constructor() {
     extendObservable(this, {
-      tileLayerName: "Mapbox",  // The name of the tile layer to use.
+      tileLayerName: 'Mapbox',  // The name of the tile layer to use.
       searchStrings: [],  // An array of strings that are being searched for
       records: [],  // An array of records, basically the raw data returned from the server.
       foundRecords: [], // An array of arrays of records, each corresponding to the searchString at the same index
@@ -14,4 +14,4 @@ class UiStore {
 
 }
 
-export default new UiStore();
+export default new UiStore()

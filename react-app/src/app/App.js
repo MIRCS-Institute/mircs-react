@@ -1,12 +1,12 @@
-import _ from 'lodash'
 import { action, extendObservable } from 'mobx'
-import { fade } from '@material-ui/core/styles/colorManipulator';
+import { fade } from '@material-ui/core/styles/colorManipulator'
 import { HashRouter } from 'react-router-dom'
 import { NavLink, Route } from 'react-router-dom'
 import { observer } from 'mobx-react'
 import { Switch } from 'react-router-dom'
 import { withRouter } from 'react-router-dom'
-import { withStyles } from '@material-ui/core/styles';
+import { withStyles } from '@material-ui/core/styles'
+import _ from 'lodash'
 import AppBar from '@material-ui/core/AppBar'
 import blue from '@material-ui/core/colors/blue'
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft'
@@ -18,12 +18,12 @@ import Home from 'pages/Home'
 import HomeIcon from '@material-ui/icons/Home'
 import IconButton from '@material-ui/core/IconButton'
 import Layout from 'utils/Layout'
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import MenuIcon from '@material-ui/icons/Menu';
-import PropTypes from 'prop-types';
+import List from '@material-ui/core/List'
+import ListItem from '@material-ui/core/ListItem'
+import ListItemIcon from '@material-ui/core/ListItemIcon'
+import ListItemText from '@material-ui/core/ListItemText'
+import MenuIcon from '@material-ui/icons/Menu'
+import PropTypes from 'prop-types'
 import React from 'react'
 import Records from 'pages/Records'
 import RelationshipMap from 'pages/RelationshipMap'
@@ -39,9 +39,6 @@ const App = observer(class extends React.Component {
     extendObservable(this, {
       isDrawerOpen: false,
     })
-  }
-
-  componentDidMount(): void {
   }
 
   toggleDrawerOpen = action(() => {
@@ -91,34 +88,43 @@ const SubTitle = withRouter((props) => {
   )
 })
 
-const SideMenu = (props) => (
-  <List>
-    <div><IconButton onClick={props.toggleDrawerOpen}><ChevronLeftIcon/></IconButton></div>
+const SideMenu = ({ toggleDrawerOpen }) => (<List>
+  <div><IconButton onClick={toggleDrawerOpen}><ChevronLeftIcon /></IconButton></div>
 
-    <NavMenuItem route='/' exact text='Home' icon={<HomeIcon/>}
-                  toggleDrawerOpen={props.toggleDrawerOpen}/>
-    <NavMenuItem route='/datasets' text='Data Sets' icon={<ExtensionIcon/>}
-                  toggleDrawerOpen={props.toggleDrawerOpen}/>
-    <NavMenuItem route='/relationships' text='Relationships' icon={<WeekendIcon/>}
-                  toggleDrawerOpen={props.toggleDrawerOpen}/>
-  </List>
-)
+  <NavMenuItem route='/' exact text='Home' icon={<HomeIcon />} toggleDrawerOpen={toggleDrawerOpen} />
+  <NavMenuItem route='/datasets' text='Data Sets' icon={<ExtensionIcon />} toggleDrawerOpen={toggleDrawerOpen} />
+  <NavMenuItem route='/relationships' text='Relationships' icon={<WeekendIcon />} toggleDrawerOpen={toggleDrawerOpen} />
+</List>)
 
-const NavMenuItem = withRouter((props) => {
+SideMenu.propTypes = {
+  toggleDrawerOpen: PropTypes.func,
+}
+
+const NavMenuItem = withRouter(({ exact, location, route, text, toggleDrawerOpen, icon }) => {
   let isSelected
-  if (props.exact) {
-    isSelected = props.location.pathname === props.route
+  if (exact) {
+    isSelected = location.pathname === route
   } else {
-    isSelected = _.startsWith(props.location.pathname, props.route)
+    isSelected = _.startsWith(location.pathname, route)
+  }
+
+  const style = {
+    navLink: {
+      textDecoration: 'none',
+      color: 'black',
+    },
+    selectedNavLink: {
+      color: blue[400],
+    },
   }
 
   return (
-    <NavLink to={props.route} style={styles.navLink} activeStyle={styles.selectedNavLink}>
-      <ListItem button onClick={props.toggleDrawerOpen}>
-        <ListItemIcon style={ isSelected ? styles.selectedNavLink : {} }>
-          {props.icon}
+    <NavLink to={route} style={style.navLink} activeStyle={style.selectedNavLink}>
+      <ListItem button onClick={toggleDrawerOpen}>
+        <ListItemIcon style={ isSelected ? style.selectedNavLink : {} }>
+          {icon}
         </ListItemIcon>
-        <ListItemText style={isSelected ? {} : styles.navLink} primary={props.text} disableTypography/>
+        <ListItemText style={isSelected ? {} : style.navLink} primary={text} disableTypography/>
       </ListItem>
     </NavLink>
   )
@@ -155,13 +161,6 @@ const styles = theme => ({
     [theme.breakpoints.up('sm')]: {
       display: 'block',
     },
-  },
-  navLink: {
-    textDecoration: 'none',
-    color: 'black'
-  },
-  selectedNavLink: {
-    color: blue[400]
   },
   grow: {
     flexGrow: 1,
@@ -207,10 +206,6 @@ const styles = theme => ({
       },
     },
   },
-});
+})
 
-App.propTypes = {
-  classes: PropTypes.object.isRequired,
-};
-
-export default withStyles(styles)(App);
+export default withStyles(styles)(App)

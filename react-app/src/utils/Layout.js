@@ -1,11 +1,11 @@
-const Layout = {};
+const Layout = {}
 
 /**
  * Layout child elements in rows
  */
 Layout.row = {
   display: 'flex',
-  flexDirection: 'row'
+  flexDirection: 'row',
 }
 
 /**
@@ -13,7 +13,7 @@ Layout.row = {
  */
 Layout.column = {
   display: 'flex',
-  flexDirection: 'column'
+  flexDirection: 'column',
 }
 
 /**
@@ -25,12 +25,12 @@ Layout.absoluteFill = {
   left: 0,
   right: 0,
   top: 0,
-  bottom: 0
+  bottom: 0,
 }
 
 Layout.listContainer = {
   overflowX: 'hidden',
-  overflowY: 'auto'
+  overflowY: 'auto',
 }
 
 /**
@@ -40,18 +40,18 @@ Layout.listContainer = {
 Layout.align = (main, cross) => {
   function sanitize(term) {
     if (term === 'start') {
-      term = 'flex-start';
+      term = 'flex-start'
     }
     if (term === 'end') {
-      term = 'flex-end';
+      term = 'flex-end'
     }
-    return term;
+    return term
   }
-  main = sanitize(main);
-  cross = sanitize(cross);
+  main = sanitize(main)
+  cross = sanitize(cross)
   return {
     justifyContent: main,
-    alignItems: cross
+    alignItems: cross,
   }
 }
-export default Layout;
+export default Layout

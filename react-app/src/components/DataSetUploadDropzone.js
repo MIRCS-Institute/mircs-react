@@ -1,6 +1,6 @@
-import _ from 'lodash'
 import { action } from 'mobx'
 import { observer } from 'mobx-react'
+import _ from 'lodash'
 import Dropzone from 'react-dropzone'
 import http from 'utils/http'
 import papa from 'papaparse'
@@ -12,73 +12,76 @@ const DataSetUploadDropzone = observer(class extends React.Component {
     dataSet: PropTypes.object.isRequired,
     onDataSetUpdated: PropTypes.func.isRequired,
     onError: PropTypes.func.isRequired,
+    children: PropTypes.array,
   }
 
-  handleDrop = action((acceptedFiles, rejectedFiles) => {
+  handleDrop = action((acceptedFiles) => {
     if (!acceptedFiles.length) {
-      return;
+      return
     }
 
-    const file = acceptedFiles[0];
+    const file = acceptedFiles[0]
     papa.parse(file, {
       dynamicTyping: true,
-      complete: (results, file) => {
-        this.handleCsvLoaded(results.data, file)
+      complete: (results) => {
+        this.handleCsvLoaded(results.data)
       },
       error: (error) => {
         console.error('error parsing csv:', error)
-        return this.props.onError(error);
+        return this.props.onError(error)
       },
     })
   })
 
-  handleCsvLoaded = (data, file) => {
-    const headers = data[0];
-    const illegalHeaders = [];
+  handleCsvLoaded = (data) => {
+    const headers = data[0]
+    const illegalHeaders = []
     _.each(headers, (header, index) => {
       if (!header || header[0] === '$' || header.indexOf('.') >= 0) {
-        illegalHeaders.push(header || index);
+        illegalHeaders.push(header || index)
       }
-    });
+    })
     if (illegalHeaders.length) {
-      return this.props.onError(new Error('Headers cannot contain dots (i.e. .) or null characters, and they must not start with a dollar sign (i.e. $). Illegal headers: ' + illegalHeaders.join(', ')));
+      return this.props.onError(new Error('Headers cannot contain dots (i.e. .) or null characters, and they must not start with a dollar sign (i.e. $). Illegal headers: ' + illegalHeaders.join(', ')))
     }
 
-    const records = [];
+    const records = []
     _.each(data, (row, index) => {
       if (index > 0) { // skip header row
-        const record = {};
+        const record = {}
         _.each(row, (value, rowValueIndex) => {
-          const key = headers[rowValueIndex];
-          record[key] = value;
-        });
-        records.push(record);
+          const key = headers[rowValueIndex]
+          record[key] = value
+        })
+        records.push(record)
       }
-    });
+    })
 
     http.jsonRequest(`/api/datasets/${this.props.dataSet._id}/records`, {
       method: 'post',
       bodyJson: {
-        records: records
-      }
+        records: records,
+      },
     })
-      .then(action((response) => {
-        this.props.onDataSetUpdated();
+      .then(action(() => {
+        this.props.onDataSetUpdated()
       }))
       .catch(action((error) => {
-        this.props.onError(error);
-      }));
+        this.props.onError(error)
+      }))
   }
 
   render() {
     return (
-      <Dropzone onDrop={this.handleDrop} accept="text/csv"
-                activeStyle={{ backgroundColor: 'lightgray' }}
-                rejectStyle={{ backgroundColor: 'red', cursor: 'no-drop' }}
-                children={this.props.children}/>
-    );
+      <Dropzone onDrop={this.handleDrop} accept='text/csv'
+        activeStyle={{ backgroundColor: 'lightgray' }}
+        rejectStyle={{ backgroundColor: 'red', cursor: 'no-drop' }}
+      >
+        {this.props.children}
+      </Dropzone>
+    )
   }
-});
+})
 
 
-export default DataSetUploadDropzone;
+export default DataSetUploadDropzone

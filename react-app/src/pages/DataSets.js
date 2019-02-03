@@ -1,3 +1,5 @@
+import { action, extendObservable } from 'mobx'
+import { observer } from 'mobx-react'
 import _ from 'lodash'
 import Button from '@material-ui/core/Button'
 import DataSetCard from 'components/DataSetCard'
@@ -6,61 +8,59 @@ import ErrorSnackbar from 'components/ErrorSnackbar'
 import http from 'utils/http'
 import LoadingSpinner from 'components/LoadingSpinner'
 import React from 'react'
-import { action, extendObservable } from 'mobx'
-import { observer } from 'mobx-react'
 
 const DataSets = observer(class extends React.Component {
   constructor() {
-    super();
+    super()
     extendObservable(this, {
       dataSets: [],
       error: null,
       isLoading: false,
 
-      showCreateDialog: false
-    });
+      showCreateDialog: false,
+    })
   }
 
   componentDidMount() {
-    this.refresh();
+    this.refresh()
   }
 
   refresh = action(() => {
-    this.isLoading = true;
+    this.isLoading = true
     // use the http.jsonRequest to create a response object from a URL
     http.jsonRequest('/api/datasets')
       .then(action((response) => {
-        this.isLoading = false;
-        this.dataSets = _.get(response, 'bodyJson.list');
+        this.isLoading = false
+        this.dataSets = _.get(response, 'bodyJson.list')
       }))
       .catch(action((error) => {
-        this.isLoading = false;
-        this.error = error;
-      }));
+        this.isLoading = false
+        this.error = error
+      }))
   })
 
   handleCreateClick = action(() => {
-    this.showCreateDialog = true;
+    this.showCreateDialog = true
   })
 
   handleCreateCancel = action(() => {
-    this.showCreateDialog = false;
+    this.showCreateDialog = false
   })
 
   handleCreateAfterSave = action(() => {
-    this.showCreateDialog = false;
-    this.refresh();
+    this.showCreateDialog = false
+    this.refresh()
   })
 
   handleError = action((error) => {
-    this.error = error;
-    this.refresh();
+    this.error = error
+    this.refresh()
   })
 
   render() {
     return (
       <div>
-        <Button variant='raised' color='primary' style={{ marginTop: 10 }} onClick={this.handleCreateClick}>
+        <Button variant='contained' color='primary' style={{ marginTop: 10 }} onClick={this.handleCreateClick}>
           Create a Data Set
         </Button>
 
@@ -77,14 +77,14 @@ const DataSets = observer(class extends React.Component {
 
         <ErrorSnackbar error={this.error} />
       </div>
-    );
+    )
   }
-});
+})
 
 const styles = {
   description: {
-    marginBottom: '20px'
+    marginBottom: '20px',
   },
-};
+}
 
-export default DataSets;
+export default DataSets

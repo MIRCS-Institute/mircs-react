@@ -6,14 +6,25 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "clean": "rm -rf build",
+    "lint": "eslint .",
     "test": "react-scripts test --env=jsdom"
   },
+  "proxy": "http://localhost:8001/",
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ],
   "dependencies": {
-    "FileReader": "^0.10.2",
-    "axios": "^0.17.1",
-    "fs": "0.0.1-security",
     "@material-ui/core": "^3.6.2",
     "@material-ui/icons": "^3.0.1",
+    "FileReader": "^0.10.2",
+    "axios": "^0.17.1",
+    "chai": "^4.2.0",
+    "eslint-plugin-sort-imports-es6-autofix": "^0.3.0",
+    "fs": "0.0.1-security",
+    "jss": "^9.8.7",
     "mobx": "^3.3.1",
     "mobx-react": "^4.3.3",
     "papaparse": "^4.4.0",
@@ -23,12 +34,5 @@
     "react-router-dom": "^4.2.2",
     "react-scripts": "^2.1.1",
     "turf": "^3.0.14"
-  },
-  "proxy": "http://localhost:8001/",
-  "browserslist": [
-    ">0.2%",
-    "not dead",
-    "not ie <= 11",
-    "not op_mini all"
-  ]
+  }
 }

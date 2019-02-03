@@ -1,14 +1,14 @@
-import _ from 'lodash'
 import { observer } from 'mobx-react'
-import { withStyles } from "@material-ui/core";
-import Card from '@material-ui/core/Card';
-import CardContent from '@material-ui/core/CardContent';
-import Paper from "@material-ui/core/Paper";
-import PropTypes from "prop-types";
+import { withStyles } from '@material-ui/core'
+import _ from 'lodash'
+import Card from '@material-ui/core/Card'
+import CardContent from '@material-ui/core/CardContent'
+import Paper from '@material-ui/core/Paper'
+import PropTypes from 'prop-types'
 import React from 'react'
-import StreetviewCard from "./StreetviewCard";
-import Typography from "@material-ui/core/Typography";
-import UiStore from "../app/UiStore";
+import StreetviewCard from './StreetviewCard'
+import Typography from '@material-ui/core/Typography'
+import UiStore from '../app/UiStore'
 
 const MapDrawer = observer(class extends React.Component {
 
@@ -53,13 +53,13 @@ const MapDrawer = observer(class extends React.Component {
   }
 
   render() {
-    const { classes } = this.props;
-    const { open } = this.state;
+    const { classes } = this.props
+    const { open } = this.state
 
     if (UiStore.selected.records) {
       return (
         <Paper
-          anchor="left"
+          anchor='left'
           open={open}
           className={classes.drawer}
           classes={{
@@ -67,12 +67,12 @@ const MapDrawer = observer(class extends React.Component {
           }}
           square={true}
         >
-          <Typography variant="h6" align="center">{UiStore.selected.records.length} records.</Typography>
+          <Typography variant='h6' align='center'>{UiStore.selected.records.length} records.</Typography>
 
           {UiStore.selected.records.map((record, i) => (
             <Card className={classes.card} key={i}>
               <CardContent>
-                <Typography component="p" dangerouslySetInnerHTML={{__html: this.buildRecordHTML(record)}}>
+                <Typography component='p' dangerouslySetInnerHTML={{__html: this.buildRecordHTML(record)}}>
                 </Typography>
               </CardContent>
             </Card>
@@ -86,7 +86,7 @@ const MapDrawer = observer(class extends React.Component {
     } else {
       return (
         <Paper
-          anchor="left"
+          anchor='left'
           open={open}
           className={classes.drawer}
           classes={{
@@ -94,7 +94,7 @@ const MapDrawer = observer(class extends React.Component {
           }}
           square={true}
         >
-          <Typography component="i" variant="h6" align="center">
+          <Typography component='i' variant='h6' align='center'>
             Select a location for more detail.
           </Typography>
         </Paper>
@@ -104,7 +104,7 @@ const MapDrawer = observer(class extends React.Component {
   }
 })
 
-const styles = theme => ({
+const styles = () => ({
   root: {
     display: 'flex',
   },
@@ -116,6 +116,6 @@ const styles = theme => ({
     width: 350,
     overflowY: 'auto',
   },
-});
+})
 
 export default withStyles(styles, { withTheme: true })(MapDrawer)
