@@ -24,42 +24,35 @@ function createRouterForDir(dir) {
     })
   }
 
-  function addMiddleware() {
-    FsUtil.forEachFileInDir(path.join(dir, 'middleware'), '.middleware.js', function(filePath) {
-      try {
-        router.use(require(filePath))
-      } catch (exception) {
-        log.fatal(`Error starting middleware ${filePath}:`, exception)
-        throw exception
-      }
-    })
-  }
+  // add middleware
+  FsUtil.forEachFileInDir(path.join(dir, 'middleware'), '.middleware.js', function(filePath) {
+    try {
+      router.use(require(filePath))
+    } catch (exception) {
+      log.fatal(`Error starting middleware ${filePath}:`, exception)
+      throw exception
+    }
+  })
 
-  function addParams() {
-    FsUtil.forEachFileInDir(path.join(dir, 'params'), '.param.js', function(filePath) {
-      try {
-        require(filePath)(router)
-      } catch (exception) {
-        log.fatal(`Error starting param handler ${filePath}:`, exception)
-        throw exception
-      }
-    })
-  }
+  // add params
+  FsUtil.forEachFileInDir(path.join(dir, 'params'), '.param.js', function(filePath) {
+    try {
+      require(filePath)(router)
+    } catch (exception) {
+      log.fatal(`Error starting param handler ${filePath}:`, exception)
+      throw exception
+    }
+  })
 
-  function addRoutes() {
-    FsUtil.forEachFileInDir(path.join(dir, 'routes'), '.route.js', function(filePath) {
-      try {
-        require(filePath)(router)
-      } catch (exception) {
-        log.fatal(`Error starting route ${filePath}:`, exception)
-        throw exception
-      }
-    })
-  }
-
-  addMiddleware()
-  addParams()
-  addRoutes()
+  // add routes
+  FsUtil.forEachFileInDir(path.join(dir, 'routes'), '.route.js', function(filePath) {
+    try {
+      require(filePath)(router)
+    } catch (exception) {
+      log.fatal(`Error starting route ${filePath}:`, exception)
+      throw exception
+    }
+  })
 
   // list all registered routes
   if (log.level() === log.TRACE) {

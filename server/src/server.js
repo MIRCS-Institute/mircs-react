@@ -8,7 +8,6 @@ const Environment = require('./utils/environment.js')
 const express = require('express')
 const log = require('./utils/log.js')
 const logger = require('morgan')
-const bodyParser = require('body-parser')
 const MongoUtil = require('./utils/mongo-util.js')
 const path = require('path')
 
@@ -26,9 +25,9 @@ app.use(cors({ maxAge: MAX_AGE_SECONDS }))
 app.use(express.static(path.join(__dirname, '../public')))
 
 // configure the app the use body-parser for POST requests
-app.use(bodyParser.urlencoded({ extended: false }))
+app.use(express.urlencoded({ extended: false }))
 // for parsing application/json
-app.use(bodyParser.json({ limit: '50mb' }))
+app.use(express.json({ limit: '50mb' }))
 
 // register the api
 app.use(createRouterForDir(path.join(__dirname, 'api')))

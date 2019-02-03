@@ -6,21 +6,27 @@ const MONGO_SERVER_URL = Environment.getRequired('MONGO_SERVER_URL')
 
 const MongoUtil = {}
 
+MongoUtil.AUTHENTICATION_COLLECTION = 'Authentication'
 MongoUtil.DATA_SETS_COLLECTION = 'DataSets'
 MongoUtil.RELATIONSHIPS_COLLECTION = 'Relationships'
 MongoUtil.DATA_SETS_COLLECTION_PREFIX = 'dataset_'
 MongoUtil.DATA_SETS_FIELDS_COLLECTION_SUFFIX = '_fields'
 
-/* the initialize function will create the master collection upon starting the server */
-MongoUtil.initialize = function () {
-  return MongoUtil
-    .createCollection(MongoUtil.DATA_SETS_COLLECTION)
-    .then(() => {
-      return MongoUtil.createCollection(MongoUtil.RELATIONSHIPS_COLLECTION)
-    })
+/* creates common collections */
+MongoUtil.initialize = async () => {
+  const db = await MongoClient.connect(MONGO_SERVER_URL)
+
+  const auth = await db.createCollection(MongoUtil.AUTHENTICATION_COLLECTION)
+  await auth.createIndex({ email: 1 }, { unique: true })
+
+  await MongoUtil.createCollection(MongoUtil.DATA_SETS_COLLECTION)
+
+  await MongoUtil.createCollection(MongoUtil.RELATIONSHIPS_COLLECTION)
+
+  await db.close()
 }
 
-MongoUtil.validateRelationship = function (relationship) {
+MongoUtil.validateRelationship = (relationship) => {
   if (!_.isString(relationship.name)) {
     throw new Error('name is required')
   }
@@ -30,7 +36,7 @@ MongoUtil.validateRelationship = function (relationship) {
   if (!_.isArray(relationship.joinElements)) {
     throw new Error('joinElements array is required')
   }
-  _.each(relationship.joinElements, function (joinElement) {
+  _.each(relationship.joinElements, (joinElement) => {
     if (relationship.dataSets.length !== joinElement.length) {
       throw new Error('joinElements arrays must be the same length as dataSets')
     }
@@ -47,10 +53,10 @@ Note: the returned db instance should be closed when finished.
 
 @see http://mongodb.github.io/node-mongodb-native/2.2/api/Db.html
 */
-MongoUtil.getDb = function () {
-  return new Promise(function (resolve, reject) {
+MongoUtil.getDb = () => {
+  return new Promise((resolve, reject) => {
     MongoClient
-      .connect(MONGO_SERVER_URL, function (error, db) {
+      .connect(MONGO_SERVER_URL, (error, db) => {
         if (error) {
           return reject(error)
         }
@@ -63,11 +69,11 @@ MongoUtil.getDb = function () {
 creates a new collection in the database
 @see http://mongodb.github.io/node-mongodb-native/2.2/api/Db.html#createCollection
  */
-MongoUtil.createCollection = function (collectionName, options) {
+MongoUtil.createCollection = (collectionName, options) => {
   return MongoUtil
     .getDb()
-    .then(function (db) {
-      return db.createCollection(collectionName, options, function (error) {
+    .then((db) => {
+      return db.createCollection(collectionName, options, (error) => {
         db.close()
         if (error) {
           throw error
@@ -80,18 +86,18 @@ MongoUtil.createCollection = function (collectionName, options) {
 finds and returns documents in a collection matching the passed query
 @see http://mongodb.github.io/node-mongodb-native/2.2/api/Collection.html#find
 */
-MongoUtil.find = function (collectionName, query) {
+MongoUtil.find = (collectionName, query) => {
   let db
   return MongoUtil
     .getDb()
-    .then(function (theDb) {
+    .then((theDb) => {
       db = theDb
 
-      return new Promise(function (resolve, reject) {
+      return new Promise((resolve, reject) => {
         db
           .collection(collectionName)
           .find(query)
-          .toArray(function (error, result) {
+          .toArray((error, result) => {
             db.close()
             if (error) {
               return reject(error)
@@ -105,12 +111,11 @@ MongoUtil.find = function (collectionName, query) {
 /*
 update the fields collection associated with a collection
 */
-MongoUtil.refreshFields = function (db, collectionName) {
-
-  return new Promise(function(resolve, reject) {
+MongoUtil.refreshFields = (db, collectionName) => {
+  return new Promise((resolve, reject) => {
     const cursor = db.collection(collectionName).find()
     const fields = {}
-    cursor.each(function(err, item) {
+    cursor.each((err, item) => {
       if (err) {
         return reject(err)
       }
@@ -120,17 +125,17 @@ MongoUtil.refreshFields = function (db, collectionName) {
         return resolve(fields)
       }
 
-      _.each(item, function(value, key) {
+      _.each(item, (value, key) => {
         fields[key] = typeof this[key]
       })
     })
   })
-    .then(function(fields) {
+    .then((fields) => {
       const fieldsCollection = db.collection(collectionName + MongoUtil.DATA_SETS_FIELDS_COLLECTION_SUFFIX)
       return fieldsCollection.remove({})
-        .then(function() {
+        .then(() => {
           const fieldDocs = []
-          _.each(fields, function(value, key) {
+          _.each(fields, (value, key) => {
             fieldDocs.push({ _id: key, value: value })
           })
           return fieldsCollection.insertMany(fieldDocs)
@@ -141,7 +146,7 @@ MongoUtil.refreshFields = function (db, collectionName) {
 /*
 from a relationship object fetch the set of joined records
  */
-MongoUtil.joinRecords = function(relationship) {
+MongoUtil.joinRecords = (relationship) => {
   if (_.get(relationship, 'dataSets.length') !== 2) {
     return Promise.reject(new Error('currently limited to relationships with 2 data sets'))
   }
@@ -152,7 +157,7 @@ MongoUtil.joinRecords = function(relationship) {
   // return a promise resolving to an array of arrays of dataset records
   function collectDataSets() {
     const promises = []
-    _.each(relationship.dataSets, function(dataSetId) {
+    _.each(relationship.dataSets, (dataSetId) => {
       const collectionName = MongoUtil.DATA_SETS_COLLECTION_PREFIX + dataSetId
       promises.push(MongoUtil.find(collectionName, {}))
     })
