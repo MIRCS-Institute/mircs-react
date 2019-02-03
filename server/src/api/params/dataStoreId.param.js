@@ -10,7 +10,12 @@ module.exports = (router) => {
   router.param('dataSetId', async (req, res, next, dataSetId) => {
     try {
       dataSetId = ObjectID(dataSetId)
+    } catch(exception) {
+      console.error(exception)
+      return next(new Error(`Invalid ObjectID: '${dataSetId}'`))
+    }
 
+    try {
       const dataSets = await MongoUtil.find(MongoUtil.DATA_SETS_COLLECTION, { _id: dataSetId })
       req.dataSet = dataSets[0]
       next()

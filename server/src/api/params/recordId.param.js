@@ -11,7 +11,12 @@ module.exports = (router) => {
   router.param('recordId', async (req, res, next, recordId) => {
     try {
       recordId = ObjectID(recordId)
+    } catch(exception) {
+      console.error(exception)
+      return next(new Error(`Invalid ObjectID: '${recordId}'`))
+    }
 
+    try {
       const collectionName = req.dataSet && req.dataSet._collectionName
       if (!collectionName) {
         return next(HttpErrors.notFound404('Data Set contains no _collectionName. dataSet: '+ JSON.stringify(req.dataSet)))

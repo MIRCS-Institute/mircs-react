@@ -10,7 +10,12 @@ module.exports = (router) => {
   router.param('relationshipId', async (req, res, next, relationshipId) => {
     try {
       relationshipId = ObjectID(relationshipId)
+    } catch(exception) {
+      console.error(exception)
+      return next(new Error(`Invalid ObjectID: '${relationshipId}'`))
+    }
 
+    try {
       const dataSets = await MongoUtil.find(MongoUtil.RELATIONSHIPS_COLLECTION, { _id: relationshipId })
       req.relationship = dataSets[0]
       next()
