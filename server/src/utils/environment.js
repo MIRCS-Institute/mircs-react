@@ -23,7 +23,7 @@ const CONFIGURATION_VARS = {
     description: 'MongoDB connection string - for details see https://docs.mongodb.org/manual/reference/connection-string/',
   },
   JWT_SECRET_KEY: {
-    default: 'mongodb://localhost:27017/mircsdb3nYZHW9zguCUvpQWYtfFAF3H3GRdYSaF5vhw3qGaM7rTFKErFf82de4YvPDeWJgBNvPxxVva4s7FmzrrtksczczrMzweEU5hXVJqyerhAhha7FDeU9v5WZPFaNxhWKJpdN3RYZhgsDwTt2x5DEhr3rxz6wMB83PNCD6DbuDWaXKw4pBpGyY5aettHMsDe6Xk8Bk7ZmdxkDd9pTVWtDhf85dQSMwZZrJ9xFZthAMhSuf3Bkb6zxnUDpUga33jvZKsPRYpkXuZ8cr2T7UgVp66B6uK33EWHed2EsPX78ckn2nz',
+    default: '3nYZHW9zguCUvpQWYtfFAF3H3GRdYSaF5vhw3qGaM7rTFKErFf82de4YvPDeWJgBNvPxxVva4s7FmzrrtksczczrMzweEU5hXVJqyerhAhha7FDeU9v5WZPFaNxhWKJpdN3RYZhgsDwTt2x5DEhr3rxz6wMB83PNCD6DbuDWaXKw4pBpGyY5aettHMsDe6Xk8Bk7ZmdxkDd9pTVWtDhf85dQSMwZZrJ9xFZthAMhSuf3Bkb6zxnUDpUga33jvZKsPRYpkXuZ8cr2T7UgVp66B6uK33EWHed2EsPX78ckn2nz',
     type: TYPE_STRING,
     description: 'used to encrypt JSON Web Tokens - use a strong key greater than 256 bytes in length',
   },

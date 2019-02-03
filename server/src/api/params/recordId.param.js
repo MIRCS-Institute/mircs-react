@@ -17,8 +17,8 @@ module.exports = (router) => {
         return next(HttpErrors.notFound404('Data Set contains no _collectionName. dataSet: '+ JSON.stringify(req.dataSet)))
       }
 
-      const record = await MongoUtil.findOne(req.dataSet._collectionName, { _id: recordId })
-      req.record = record
+      const records = await MongoUtil.find(req.dataSet._collectionName, { _id: recordId })
+      req.record = records[0]
       next()
     } catch (exception) {
       return next(exception)

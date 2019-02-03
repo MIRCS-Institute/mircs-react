@@ -44,6 +44,8 @@ module.exports = (router) => {
       })
 
       res.status(200).send({
+        createdAt: authDoc.createdAt,
+        userId: authDoc._id,
         email,
         idToken,
         expiresInMs: TOKEN_EXPIRES_IN_SECONDS * 1000,

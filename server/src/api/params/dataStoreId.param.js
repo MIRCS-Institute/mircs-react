@@ -11,8 +11,8 @@ module.exports = (router) => {
     try {
       dataSetId = ObjectID(dataSetId)
 
-      const dataSet = await MongoUtil.findOne(MongoUtil.DATA_SETS_COLLECTION, { _id: dataSetId })
-      req.dataSet = dataSet
+      const dataSets = await MongoUtil.find(MongoUtil.DATA_SETS_COLLECTION, { _id: dataSetId })
+      req.dataSet = dataSets[0]
       next()
     } catch (exception) {
       return next(exception)
