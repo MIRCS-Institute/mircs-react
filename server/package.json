@@ -6,8 +6,8 @@
   "scripts": {
     "start": "node src/server.js",
     "watch": "nodemon",
-    "lint": "npx eslint src",
-    "test": "npm run lint"
+    "lint": "eslint src",
+    "test": "echo 'TODO: add unit test tool'"
   },
   "engines": {
     "node": ">=7.6.0"
