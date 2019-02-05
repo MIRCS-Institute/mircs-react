@@ -54,4 +54,15 @@ Layout.align = (main, cross) => {
     alignItems: cross,
   }
 }
+
+Layout.colours = [
+  'darkred',
+  'orange',
+  'yellow',
+  'chartreuse',
+  'green',
+  'deepskyblue',
+  'darkorchid'
+]
+
 export default Layout

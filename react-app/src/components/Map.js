@@ -81,7 +81,6 @@ const Map = observer(class extends React.Component {
     http.jsonRequest(`/api/datasets/${dataSetId}/records`)
       .then(action((response) => {
         UiStore.records.replace(_.get(response, 'bodyJson.list'))
-        this.mapPoints()
       }))
       .catch(showSnackbarMessage)
   }
@@ -91,7 +90,6 @@ const Map = observer(class extends React.Component {
     http.jsonRequest(`/api/relationships/${relationshipId}/join`)
       .then(action((response) => {
         UiStore.records.replace(_.get(response, 'bodyJson.list'))
-        this.mapPoints()
       }))
       .catch(showSnackbarMessage)
   }
@@ -109,56 +107,57 @@ const Map = observer(class extends React.Component {
     return '<svg width="' + ( size ? size : '18' ) + 'px" height="' + ( size ? size : '18' ) + 'px" viewBox="0 0 1024 1024"><polygon points="512,9 0,521 128,521 128,905 448,905 448,649 576,649 576,905 896,905 896,521 1024,521 "' + ( opacity ? 'fill-opacity="' + opacity + '"' : '' ) + '/></svg>'
   }
 
-  mapPoints = () => {
+  // Set up different icons for each search term, colouring is through CSS where it is also used for text and chips
+  icons = [
+      L.divIcon({
+        html: this.getIcon(1, 34),
+        className: 'searchIcon0',
+        iconAnchor: [17, 17],
+      }),
+      L.divIcon({
+        html: this.getIcon(1, 30),
+        className: 'searchIcon1',
+        iconAnchor: [15, 15],
+      }),
+      L.divIcon({
+        html: this.getIcon(0.9, 26),
+        className: 'searchIcon2',
+        iconAnchor: [13, 13],
+      }),
+      L.divIcon({
+        html: this.getIcon(0.85, 22),
+        className: 'searchIcon3',
+        iconAnchor: [11, 11],
+      }),
+      L.divIcon({
+        html: this.getIcon(0.8, 22),
+        className: 'searchIcon4',
+        iconAnchor: [11, 11],
+      }),
+      L.divIcon({
+        html: this.getIcon(0.75, 22),
+        className: 'searchIcon5',
+        iconAnchor: [11, 11],
+      }),
+      L.divIcon({
+        html: this.getIcon(0.7, 22),
+        className: 'searchIcon6',
+        iconAnchor: [11, 11],
+      }),
+      L.divIcon({
+        html: this.getIcon(0.65, 22),
+        className: 'searchIconN',
+        iconAnchor: [11, 11],
+      })
+    ]
+  // standard icon
+  iconX = L.divIcon({
+    html: this.getIcon(0.4),
+    className: 'searchIconX',
+    iconAnchor: [9, 9],
+  })
 
-    // Set up different icons for each search term, colouring is through CSS where it is also used for text and chips
-    const icons = []
-    icons[0] = L.divIcon({
-      html: this.getIcon(1, 34),
-      className: 'searchIcon0',
-      iconAnchor: [17, 17],
-    })
-    icons[1] = L.divIcon({
-      html: this.getIcon(1, 30),
-      className: 'searchIcon1',
-      iconAnchor: [15, 15],
-    })
-    icons[2] = L.divIcon({
-      html: this.getIcon(0.9, 26),
-      className: 'searchIcon2',
-      iconAnchor: [13, 13],
-    })
-    icons[3] = L.divIcon({
-      html: this.getIcon(0.85, 22),
-      className: 'searchIcon3',
-      iconAnchor: [11, 11],
-    })
-    icons[4] = L.divIcon({
-      html: this.getIcon(0.8, 22),
-      className: 'searchIcon4',
-      iconAnchor: [11, 11],
-    })
-    icons[5] = L.divIcon({
-      html: this.getIcon(0.75, 22),
-      className: 'searchIcon5',
-      iconAnchor: [11, 11],
-    })
-    icons[6] = L.divIcon({
-      html: this.getIcon(0.7, 22),
-      className: 'searchIcon6',
-      iconAnchor: [11, 11],
-    })
-    icons[7] = L.divIcon({
-      html: this.getIcon(0.65, 22),
-      className: 'searchIconN',
-      iconAnchor: [11, 11],
-    })
-    // standard icon
-    const iconX = L.divIcon({
-      html: this.getIcon(0.4),
-      className: 'searchIconX',
-      iconAnchor: [9, 9],
-    })
+  mapPoints = () => {
 
     const points = []
     const foundPoints = []
@@ -182,18 +181,46 @@ const Map = observer(class extends React.Component {
         if (UiStore.searchStrings.length > 0) {
           const recordString = JSON.stringify(record).toLowerCase()
           UiStore.searchStrings.forEach((element, index) => {
-            if (recordString.includes(element.toLowerCase())) {
-              L.marker(point, {icon: icons[index < 7 ? index : 7], zIndexOffset: (index * 100) + 500})
-                .addTo(this.markers)
-                .on('click', () => { this.updateSelected(point, record) })
-              found = true
-              this.addFoundRecord(record, index)
+            if (element.includes(':')) {
+              // This is a specific field/value search such as 'Surname: Smith'
+              const highlightField = element.substring(0, element.indexOf(':'))
+              const highlightValue = element.substring(element.indexOf(':')+2)
+              if (record.data) {
+                // relationship data
+                _.each(record.data, (leftSideRecords) => {
+                  _.each(leftSideRecords, (card) => {
+                    if (_.get(card, highlightField) === highlightValue) {
+                      this.makeMarker(point, record, index)
+                      found = true
+                    }
+                  })
+                })
+                _.each(record.data, (rightSideRecords) => {
+                  _.each(rightSideRecords, (card) => {
+                    if (_.get(card, highlightField) === highlightValue) {
+                      this.makeMarker(point, record, index)
+                      found = true
+                    }
+                  })
+                })
+              } else {
+                // no relationship
+                if (_.get(record, highlightField) === highlightValue) {
+                  this.makeMarker(point, record, index)
+                  found = true
+                }
+              }
+            } else {
+              if (recordString.includes(element.toLowerCase())) {
+                this.makeMarker(point, record, index)
+                found = true
+              }
             }
           })
         }
 
         if (!found) {
-          L.marker(point, {icon: iconX})
+          L.marker(point, {icon: this.iconX})
             .addTo(this.markers)
             .on('click', () => { this.updateSelected(point, record) })
         }
@@ -206,11 +233,22 @@ const Map = observer(class extends React.Component {
 
     this.markers.addTo(this.map)
 
+    this.fetchFieldNames()
+
     if (foundPoints.length > 0)
       this.centerMapOnPoints(foundPoints)
     else
       this.centerMapOnPoints(points)
     this.updatePoints(points)
+  }
+
+  makeMarker = (point, record, index) => {
+    L.marker(point, {icon: this.icons[index < 7 ? index : 7], zIndexOffset: (index * 100) + 500})
+      .addTo(this.markers)
+      .on('click', () => {
+        this.updateSelected(point, record)
+      })
+    this.addFoundRecord(record, index)
   }
 
   updateSelected = action((point, record) => {
@@ -244,6 +282,15 @@ const Map = observer(class extends React.Component {
     UiStore.searchStrings.forEach(() => {
       UiStore.foundRecords.push([])
     })
+  })
+
+  fetchFieldNames = action(() => {
+    // Get the fields names in the records.  We only check the first record (good enough for now).
+    if (UiStore.records[0].data) {
+      UiStore.fieldNames = _.keys(UiStore.records[0].data[0].values().next().value)
+    } else {
+      UiStore.fieldNames = _.keys(UiStore.records[0])
+    }
   })
 
   makePoint = (record) => {

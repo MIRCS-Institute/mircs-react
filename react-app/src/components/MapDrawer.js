@@ -3,7 +3,9 @@ import { withStyles } from '@material-ui/core'
 import _ from 'lodash'
 import Card from '@material-ui/core/Card'
 import CardContent from '@material-ui/core/CardContent'
+import Layout from '../utils/Layout'
 import Paper from '@material-ui/core/Paper'
+import PieChart from 'react-simple-pie-chart'
 import PropTypes from 'prop-types'
 import React from 'react'
 import StreetviewCard from './StreetviewCard'
@@ -38,6 +40,7 @@ const MapDrawer = observer(class extends React.Component {
         return ''
       }
 
+      // Try to highlight any search terms within the card
       let highlightedValue = value
       UiStore.searchStrings.forEach((s, i) => {
         const regex = new RegExp(UiStore.searchStrings[i], 'giy')
@@ -56,6 +59,22 @@ const MapDrawer = observer(class extends React.Component {
     const { classes } = this.props
     const { open } = this.state
 
+    let pieChart = ''
+
+    if (UiStore.highlightField !== 'none') {
+      const pieChartData = []
+      for (let i=0; i<UiStore.foundRecords.length; i++) {
+        pieChartData.push({ color: Layout.colours[i], value: UiStore.foundRecords[i].length })
+      }
+      pieChart = <div>
+        <Typography variant="h5" align="center">{UiStore.highlightField}</Typography>
+        <PieChart
+          slices={pieChartData}
+        />
+      </div>
+    }
+
+
     if (UiStore.selected.records) {
       return (
         <Paper
@@ -67,7 +86,9 @@ const MapDrawer = observer(class extends React.Component {
           }}
           square={true}
         >
-          <Typography variant='h6' align='center'>{UiStore.selected.records.length} records.</Typography>
+          {pieChart}
+
+          <Typography variant='h6' align='center'>{UiStore.selected.records.length} records at selected location.</Typography>
 
           {UiStore.selected.records.map((record, i) => (
             <Card className={classes.card} key={i}>
@@ -94,6 +115,7 @@ const MapDrawer = observer(class extends React.Component {
           }}
           square={true}
         >
+          {pieChart}
           <Typography component='i' variant='h6' align='center'>
             Select a location for more detail.
           </Typography>

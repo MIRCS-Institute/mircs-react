@@ -1,7 +1,9 @@
 import { action } from 'mobx'
 import { observer } from 'mobx-react'
 import { withStyles } from '@material-ui/core/styles'
+import _ from 'lodash'
 import Chip from '@material-ui/core/Chip'
+import Layout from '../utils/Layout'
 import MenuItem from '@material-ui/core/MenuItem'
 import React from 'react'
 import TextField from '@material-ui/core/TextField'
@@ -18,7 +20,45 @@ const MapFilter = observer(class extends React.Component {
 
   handleTileLayerNameChange = action((event) => {
     UiStore.tileLayerName = event.target.value
-  });
+  })
+
+  handleFieldNameHighlighting = action( (event) => {
+    // This counts the distinct values in the selected field, then sorts by the most common values.
+    UiStore.highlightField = event.target.value
+    let valueCounts = []  // An array of objects used to keep a count of each of all of the values of this field, eg {value:'foo',count:7}
+    let thisValue
+    _.each(UiStore.records, (record) => {  // Loop through all the records
+      if (record.data) {  // Check if there is a relationship to work with
+        _.each(record.data, (card) => {  // Loop through all the records found in the relationship
+          thisValue = _.get(card.values().next().value, event.target.value)  // Try to find the value of the requested field in the current card
+          this.countFieldValue(valueCounts, thisValue)
+        })
+      } else {
+        thisValue = _.get(record, event.target.value)  // Try to find the value of the requested field in the current card
+        this.countFieldValue(valueCounts, thisValue)
+      }
+    })
+    valueCounts = _.sortBy(valueCounts, [function(o) { return -o.count }])
+    UiStore.searchStrings = []
+    for (let i=0; i<7; i++) {
+      if (valueCounts[i]) {
+        UiStore.searchStrings.push(event.target.value + ': ' + valueCounts[i].value)
+      }
+    }
+  })
+
+  countFieldValue = (valueCounts, thisValue) => {
+    // Used for invrementing our count of a given value.
+    if (thisValue) {  // We have a value
+      let counter = _.find(valueCounts, function(o) { return o.value === thisValue; })  // See if we have a counter object already for this field value
+      if (counter) {
+        counter.count++
+      } else {
+        counter = { value: thisValue, count: 1 }
+        valueCounts.push(counter)
+      }
+    }
+  }
 
   handleSearchSubmit = action( (event) => {
     if (event.target.value) {
@@ -30,7 +70,7 @@ const MapFilter = observer(class extends React.Component {
         event.target.value = ''
       }
     }
-  });
+  })
 
   handleSearchDelete =
     action(
@@ -75,6 +115,34 @@ const MapFilter = observer(class extends React.Component {
           <MenuItem value='Mapbox'>
             Mapbox
           </MenuItem>
+        </TextField>
+
+        <TextField
+          id="standard-select-field"
+          select
+          label="Highligh Fields"
+          className={classes.mapOptions}
+          value={store.highlightField}
+          onChange={this.handleFieldNameHighlighting}
+          SelectProps={{
+            MenuProps: {
+              className: classes.menu,
+            },
+          }}
+          margin="normal"
+          variant="outlined"
+          style={{ marginLeft: 10, width: 200 }}
+        >
+          <MenuItem key='none' value='none' name='none'>
+            None
+          </MenuItem>
+          {store.fieldNames.map((data, i) => {
+            return (
+              <MenuItem key={i} value={data} name={data}>
+                {data}
+              </MenuItem>
+            )
+          })}
         </TextField>
 
         <TextField
@@ -190,31 +258,31 @@ const styles = {
   },
   chip0: {
     margin: 5,
-    backgroundColor: 'darkred',
+    backgroundColor: Layout.colours[0],
   },
   chip1: {
     margin: 5,
-    backgroundColor: 'orange',
+    backgroundColor: Layout.colours[1],
   },
   chip2: {
     margin: 5,
-    backgroundColor: 'yellow',
+    backgroundColor: Layout.colours[2],
   },
   chip3: {
     margin: 5,
-    backgroundColor: 'chartreuse',
+    backgroundColor: Layout.colours[3],
   },
   chip4: {
     margin: 5,
-    backgroundColor: 'green',
+    backgroundColor: Layout.colours[4],
   },
   chip5: {
     margin: 5,
-    backgroundColor: 'deepskyblue',
+    backgroundColor: Layout.colours[5],
   },
   chip6: {
     margin: 5,
-    backgroundColor: 'darkorchid',
+    backgroundColor: Layout.colours[6],
   },
   chipx: {
     margin: 5,

@@ -48,25 +48,25 @@ const MapStatus = observer(class extends React.Component {
 
 const styles = {
   found0: {
-    color: 'darkred',
+    color: Layout.colours[0],
   },
   found1: {
-    color: 'orange',
+    color: Layout.colours[1],
   },
   found2: {
-    color: 'yellow',
+    color: Layout.colours[2],
   },
   found3: {
-    color: 'chartreuse',
+    color: Layout.colours[3],
   },
   found4: {
-    color: 'green',
+    color: Layout.colours[4],
   },
   found5: {
-    color: 'deepskyblue',
+    color: Layout.colours[5],
   },
   found6: {
-    color: 'darkorchid',
+    color: Layout.colours[6],
   },
 }
 

@@ -33,6 +33,7 @@
     "react-dropzone": "^4.2.3",
     "react-router-dom": "^4.2.2",
     "react-scripts": "^2.1.1",
+    "react-simple-pie-chart": "^0.5.0",
     "turf": "^3.0.14"
   }
 }
