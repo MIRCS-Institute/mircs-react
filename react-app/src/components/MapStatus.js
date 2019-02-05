@@ -1,5 +1,6 @@
 import { observer } from 'mobx-react'
 import { withStyles } from '@material-ui/core/styles'
+import Layout from '../utils/Layout'
 import React from 'react'
 import UiStore from '../states/UiStore'
 
