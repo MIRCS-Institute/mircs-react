@@ -106,7 +106,6 @@ const snackbarMessageStyles = (theme) => {
 
 const SnackbarMessage = withStyles(snackbarMessageStyles)(class extends React.Component {
   static propTypes = {
-    classes: PropTypes.object.isRequired,
     snackbarMessage: PropTypes.object.isRequired,
   }
   handleClose = action(() => {

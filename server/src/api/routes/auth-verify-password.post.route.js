@@ -26,7 +26,7 @@ module.exports = (router) => {
     }
 
     try {
-      const authDoc = await MongoUtil.find(MongoUtil.AUTHENTICATION_COLLECTION, { email })
+      const authDoc = (await MongoUtil.find(MongoUtil.AUTHENTICATION_COLLECTION, { email }))[0]
       if (!authDoc) {
         return next(HttpErrors.unauthorized401(`no user exists with email '${email}'`))
       }

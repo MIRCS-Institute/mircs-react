@@ -5,31 +5,38 @@ import { Route } from 'react-router-dom'
 import { Switch } from 'react-router-dom'
 import { toJS } from 'mobx'
 import _ from 'lodash'
-import Button from '@material-ui/core/Button'
-import createBrowserHistory from 'history/createBrowserHistory'
+import createHashHistory from 'history/createHashHistory'
+import CssBaseline from '@material-ui/core/CssBaseline'
 import DataSetMap from '../pages/DataSetMap'
 import DataSets from '../pages/DataSets'
+import DefaultTheme from './Theme'
+import ErrorBoundary from '../components/ErrorBoundary'
 import Home from '../pages/Home'
+import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider'
 import pathReplace from '../utils/pathReplace'
 import React from 'react'
 import Records from '../pages/Records'
 import RelationshipMap from '../pages/RelationshipMap'
 import Relationships from '../pages/Relationships'
+import SignedInUser from '../states/SignedInUser'
+import SignIn from '../pages/SignIn'
 import SnackbarMessages from '../components/SnackbarMessages'
 import Unknown404 from '../pages/Unknown404'
 import UrlParams from '../states/UrlParams'
 
 class PathClass {
   home = (params) => { return appPathReplace('/', params) }
-  dataSets = (params) => { return appPathReplace('/datasets', params) }
-  dataSetRecords = (params) => { return appPathReplace('/datasets/:dataSetId', params) }
   dataSetMap = (params) => { return appPathReplace('/datasets/:dataSetId/map', params) }
-  relationships = (params) => { return appPathReplace('/relationships', params) }
   relationshipMap = (params) => { return appPathReplace('/relationships/:relationshipId/map', params) }
+
+  manageRoot = (params) => { return appPathReplace('/manage', params) }
+  dataSets = (params) => { return appPathReplace('/manage/datasets', params) }
+  dataSetRecords = (params) => { return appPathReplace('/manage/datasets/:dataSetId', params) }
+  relationships = (params) => { return appPathReplace('/manage/relationships', params) }
 }
 export const Path = new PathClass()
 
-const _history = createBrowserHistory()
+const _history = createHashHistory()
 
 _history.listen(() => {
   clearSnackbarMessages()
@@ -57,26 +64,36 @@ function appPathReplace(path, params) {
   return pathReplace(path, params)
 }
 
-const App = observer(class extends React.Component {
-  render() {
-    return (
-      <HashRouter>
-        <ErrorBoundary>
-          <Switch>
-            <AppRoute exact path={Path.home(false)} component={Home}/>
-            <AppRoute exact path={Path.dataSets(false)} component={DataSets}/>
-            <AppRoute exact path={Path.dataSetRecords(false)} component={Records}/>
-            <AppRoute exact path={Path.dataSetMap(false)} component={DataSetMap}/>
-            <AppRoute exact path={Path.relationships(false)} component={Relationships}/>
-            <AppRoute exact path={Path.relationshipMap(false)} component={RelationshipMap}/>
-            <AppRoute component={Unknown404}/>
-          </Switch>
+const App = observer(() => (
+  <MuiThemeProvider theme={DefaultTheme}>
+    <CssBaseline/>
+    <HashRouter>
+      <ErrorBoundary>
+        <Switch>
+          <AppRoute exact path={Path.home(false)} component={Home}/>
+          <AppRoute exact path={Path.dataSetMap(false)} component={DataSetMap}/>
+          <AppRoute exact path={Path.relationshipMap(false)} component={RelationshipMap}/>
+          <AppRoute path={Path.manageRoot(false)} component={RequiresSignIn}/>
+          <AppRoute component={Unknown404}/>
+        </Switch>
 
-          <SnackbarMessages/>
-        </ErrorBoundary>
-      </HashRouter>
-    )
+        <SnackbarMessages/>
+      </ErrorBoundary>
+    </HashRouter>
+  </MuiThemeProvider>
+))
+
+const RequiresSignIn = observer(() => {
+  if (!SignedInUser.isSignedIn()) {
+    return <SignIn/>
   }
+
+  return <Switch>
+    <AppRoute exact path={Path.dataSets(false)} component={DataSets}/>
+    <AppRoute exact path={Path.dataSetRecords(false)} component={Records}/>
+    <AppRoute exact path={Path.relationships(false)} component={Relationships}/>
+    <AppRoute component={Unknown404}/>
+  </Switch>
 })
 
 // eslint-disable-next-line react/prop-types
@@ -90,43 +107,6 @@ const setUrlParams = (Component) => {
   return ({ match }) => {
     UrlParams.set(_.clone(match.params))
     return (<Component/>)
-  }
-}
-
-// see https://reactjs.org/docs/error-boundaries.html
-class ErrorBoundary extends React.Component {
-  constructor(props) {
-    super(props)
-    this.state = { hasError: false }
-  }
-  componentDidCatch(error, info) {
-    console.error('ErrorBoundary error:', error)
-    console.error('ErrorBoundary info:', info)
-    this.setState({
-      error: errorToString(error),
-      info: errorToString(info),
-      hasError: true,
-    })
-
-    function errorToString(errorObject) {
-      if (errorObject) {
-        return errorObject.message || errorObject.toString() || errorObject
-      }
-    }
-  }
-  restart = () => {
-    window.location.reload()
-  }
-  render() {
-    if (this.state.hasError) {
-      return <div>
-        <h1>We are sorry - you have discovered a crashing bug in the app. Our apologies for any lost data.</h1>
-        <Button onClick={this.restart}>Restart the app</Button>
-        {this.state.error && <div>Error: {`${this.state.error}`}</div>}
-        {this.state.info && <div>Info: {`${this.state.info}`}</div>}
-      </div>
-    }
-    return this.props.children
   }
 }
 

@@ -15,7 +15,7 @@ const CONFIGURATION_VARS = {
     description: 'when set to true extra debug output is logged',
   },
   SERVER_URL: {
-    default: '',
+    default: document.location.origin,
     type: TYPE_STRING,
     description: 'mircs api server url',
   },

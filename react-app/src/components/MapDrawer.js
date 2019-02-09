@@ -15,9 +15,8 @@ import UiStore from '../states/UiStore'
 const MapDrawer = observer(class extends React.Component {
 
   static propTypes = {
-    classes: PropTypes.object.isRequired,
     theme: PropTypes.object.isRequired,
-  };
+  }
 
   state = {
     open: true,

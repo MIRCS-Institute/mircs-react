@@ -70,45 +70,34 @@ function createRouterForDir(dir) {
     })()
   }
 
-  // return 404 for unknown commands
-  router.all(`/${dir}*`, function(req, res) {
-    log.info('404 - Unknown ' + dir + ' command', {
-      method: req.method,
-      path: req.path,
-      query: req.query,
-      params: req.params,
-      headers: req.headers,
-      body: req.body,
-    })
-    res.status(404).send({ error: `Cannot ${req.method} ${req.path}` })
-  })
-
   return function(req, res, next) {
-    return router(req, res, function onRouteError(error) {
-      let errorMessage = 'Error handling request ' + _.get(error, 'message', '')
+    return router(req, res, onRouteError)
+
+    function onRouteError(error) {
+      if (!error) {
+        return next()
+      }
+
+      const response = { message: _.get(error, 'message', '') }
+      const statusCode = _.get(error, 'status', 500)
 
       if (error) {
-        log.error('Error handling request', req.method, dir + req.path, {
+        const logLevel = (statusCode === 500) ? 'error' : 'info'
+        log[logLevel]('Error handling request', req.method, req.path, {
           query: req.query,
           params: req.params,
           headers: req.headers,
           body: req.body,
         }, '\nerror:', error)
 
+        // include error details in response when in engineering mode
         if (log.level() <= log.DEBUG) {
-          // include error details when building in engineering mode to help debug issues
-          errorMessage += '\n' + error.stack || error
+          response.stack = error.stack || error.toString()
         }
-      } else if (!_.startsWith(req.url, '/' + dir)) {
-        return next()
       }
 
-      log.error('Request not handled', req.path, req.method)
-      if (log.level() <= log.DEBUG) {
-        errorMessage += ' Request not handled.'
-      }
-      res.status(500).send({ error: errorMessage })
-    })
+      res.status(statusCode).send(response)
+    }
   }
 }
 

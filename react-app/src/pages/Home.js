@@ -1,4 +1,5 @@
 import {action, extendObservable} from 'mobx'
+import { goToPath, Path } from '../app/App'
 import {observer} from 'mobx-react'
 import { showSnackbarMessage } from '../components/SnackbarMessages'
 import _ from 'lodash'
@@ -64,7 +65,7 @@ const Home = observer(class extends React.Component {
                     value={dataSet._id}
                     variant='contained'
                     color='primary'
-                    href={`#/datasets/${dataSet._id}/map`}
+                    onClick={() => goToPath(Path.dataSetMap({ dataSetId: dataSet._id }))}
                   >
                     Map
                   </Button>
@@ -89,7 +90,7 @@ const Home = observer(class extends React.Component {
                     style={styles.button}
                     variant='contained'
                     color='primary'
-                    href={`#/relationships/${relation._id}/map`}
+                    onClick={() => goToPath(Path.relationshipMap({ relationshipId: relation._id }))}
                   >
                     Map
                   </Button>

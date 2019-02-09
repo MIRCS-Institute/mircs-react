@@ -38,7 +38,12 @@ http.jsonRequest = function (url, request) {
 
         try {
           response.bodyJson = JSON.parse(text)
+        } catch(exception) {
+          response.error = exception
+          console.error('Could not parse body as JSON:', response.bodyText)
+        }
 
+        try {
           if (response.status < 200 || response.status >= 300) {
             if (DEBUG) {
               console.error('http.jsonRequest: error response:',
@@ -46,7 +51,13 @@ http.jsonRequest = function (url, request) {
                 '\n    request:', request,
                 '\n    response:', response)
             }
-            return Promise.reject(new Error(`${response.status}: ${response.bodyText}`))
+
+            response.toString = () => {
+              const message = _.get(response, 'bodyJson.message', response.bodyText)
+              return `${response.status}: ${message}`
+            }
+
+            return Promise.reject(response)
           }
 
           if (DEBUG) {

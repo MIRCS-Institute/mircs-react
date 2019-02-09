@@ -2,10 +2,9 @@
   "name": "mircs-server",
   "version": "0.0.0",
   "private": true,
-  "main": "src/server.js",
   "scripts": {
-    "start": "node src/server.js",
-    "watch": "nodemon",
+    "start": "echo 'use `npm run watch` for local development'",
+    "watch": "nodemon --watch src src/server.js",
     "lint": "eslint src",
     "test": "echo 'TODO: add unit test tool'"
   },

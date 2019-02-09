@@ -1,4 +1,5 @@
 import {action, extendObservable} from 'mobx'
+import { goToPath, Path } from '../app/App'
 import {observer} from 'mobx-react'
 import _ from 'lodash'
 import Button from '@material-ui/core/Button'
@@ -135,7 +136,7 @@ const DataSetCard = observer(class extends React.Component {
           </DataSetUploadDropzone>
         </CardContent>
         <CardActions>
-          <Button variant='contained' href={`#/datasets/${dataSet._id}`}>
+          <Button variant='contained' onClick={() => goToPath(Path.dataSets({ dataSetId: dataSet._id }))}>
             View Records
           </Button>
           <Button variant='contained' onClick={this.handleEditClick}>

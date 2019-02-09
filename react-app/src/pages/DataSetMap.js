@@ -5,15 +5,10 @@ import MapDrawer from '../components/MapDrawer'
 import MapFilter from '../components/MapFilter'
 import MapStatus from '../components/MapStatus'
 import PageSkeleton from '../components/PageSkeleton'
-import PropTypes from 'prop-types'
 import React from 'react'
 import UrlParams from '../states/UrlParams'
 
 const DataSetMap = observer(class extends React.Component {
-  static propTypes = {
-    dataSetId: PropTypes.string.isRequired,
-  }
-
   render() {
     const dataSetId = UrlParams.get('dataSetId')
 
