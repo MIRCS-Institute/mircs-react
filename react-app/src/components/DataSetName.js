@@ -1,9 +1,9 @@
 import { action, extendObservable } from 'mobx'
 import { observer } from 'mobx-react'
 import { showSnackbarMessage } from './SnackbarMessages'
-import http from '../utils/http'
 import PropTypes from 'prop-types'
 import React from 'react'
+import ServerHttpApi from '../api/net/ServerHttpApi'
 
 const DataSetName = observer(class extends React.Component {
   static propTypes = {
@@ -31,7 +31,7 @@ const DataSetName = observer(class extends React.Component {
       } else {
         this.isLoading = true
         const fetchingDataSetId = this.dataSetId
-        http.jsonRequest(`/api/datasets/${fetchingDataSetId}`)
+        ServerHttpApi.jsonGet(`/api/datasets/${fetchingDataSetId}`)
           .then(action((response) => {
             // due to the asynchronous nature of http requests, we check to see that this response is
             // regarding the one requested, otherwise we ignore it

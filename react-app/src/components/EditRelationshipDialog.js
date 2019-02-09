@@ -15,13 +15,13 @@ import DialogTitle from '@material-ui/core/DialogTitle'
 import FormControl from '@material-ui/core/FormControl'
 import ForwardIcon from '@material-ui/icons/Forward'
 import Grid from '@material-ui/core/Grid'
-import http from '../utils/http'
 import IconButton from '@material-ui/core/IconButton'
 import Layout from '../utils/Layout'
 import PropTypes from 'prop-types'
 import React from 'react'
 import RemoveCircleIcon from '@material-ui/icons/RemoveCircle'
 import Select from '@material-ui/core/Select'
+import ServerHttpApi from '../api/net/ServerHttpApi'
 import TextField from '@material-ui/core/TextField'
 
 const EditRelationshipDialog = observer(class extends React.Component {
@@ -46,8 +46,8 @@ const EditRelationshipDialog = observer(class extends React.Component {
     })
   }
 
-  componentDidUpdate() {
-    if (this.props.open) {
+  componentDidUpdate(prevProps) {
+    if (this.props.open && !prevProps.open) {
       action(() => {
         let relationshipCopy = {}
         if (this.props.relationship) {
@@ -103,9 +103,9 @@ const EditRelationshipDialog = observer(class extends React.Component {
 
   doSave() {
     if (this.isCreate) {
-      return http.jsonRequest('/api/relationships', { method: 'post', bodyJson: this.relationship })
+      return ServerHttpApi.jsonPost('/api/relationships', this.relationship)
     } else {
-      return http.jsonRequest('/api/relationships/' + this.relationship._id, { method: 'put', bodyJson: this.relationship })
+      return ServerHttpApi.jsonPut('/api/relationships/' + this.relationship._id, this.relationship)
     }
   }
 
@@ -278,7 +278,7 @@ const FieldChooser = observer(class extends React.Component {
     } else {
       this.isLoading = true
       const fetchingDataSetId = this.dataSetId
-      http.jsonRequest(`/api/datasets/${fetchingDataSetId}/fields`)
+      ServerHttpApi.jsonGet(`/api/datasets/${fetchingDataSetId}/fields`)
         .then(action((response) => {
           // due to the asynchronous nature of http requests, we check to see that this response is
           // regarding the one requested, otherwise we ignore it

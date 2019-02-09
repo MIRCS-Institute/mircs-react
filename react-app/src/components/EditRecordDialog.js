@@ -8,9 +8,9 @@ import Dialog from '@material-ui/core/Dialog'
 import DialogActions from '@material-ui/core/DialogActions'
 import DialogContent from '@material-ui/core/DialogContent'
 import DialogTitle from '@material-ui/core/DialogTitle'
-import http from '../utils/http'
 import PropTypes from 'prop-types'
 import React from 'react'
+import ServerHttpApi from '../api/net/ServerHttpApi'
 import TextField from '@material-ui/core/TextField'
 
 const EditRecordDialog = observer(class extends React.Component {
@@ -76,9 +76,9 @@ const EditRecordDialog = observer(class extends React.Component {
 
   doSave() {
     if (this.isCreate) {
-      return http.jsonRequest(`/api/datasets/${this.props.dataSetId}/records`, { method: 'post', bodyJson: this.record })
+      return ServerHttpApi.jsonPost(`/api/datasets/${this.props.dataSetId}/records`, this.record)
     } else {
-      return http.jsonRequest(`/api/datasets/${this.props.dataSetId}/records/${this.props.record._id}`, { method: 'put', bodyJson: this.record })
+      return ServerHttpApi.jsonPut(`/api/datasets/${this.props.dataSetId}/records/${this.props.record._id}`, this.record)
     }
   }
 

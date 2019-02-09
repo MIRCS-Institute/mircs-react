@@ -3,8 +3,6 @@ import Environment from '../utils/Environment'
 
 const DEBUG = Environment.getRequired('DEBUG')
 
-const http = {}
-
 /*
 Convenience function that wraps the window.fetch API to make a JSON request to @url.
 @request can be used to configure the connection, for example to make a PUT request specify { method: 'put' }.
@@ -19,7 +17,7 @@ If the response status code is not 2** then the Promise is rejected.
 @see https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API
  */
 
-http.jsonRequest = function (url, request) {
+const jsonRequest = async (url, request) => {
   request = _.extend({
     credentials: 'same-origin',
     headers: {
@@ -31,55 +29,52 @@ http.jsonRequest = function (url, request) {
     request.body = JSON.stringify(request.bodyJson)
   }
 
-  return window.fetch(url, request)
-    .then(function (response) {
-      return response.text().then(function (text) {
-        response.bodyText = text
+  const response = await window.fetch(url, request)
+  const text = await response.text()
+  response.bodyText = text
 
-        try {
-          response.bodyJson = JSON.parse(text)
-        } catch(exception) {
-          response.error = exception
-          console.error('Could not parse body as JSON:', response.bodyText)
-        }
+  try {
+    response.bodyJson = JSON.parse(text)
+  } catch(exception) {
+    response.error = exception
+    console.error('Could not parse body as JSON:', response.bodyText)
+  }
 
-        try {
-          if (response.status < 200 || response.status >= 300) {
-            if (DEBUG) {
-              console.error('http.jsonRequest: error response:',
-                '\n    url:', url,
-                '\n    request:', request,
-                '\n    response:', response)
-            }
+  try {
+    if (response.status < 200 || response.status >= 300) {
+      if (DEBUG) {
+        console.error('http.jsonRequest: error response:',
+          '\n    url:', url,
+          '\n    request:', request,
+          '\n    response:', response)
+      }
 
-            response.toString = () => {
-              const message = _.get(response, 'bodyJson.message', response.bodyText)
-              return `${response.status}: ${message}`
-            }
+      response.toString = () => {
+        const message = _.get(response, 'bodyJson.message', response.bodyText)
+        return `${response.status}: ${message}`
+      }
 
-            return Promise.reject(response)
-          }
+      throw response
+    }
 
-          if (DEBUG) {
-            console.log('http.jsonRequest: success:',
-              '\n    url:', url,
-              '\n    request:', request,
-              '\n    response:', response)
-          }
-        } catch (exception) {
-          response.error = exception
-          if (DEBUG) {
-            console.error('http.jsonRequest: error parsing json response:',
-              '\n    url:', url,
-              '\n    request:', request,
-              '\n    response:', response)
-          }
-          return Promise.reject(new Error(`${response.status}: ${response.bodyText}`))
-        }
+    if (DEBUG) {
+      console.log('http.jsonRequest: success:',
+        '\n    url:', url,
+        '\n    request:', request,
+        '\n    response:', response)
+    }
+  } catch (exception) {
+    response.error = exception
+    if (DEBUG) {
+      console.error('http.jsonRequest: error parsing json response:',
+        '\n    url:', url,
+        '\n    request:', request,
+        '\n    response:', response)
+    }
+    throw new Error(`${response.status}: ${response.bodyText}`)
+  }
 
-        return response
-      })
-    })
+  return response
 }
 
-export default http
+export default { jsonRequest }

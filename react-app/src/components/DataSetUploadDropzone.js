@@ -2,10 +2,10 @@ import { action } from 'mobx'
 import { observer } from 'mobx-react'
 import _ from 'lodash'
 import Dropzone from 'react-dropzone'
-import http from '../utils/http'
 import papa from 'papaparse'
 import PropTypes from 'prop-types'
 import React from 'react'
+import ServerHttpApi from '../api/net/ServerHttpApi'
 
 const DataSetUploadDropzone = observer(class extends React.Component {
   static propTypes = {
@@ -56,12 +56,7 @@ const DataSetUploadDropzone = observer(class extends React.Component {
       }
     })
 
-    http.jsonRequest(`/api/datasets/${this.props.dataSet._id}/records`, {
-      method: 'post',
-      bodyJson: {
-        records: records,
-      },
-    })
+    ServerHttpApi.jsonPost(`/api/datasets/${this.props.dataSet._id}/records`, { records })
       .then(action(() => {
         this.props.onDataSetUpdated()
       }))

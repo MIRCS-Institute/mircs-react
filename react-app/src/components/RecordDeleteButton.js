@@ -2,9 +2,9 @@ import { action, extendObservable } from 'mobx'
 import { observer } from 'mobx-react'
 import Button from '@material-ui/core/Button'
 import ConfirmDeleteDialog from '../components/ConfirmDeleteDialog'
-import http from '../utils/http'
 import PropTypes from 'prop-types'
 import React from 'react'
+import ServerHttpApi from '../api/net/ServerHttpApi'
 
 const RecordDeleteButton = observer(class extends React.Component {
   static propTypes = {
@@ -33,7 +33,7 @@ const RecordDeleteButton = observer(class extends React.Component {
 
   handleDeleteConfirm = action(() => {
     this.showConfirmDeleteDialog = false
-    http.jsonRequest(`/api/datasets/${this.props.dataSetId}/records/${this.props.record._id}`, { method: 'delete' })
+    ServerHttpApi.jsonDelete(`/api/datasets/${this.props.dataSetId}/records/${this.props.record._id}`)
       .then(this.props.onRefresh)
       .catch(this.props.onError)
   })

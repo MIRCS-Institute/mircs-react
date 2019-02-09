@@ -3,10 +3,10 @@ import { observer } from 'mobx-react'
 import { showSnackbarMessage } from './SnackbarMessages'
 import { withStyles } from '@material-ui/core/styles'
 import _ from 'lodash'
-import http from '../utils/http'
 import Layout from '../utils/Layout'
 import PropTypes from 'prop-types'
 import React from 'react'
+import ServerHttpApi from '../api/net/ServerHttpApi'
 import turf from 'turf'
 import UiStore from '../states/UiStore'
 
@@ -78,7 +78,7 @@ const Map = observer(class extends React.Component {
 
   fetchDataSetForMap = (dataSetId) => {
     this.refreshMap()
-    http.jsonRequest(`/api/datasets/${dataSetId}/records`)
+    ServerHttpApi.jsonGet(`/api/datasets/${dataSetId}/records`)
       .then(action((response) => {
         UiStore.records.replace(_.get(response, 'bodyJson.list'))
       }))
@@ -87,7 +87,7 @@ const Map = observer(class extends React.Component {
 
   fetchRelationshipDataForMap = (relationshipId) => {
     this.refreshMap()
-    http.jsonRequest(`/api/relationships/${relationshipId}/join`)
+    ServerHttpApi.jsonGet(`/api/relationships/${relationshipId}/join`)
       .then(action((response) => {
         UiStore.records.replace(_.get(response, 'bodyJson.list'))
       }))
@@ -109,47 +109,47 @@ const Map = observer(class extends React.Component {
 
   // Set up different icons for each search term, colouring is through CSS where it is also used for text and chips
   icons = [
-      L.divIcon({
-        html: this.getIcon(1, 34),
-        className: 'searchIcon0',
-        iconAnchor: [17, 17],
-      }),
-      L.divIcon({
-        html: this.getIcon(1, 30),
-        className: 'searchIcon1',
-        iconAnchor: [15, 15],
-      }),
-      L.divIcon({
-        html: this.getIcon(0.9, 26),
-        className: 'searchIcon2',
-        iconAnchor: [13, 13],
-      }),
-      L.divIcon({
-        html: this.getIcon(0.85, 22),
-        className: 'searchIcon3',
-        iconAnchor: [11, 11],
-      }),
-      L.divIcon({
-        html: this.getIcon(0.8, 22),
-        className: 'searchIcon4',
-        iconAnchor: [11, 11],
-      }),
-      L.divIcon({
-        html: this.getIcon(0.75, 22),
-        className: 'searchIcon5',
-        iconAnchor: [11, 11],
-      }),
-      L.divIcon({
-        html: this.getIcon(0.7, 22),
-        className: 'searchIcon6',
-        iconAnchor: [11, 11],
-      }),
-      L.divIcon({
-        html: this.getIcon(0.65, 22),
-        className: 'searchIconN',
-        iconAnchor: [11, 11],
-      })
-    ]
+    L.divIcon({
+      html: this.getIcon(1, 34),
+      className: 'searchIcon0',
+      iconAnchor: [17, 17],
+    }),
+    L.divIcon({
+      html: this.getIcon(1, 30),
+      className: 'searchIcon1',
+      iconAnchor: [15, 15],
+    }),
+    L.divIcon({
+      html: this.getIcon(0.9, 26),
+      className: 'searchIcon2',
+      iconAnchor: [13, 13],
+    }),
+    L.divIcon({
+      html: this.getIcon(0.85, 22),
+      className: 'searchIcon3',
+      iconAnchor: [11, 11],
+    }),
+    L.divIcon({
+      html: this.getIcon(0.8, 22),
+      className: 'searchIcon4',
+      iconAnchor: [11, 11],
+    }),
+    L.divIcon({
+      html: this.getIcon(0.75, 22),
+      className: 'searchIcon5',
+      iconAnchor: [11, 11],
+    }),
+    L.divIcon({
+      html: this.getIcon(0.7, 22),
+      className: 'searchIcon6',
+      iconAnchor: [11, 11],
+    }),
+    L.divIcon({
+      html: this.getIcon(0.65, 22),
+      className: 'searchIconN',
+      iconAnchor: [11, 11],
+    }),
+  ]
   // standard icon
   iconX = L.divIcon({
     html: this.getIcon(0.4),

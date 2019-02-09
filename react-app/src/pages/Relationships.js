@@ -4,11 +4,11 @@ import { showSnackbarMessage } from '../components/SnackbarMessages'
 import _ from 'lodash'
 import Button from '@material-ui/core/Button'
 import EditRelationshipDialog from '../components/EditRelationshipDialog'
-import http from '../utils/http'
 import LoadingSpinner from '../components/LoadingSpinner'
 import PageSkeleton from '../components/PageSkeleton'
 import React from 'react'
 import RelationshipCard from '../components/RelationshipCard'
+import ServerHttpApi from '../api/net/ServerHttpApi'
 
 const Relationships = observer(class extends React.Component {
   constructor() {
@@ -27,8 +27,7 @@ const Relationships = observer(class extends React.Component {
 
   refresh = action(() => {
     this.isLoading = true
-    // use the http.jsonRequest to create a response object from a URL
-    http.jsonRequest('/api/relationships')
+    ServerHttpApi.jsonGet('/api/relationships')
       .then(action((response) => {
         this.isLoading = false
         this.relationships = _.get(response, 'bodyJson.list')
