@@ -3,20 +3,19 @@ import Environment from '../utils/Environment'
 
 const DEBUG = Environment.getRequired('DEBUG')
 
-/*
-Convenience function that wraps the window.fetch API to make a JSON request to @url.
-@request can be used to configure the connection, for example to make a PUT request specify { method: 'put' }.
-If request.body is a JS object, it will be converted to a JSON string before being sent in the request.
-
-Returns a Promise that resolves to a Response object with some extra properties:
-    - response.bodyText: contains the response body text
-    - response.bodyJson: contains the response body parsed as a JS object
-
-If the response status code is not 2** then the Promise is rejected.
-
-@see https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API
+/**
+ * Convenience function that wraps the window.fetch API to make a JSON request to @url.
+ * @request can be used to configure the connection, for example to make a PUT request specify { method: 'put' }.
+ * If request.body is a JS object, it will be converted to a JSON string before being sent in the request.
+ *
+ * Returns a Promise that resolves to a Response object with some extra properties:
+ *     - response.bodyText: contains the response body text
+ *     - response.bodyJson: contains the response body parsed as a JS object
+ *
+ * If the response status code is not 2** then the Promise is rejected.
+ *
+ * @see https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API
  */
-
 const jsonRequest = async (url, request) => {
   request = _.extend({
     credentials: 'same-origin',

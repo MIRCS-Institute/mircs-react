@@ -1,4 +1,4 @@
-import { action, extendObservable } from 'mobx'
+import { action, extendObservable, toJS } from 'mobx'
 import { observer } from 'mobx-react'
 import { showSnackbarMessage } from '../components/SnackbarMessages'
 import _ from 'lodash'
@@ -102,10 +102,11 @@ const EditRelationshipDialog = observer(class extends React.Component {
   })
 
   doSave() {
+    const bodyJson = toJS(this.relationship)
     if (this.isCreate) {
-      return ServerHttpApi.jsonPost('/api/relationships', this.relationship)
+      return ServerHttpApi.jsonPost('/api/relationships', bodyJson)
     } else {
-      return ServerHttpApi.jsonPut('/api/relationships/' + this.relationship._id, this.relationship)
+      return ServerHttpApi.jsonPut(`/api/relationships/${this.relationship._id}`, bodyJson)
     }
   }
 

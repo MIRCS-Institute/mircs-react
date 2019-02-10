@@ -1,4 +1,4 @@
-import { action, extendObservable } from 'mobx'
+import { action, extendObservable, toJS } from 'mobx'
 import { observer } from 'mobx-react'
 import { showSnackbarMessage } from '../components/SnackbarMessages'
 import _ from 'lodash'
@@ -75,10 +75,11 @@ const EditRecordDialog = observer(class extends React.Component {
   })
 
   doSave() {
+    const bodyJson = toJS(this.record)
     if (this.isCreate) {
-      return ServerHttpApi.jsonPost(`/api/datasets/${this.props.dataSetId}/records`, this.record)
+      return ServerHttpApi.jsonPost(`/api/datasets/${this.props.dataSetId}/records`, bodyJson)
     } else {
-      return ServerHttpApi.jsonPut(`/api/datasets/${this.props.dataSetId}/records/${this.props.record._id}`, this.record)
+      return ServerHttpApi.jsonPut(`/api/datasets/${this.props.dataSetId}/records/${this.props.record._id}`, bodyJson)
     }
   }
 

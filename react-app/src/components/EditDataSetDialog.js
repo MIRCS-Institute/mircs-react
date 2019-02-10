@@ -1,4 +1,4 @@
-import { action, extendObservable } from 'mobx'
+import { action, extendObservable, toJS } from 'mobx'
 import { observer } from 'mobx-react'
 import { showSnackbarMessage } from '../components/SnackbarMessages'
 import _ from 'lodash'
@@ -75,10 +75,11 @@ const EditDataSetDialog = observer(class extends React.Component {
   })
 
   doSave() {
+    const bodyJson = toJS(this.dataSet)
     if (this.isCreate) {
-      return ServerHttpApi.jsonPost('/api/datasets', this.dataSet)
+      return ServerHttpApi.jsonPost('/api/datasets', bodyJson)
     } else {
-      return ServerHttpApi.jsonPut(`/api/datasets/${this.dataSet._id}`, this.dataSet)
+      return ServerHttpApi.jsonPut(`/api/datasets/${this.dataSet._id}`, bodyJson)
     }
   }
 
