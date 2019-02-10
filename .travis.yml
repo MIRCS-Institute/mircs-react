@@ -1,10 +1,8 @@
 language: node_js
 node_js:
-  - '10'
+- '10'
 
-deploy:
-  provider: heroku
-  api_key:
-    secure: l3NHEKtt49WD5XHfChBWhb+V3zLuPApBB3YI4c2OqAfIjH/wyDPwloAwV6OgZh/e88Gtm+W7B+wcfE1ThxZ04KV4DB+WLnbaUxfbp2subIHQ9PrOrkkZ22eibRTnOYsldaQns9/dUo1fD08mNHa3/xXovE7B81kY8VeFgkHIxUr00r/IyjQRUc9tI2ptn0+Mc26V7RlLIung9m4Jk0syH2ZFPjZPuqmOMAscZnA0lFQ0ovunE+vDiW7jTRiV5ovDebyehVX9WS0nZzqRP3GbEEBVtt9NK56F+9aosf6Kx7wndb0YFHK04DP+6Gduu0d29Rp4hp4IX9v5unAveMoljMz9+MX1MpboyLXnBiJG4iK9mRZR+lOW3I4ZRSncTCmE9auoll4BwIx4ZFU0krau6IDH8qmE77bG51gN8N/AauFbpa59ZSP0eAXrAjjF70JXzfax9Fi2A+PvhYS73tJkbMhj8pAECKVLCBhIjlySL8XytP9XU3FR5PvW+tG1DVXlpv1/jHZiNlgVdWXCHOAU/CO0s1CK+aACBCy7hApIZx+X/oxPc/UQpDvW/1E3BShKTYSfYFKyEljUJqqE3Yj3KTwkUbYGUqnGFns5RCKK1Q0QFLdbnnqq7eBTdECr7AEmUvlzECvyjKkiS20mebgcdMBJvfFFL8hhR9K3dFQs/CA=
-  app: mircs-develop
-  on: develop
+install:
+- ./bin/install-all.sh
+script:
+- ./bin/test-all.sh
