@@ -7,7 +7,7 @@ const HttpErrors = require('../utils/http-errors.js')
 
 function requireSignIn(req, res, next) {
   if (!req.authentication) {
-    return next(HttpErrors.forbidden403())
+    return next(HttpErrors.forbidden403('This action requires you to sign in.'))
   }
   next()
 }
