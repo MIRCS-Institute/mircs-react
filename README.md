@@ -1,3 +1,8 @@
+|Branch|Travis CI|
+|:-:|:-:|
+|develop|[![Build Status](https://travis-ci.org/shaunjohansen/cordova-plugin-android-photo.svg?branch=master)](https://travis-ci.org/MIRCS-Institute/mircs-react.svg?branch=develop)|
+|release|[![Build Status](https://travis-ci.org/shaunjohansen/cordova-plugin-android-photo.svg?branch=master)](https://travis-ci.org/MIRCS-Institute/mircs-react.svg?branch=release)|
+
 # MIRCS Geogenealogy
 
 This repository contains the mircs-geogenealogy service prototype, built as a React web app connected to an ExpressJS server backed by MongoDB. For more information on the project see the [MIRCS website](https://www.mircs.ca/geo-genealogy/).
