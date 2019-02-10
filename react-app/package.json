@@ -6,7 +6,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "clean": "rm -rf build",
-    "lint": "eslint .",
+    "lint": "eslint src",
     "test": "react-scripts test --env=jsdom"
   },
   "proxy": "http://localhost:8001/",

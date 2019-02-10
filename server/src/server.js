@@ -27,6 +27,9 @@ app.use(morgan(LOG_FORMAT))
 const MAX_AGE_SECONDS = 24 * 60 * 60
 app.use(cors({ maxAge: MAX_AGE_SECONDS }))
 
+// serve the contents of public as static content
+app.use(express.static(path.join(__dirname, '..', 'public')))
+
 // for parsing application/json in request body
 app.use(express.json({ limit: '50mb' }))
 
