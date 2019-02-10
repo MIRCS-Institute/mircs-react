@@ -9,7 +9,7 @@
     "test": "echo 'TODO: add unit test tool'"
   },
   "engines": {
-    "node": ">=7.6.0"
+    "node": "10.x"
   },
   "dependencies": {
     "bcrypt": "^3.0.3",
