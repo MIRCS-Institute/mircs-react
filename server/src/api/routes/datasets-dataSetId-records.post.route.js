@@ -9,6 +9,7 @@ const MongoUtil = require('../../utils/mongo-util.js')
 
 module.exports = function(router) {
   router.post('/api/datasets/:dataSetId/records',
+    require('../../middleware/require-sign-in'),
     function(req, res, next) {
       if (!req.dataSet) {
         return res.status(404).send({ error: 'No Data Set found with id ' + req.params.dataSetId })

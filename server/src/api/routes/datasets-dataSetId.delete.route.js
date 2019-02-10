@@ -7,6 +7,7 @@ const ObjectID = require('mongodb').ObjectID
 
 module.exports = function(router) {
   router.delete('/api/datasets/:dataSetId',
+    require('../../middleware/require-sign-in'),
     function(req, res, next) {
       if (!req.dataSet) {
         return res.status(404).send({ error: 'No Data Set found with id ' + req.params.dataSetId })

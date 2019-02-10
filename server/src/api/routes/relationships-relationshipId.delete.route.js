@@ -7,6 +7,7 @@ const ObjectID = require('mongodb').ObjectID
 
 module.exports = function(router) {
   router.delete('/api/relationships/:relationshipId',
+    require('../../middleware/require-sign-in'),
     function(req, res, next) {
       if (!req.relationship) {
         return res.status(404).send({ error: 'No Relationship found with id ' + req.params.relationshipId })
