@@ -9,6 +9,7 @@ script:
 
 deploy:
   provider: script
+  skip_cleanup: true
   script: bash ./bin/travis-deploy-to-heroku.sh mircs-develop
   on:
     branch: develop
