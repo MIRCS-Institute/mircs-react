@@ -6,15 +6,22 @@ const cors = require('cors')
 const createRouterForDir = require('./utils/create-router-for-dir.js')
 const Environment = require('./utils/environment.js')
 const express = require('express')
+const helmet = require('helmet')
 const log = require('./utils/log.js')
-const logger = require('morgan')
+const morgan = require('morgan')
 const MongoUtil = require('./utils/mongo-util.js')
 const path = require('path')
 
+const PORT = Environment.getRequired('PORT')
+const LOG_FORMAT = Environment.getRequired('LOG_FORMAT')
+
 const app = express()
 
+// see https://helmetjs.github.io/docs/ for list of protections helmet adds
+app.use(helmet())
+
 // logging for all routes
-app.use(logger('dev'))
+app.use(morgan(LOG_FORMAT))
 
 // set up CORS with a max-age header, to save browser re-requests of OPTIONS for each route
 const MAX_AGE_SECONDS = 24 * 60 * 60
@@ -41,7 +48,6 @@ app.all('*', function(req, res) {
 
 MongoUtil.initialize()
   .then(() => {
-    const PORT = Environment.getRequired('PORT')
     app.listen(PORT, function() {
       log.info(`expressjs server is listening on port ${PORT}...`)
     })

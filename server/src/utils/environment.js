@@ -17,6 +17,11 @@ const CONFIGURATION_VARS = {
     type: TYPE_NUMBER,
     description: 'used to set the port acting as the http server',
   },
+  LOG_FORMAT: {
+    default: 'dev',
+    type: TYPE_STRING,
+    description: 'format parameter for `morgan` logger',
+  },
   MONGO_SERVER_URL: {
     default: 'mongodb://localhost:27017/mircsdb',
     type: TYPE_STRING,
