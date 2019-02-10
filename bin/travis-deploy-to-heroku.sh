@@ -8,11 +8,14 @@ __dirname="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 cd $__dirname/..
 
 HEROKU_PROJECT=$1
-git clone https://:${HEROKU_AUTH_TOKEN}@git.heroku.com/${HEROKU_PROJECT}.git
+
+heroku git:clone -a ${HEROKU_PROJECT}
 
 ./bin/prepare-deploy.sh
 
+# convert the build folder into a Heroku git folder
 mv ${HEROKU_PROJECT}/.git build
+
 cd build
 if [ -z "$(git status --porcelain)" ]; then
   echo "build directory clean is clean, skipping Heroku deploy."
