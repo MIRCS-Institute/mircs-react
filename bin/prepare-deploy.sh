@@ -7,8 +7,6 @@
 __dirname="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 cd $__dirname/..
 
-./bin/install-all.sh
-./bin/test-all.sh
 (cd react-app && npm run build)
 
 rm -rf build
