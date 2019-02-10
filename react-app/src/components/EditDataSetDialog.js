@@ -10,8 +10,8 @@ import DialogContent from '@material-ui/core/DialogContent'
 import DialogTitle from '@material-ui/core/DialogTitle'
 import PropTypes from 'prop-types'
 import React from 'react'
-import TextField from '@material-ui/core/TextField'
 import ServerHttpApi from '../api/net/ServerHttpApi'
+import TextField from '@material-ui/core/TextField'
 
 const EditDataSetDialog = observer(class extends React.Component {
   static propTypes = {

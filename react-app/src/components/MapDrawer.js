@@ -66,7 +66,7 @@ const MapDrawer = observer(class extends React.Component {
         pieChartData.push({ color: Layout.colours[i], value: UiStore.foundRecords[i].length })
       }
       pieChart = <div>
-        <Typography variant="h5" align="center">{UiStore.highlightField}</Typography>
+        <Typography variant='h5' align='center'>{UiStore.highlightField}</Typography>
         <PieChart
           slices={pieChartData}
         />

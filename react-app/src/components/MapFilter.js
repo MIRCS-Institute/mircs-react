@@ -25,16 +25,16 @@ const MapFilter = observer(class extends React.Component {
   handleFieldNameHighlighting = action( (event) => {
     // This counts the distinct values in the selected field, then sorts by the most common values.
     UiStore.highlightField = event.target.value
-    let valueCounts = []  // An array of objects used to keep a count of each of all of the values of this field, eg {value:'foo',count:7}
+    let valueCounts = [] // An array of objects used to keep a count of each of all of the values of this field, eg {value:'foo',count:7}
     let thisValue
-    _.each(UiStore.records, (record) => {  // Loop through all the records
-      if (record.data) {  // Check if there is a relationship to work with
-        _.each(record.data, (card) => {  // Loop through all the records found in the relationship
-          thisValue = _.get(card.values().next().value, event.target.value)  // Try to find the value of the requested field in the current card
+    _.each(UiStore.records, (record) => { // Loop through all the records
+      if (record.data) { // Check if there is a relationship to work with
+        _.each(record.data, (card) => { // Loop through all the records found in the relationship
+          thisValue = _.get(card.values().next().value, event.target.value) // Try to find the value of the requested field in the current card
           this.countFieldValue(valueCounts, thisValue)
         })
       } else {
-        thisValue = _.get(record, event.target.value)  // Try to find the value of the requested field in the current card
+        thisValue = _.get(record, event.target.value) // Try to find the value of the requested field in the current card
         this.countFieldValue(valueCounts, thisValue)
       }
     })
@@ -48,9 +48,9 @@ const MapFilter = observer(class extends React.Component {
   })
 
   countFieldValue = (valueCounts, thisValue) => {
-    // Used for invrementing our count of a given value.
-    if (thisValue) {  // We have a value
-      let counter = _.find(valueCounts, function(o) { return o.value === thisValue; })  // See if we have a counter object already for this field value
+    // Used for incrementing our count of a given value.
+    if (thisValue) { // We have a value
+      let counter = _.find(valueCounts, function(o) { return o.value === thisValue }) // See if we have a counter object already for this field value
       if (counter) {
         counter.count++
       } else {
@@ -118,9 +118,9 @@ const MapFilter = observer(class extends React.Component {
         </TextField>
 
         <TextField
-          id="standard-select-field"
+          id='standard-select-field'
           select
-          label="Highligh Fields"
+          label='Highligh Fields'
           className={classes.mapOptions}
           value={store.highlightField}
           onChange={this.handleFieldNameHighlighting}
@@ -129,8 +129,8 @@ const MapFilter = observer(class extends React.Component {
               className: classes.menu,
             },
           }}
-          margin="normal"
-          variant="outlined"
+          margin='normal'
+          variant='outlined'
           style={{ marginLeft: 10, width: 200 }}
         >
           <MenuItem key='none' value='none' name='none'>
