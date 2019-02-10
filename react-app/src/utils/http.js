@@ -40,38 +40,27 @@ const jsonRequest = async (url, request) => {
     console.error('Could not parse body as JSON:', response.bodyText)
   }
 
-  try {
-    if (response.status < 200 || response.status >= 300) {
-      if (DEBUG) {
-        console.error('http.jsonRequest: error response:',
-          '\n    url:', url,
-          '\n    request:', request,
-          '\n    response:', response)
-      }
-
-      response.toString = () => {
-        const message = _.get(response, 'bodyJson.message', response.bodyText)
-        return `${response.status}: ${message}`
-      }
-
-      throw response
-    }
-
+  if (response.status < 200 || response.status >= 300) {
     if (DEBUG) {
-      console.log('http.jsonRequest: success:',
+      console.error('http.jsonRequest: error response:',
         '\n    url:', url,
         '\n    request:', request,
         '\n    response:', response)
     }
-  } catch (exception) {
-    response.error = exception
-    if (DEBUG) {
-      console.error('http.jsonRequest: error parsing json response:',
-        '\n    url:', url,
-        '\n    request:', request,
-        '\n    response:', response)
+
+    response.toString = () => {
+      const message = _.get(response, 'bodyJson.message', response.bodyText)
+      return `${response.status}: ${message}`
     }
-    throw new Error(`${response.status}: ${response.bodyText}`)
+
+    throw response
+  }
+
+  if (DEBUG) {
+    console.log('http.jsonRequest: success:',
+      '\n    url:', url,
+      '\n    request:', request,
+      '\n    response:', response)
   }
 
   return response

@@ -23,7 +23,7 @@ const jsonDelete = (path) => {
   return makeRequest(path, { method: 'DELETE', headers: JSON_HEADER })
 }
 
-const makeRequest = (path, request) => {
+const makeRequest = async (path, request) => {
   if (!_.isString(path)) {
     throw new Error('path is required')
   }
@@ -31,17 +31,28 @@ const makeRequest = (path, request) => {
     throw new Error('request is required')
   }
 
+  const serverRequest = _.cloneDeep(request)
+
   const idToken = SignedInUser.get('idToken')
   if (idToken) {
-    _.set(request, 'headers.Authorization', `Bearer ${idToken}`)
+    _.set(serverRequest, 'headers.Authorization', `Bearer ${idToken}`)
   }
-
-  _.set(request, 'headers.X-Client-Platform', window.navigator.platform)
-  _.set(request, 'headers.X-User-Agent', window.navigator.userAgent)
 
   const url = SERVER_URL + path
 
-  return http.jsonRequest(url, request)
+  try {
+    return await http.jsonRequest(url, serverRequest)
+  } catch (exception) {
+    if (exception.status === 401 && _.get(exception.bodyJson, 'message') === 'token expired') {
+      // until we implement a token renewal strategy we simply sign the user out when their
+      // token expires
+      SignedInUser.signOut()
+      // retry the original request after sign out
+      return makeRequest(path, request)
+    } else {
+      throw exception
+    }
+  }
 }
 
 export default {

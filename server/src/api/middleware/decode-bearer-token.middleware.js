@@ -23,7 +23,7 @@ const decodeBearerToken = (req, res, next) => {
     req.authentication = decoded
   } catch (exception) {
     if (exception.name === 'TokenExpiredError') {
-      return next(HttpErrors.badRequest401('token expired'))
+      return next(HttpErrors.unauthorized401('token expired'))
     } else {
       return next(exception)
     }
