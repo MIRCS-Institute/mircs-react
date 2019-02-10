@@ -25,6 +25,10 @@ export const LEVEL_ERROR = 'error'
 const DEFAULT_TIME_MILLIS = 30 * 1000
 
 export const showSnackbarMessage = action((text, level=LEVEL_ERROR, timeToDisplay=DEFAULT_TIME_MILLIS) => {
+  if (level === LEVEL_ERROR || level === LEVEL_WARNING) {
+    console.error('showSnackbarMessage', level, text)
+  }
+
   if (typeof text !== 'string') {
     text = getErrorMessage(text)
   }

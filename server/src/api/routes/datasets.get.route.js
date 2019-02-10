@@ -11,10 +11,11 @@
 const MongoUtil = require('../../utils/mongo-util.js')
 
 module.exports = function(router) {
-  router.get('/api/datasets', function(req, res, next) {
-    MongoUtil.find(MongoUtil.DATA_SETS_COLLECTION, {})
-      .then((dataSets) => {
-        res.status(200).send({ list: dataSets })
-      }, next)
-  })
+  router.get('/api/datasets',
+    function(req, res, next) {
+      MongoUtil.find(MongoUtil.DATA_SETS_COLLECTION, {})
+        .then((dataSets) => {
+          res.status(200).send({ list: dataSets })
+        }, next)
+    })
 }

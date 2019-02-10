@@ -5,7 +5,6 @@ import _ from 'lodash'
 import Button from '@material-ui/core/Button'
 import ConfirmDeleteDialog from '../components/ConfirmDeleteDialog'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
-import http from '../utils/http'
 import LoadingSpinner from '../components/LoadingSpinner'
 import PageSkeleton from '../components/PageSkeleton'
 import Radio from '@material-ui/core/Radio'
@@ -13,6 +12,7 @@ import RadioGroup from '@material-ui/core/RadioGroup'
 import React from 'react'
 import RecordsCards from '../components/RecordsCards'
 import RecordsTable from '../components/RecordsTable'
+import ServerHttpApi from '../api/net/ServerHttpApi'
 import UrlParams from '../states/UrlParams'
 
 const Records = observer(class extends React.Component {
@@ -39,7 +39,7 @@ const Records = observer(class extends React.Component {
   refresh = action(() => {
     this.isLoading = true
     const dataSetId = UrlParams.get('dataSetId')
-    http.jsonRequest(`/api/datasets/${dataSetId}/records`)
+    ServerHttpApi.jsonGet(`/api/datasets/${dataSetId}/records`)
       .then(action((response) => {
         this.isLoading = false
         this.records = _.get(response, 'bodyJson.list')
@@ -49,13 +49,13 @@ const Records = observer(class extends React.Component {
         this.isLoading = false
       }))
 
-    http.jsonRequest(`/api/datasets/${dataSetId}/fields`)
+    ServerHttpApi.jsonGet(`/api/datasets/${dataSetId}/fields`)
       .then(action((response) => {
         this.fields = _.get(response, 'bodyJson.fields')
       }))
       .catch(showSnackbarMessage)
 
-    http.jsonRequest(`/api/datasets/${dataSetId}`)
+    ServerHttpApi.jsonGet(`/api/datasets/${dataSetId}`)
       .then(action((response) => {
         this.dataSet = _.get(response, 'bodyJson')
       }))
@@ -73,7 +73,7 @@ const Records = observer(class extends React.Component {
   handleDeleteConfirm = action(() => {
     this.showConfirmDeleteDialog = false
     const dataSetId = UrlParams.get('dataSetId')
-    http.jsonRequest(`/api/datasets/${dataSetId}/records`, { method: 'delete' })
+    ServerHttpApi.jsonDelete(`/api/datasets/${dataSetId}/records`)
       .then(action(() => {
         this.refresh()
       }))

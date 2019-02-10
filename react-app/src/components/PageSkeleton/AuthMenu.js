@@ -38,7 +38,7 @@ const AuthMenu = observer(class extends React.Component {
       >
         <List className={classes.list}>
           <ListItem className={classes.listItem}>
-            <ListItemText primary={SignedInUser.getEmail()}/>
+            <ListItemText primary={SignedInUser.get('email')}/>
           </ListItem>
         </List>
         <Divider/>

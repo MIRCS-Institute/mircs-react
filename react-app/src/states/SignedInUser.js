@@ -1,11 +1,10 @@
-import { action, computed, extendObservable, toJS } from 'mobx'
+import { action, computed, extendObservable } from 'mobx'
 import _ from 'lodash'
 import Environment from '../utils/Environment'
-import http from '../utils/http'
 import LocalStorage from '../utils/LocalStorage'
+import ServerHttpApi from '../api/net/ServerHttpApi'
 
 const SERVER_URL = Environment.getRequired('SERVER_URL')
-
 const MIRCS_USER_STORAGE_KEY = `mircs-user-${SERVER_URL}`
 
 class SignedInUserClass {
@@ -13,40 +12,25 @@ class SignedInUserClass {
     extendObservable(this, {
       _authRecord: null,
     })
-    this._loadFromLocalStorage()
+    this._computedValues = {}
+    action(() => {
+      this._authRecord = LocalStorage.getObject(MIRCS_USER_STORAGE_KEY)
+    })()
   }
 
-  _loadFromLocalStorage = action(() => {
-    this._authRecord = LocalStorage.getObject(MIRCS_USER_STORAGE_KEY)
-    console.log('this._authRecord:', toJS(this._authRecord))
-  })
-
-  _userIdComputed = computed(() => {
-    return _.get(this._authRecord, 'userId')
-  })
-
-  getUserId = () => {
-    return this._userIdComputed.get()
+  get = (key) => {
+    let computedValue = this._computedValues[key]
+    if (!computedValue) {
+      computedValue = computed(() => {
+        return _.get(this._authRecord, key)
+      })
+      this._computedValues[key] = computedValue
+    }
+    return computedValue.get()
   }
-
-  authRecord = () => {
-    return toJS(this._authRecord)
-  }
-
-  _emailComputed = computed(() => {
-    return _.get(this._authRecord, 'email')
-  })
-
-  getEmail = () => {
-    return this._emailComputed.get()
-  }
-
-  _isSignedInComputed = computed(() => {
-    return !!_.get(this._authRecord, 'userId')
-  })
 
   isSignedIn = () => {
-    return this._isSignedInComputed.get()
+    return !!this.get('userId')
   }
 
   signOut = async () => {
@@ -58,10 +42,7 @@ class SignedInUserClass {
   }
 
   signIn = async (email, password) => {
-    const response = await http.jsonRequest(`${SERVER_URL}/auth/verify-password`, {
-      method: 'POST',
-      bodyJson: { email, password },
-    })
+    const response = await ServerHttpApi.jsonPost('/auth/verify-password', { email, password })
     const authRecord = response.bodyJson
     LocalStorage.setObject(MIRCS_USER_STORAGE_KEY, authRecord)
     action(() => {

@@ -5,10 +5,10 @@ import _ from 'lodash'
 import Button from '@material-ui/core/Button'
 import DataSetCard from '../components/DataSetCard'
 import EditDataSetDialog from '../components/EditDataSetDialog'
-import http from '../utils/http'
 import LoadingSpinner from '../components/LoadingSpinner'
 import PageSkeleton from '../components/PageSkeleton'
 import React from 'react'
+import ServerHttpApi from '../api/net/ServerHttpApi'
 
 const DataSets = observer(class extends React.Component {
   constructor() {
@@ -27,14 +27,13 @@ const DataSets = observer(class extends React.Component {
 
   refresh = action(() => {
     this.isLoading = true
-    // use the http.jsonRequest to create a response object from a URL
-    http.jsonRequest('/api/datasets')
+    ServerHttpApi.jsonGet('/api/datasets')
       .then(action((response) => {
         this.isLoading = false
         this.dataSets = _.get(response, 'bodyJson.list')
       }))
       .catch(showSnackbarMessage)
-      .catch(action(() => {
+      .then(action(() => {
         this.isLoading = false
       }))
   })

@@ -10,9 +10,9 @@ import CardHeader from '@material-ui/core/CardHeader'
 import ConfirmDeleteDialog from '../components/ConfirmDeleteDialog'
 import DataSetUploadDropzone from '../components/DataSetUploadDropzone'
 import EditDataSetDialog from '../components/EditDataSetDialog'
-import http from '../utils/http'
 import PropTypes from 'prop-types'
 import React from 'react'
+import ServerHttpApi from '../api/net/ServerHttpApi'
 
 /* each individual card will represent a single Data Set */
 const DataSetCard = observer(class extends React.Component {
@@ -38,15 +38,13 @@ const DataSetCard = observer(class extends React.Component {
 
   refreshStats = () => {
     const { onError } = this.props
-    http
-      .jsonRequest(`/api/datasets/${this.props.dataSet._id}/stats`)
+    ServerHttpApi.jsonGet(`/api/datasets/${this.props.dataSet._id}/stats`)
       .then(action((response) => {
         this.stats = _.get(response, 'bodyJson')
       }))
       .catch(onError)
 
-    http
-      .jsonRequest(`/api/datasets/${this.props.dataSet._id}/fields`)
+    ServerHttpApi.jsonGet(`/api/datasets/${this.props.dataSet._id}/fields`)
       .then(action((response) => {
         this.fields = _.get(response, 'bodyJson.fields')
       }))
@@ -64,8 +62,7 @@ const DataSetCard = observer(class extends React.Component {
   handleDeleteConfirm = action(() => {
     const { onRefresh, onError, dataSet } = this.props
     this.showConfirmDeleteDialog = false
-    http
-      .jsonRequest(`/api/datasets/${dataSet._id}`, {method: 'delete'})
+    ServerHttpApi.jsonDelete(`/api/datasets/${dataSet._id}`)
       .then(onRefresh)
       .catch(onError)
   })
@@ -136,7 +133,7 @@ const DataSetCard = observer(class extends React.Component {
           </DataSetUploadDropzone>
         </CardContent>
         <CardActions>
-          <Button variant='contained' onClick={() => goToPath(Path.dataSets({ dataSetId: dataSet._id }))}>
+          <Button variant='contained' onClick={() => goToPath(Path.dataSetRecords({ dataSetId: dataSet._id }))}>
             View Records
           </Button>
           <Button variant='contained' onClick={this.handleEditClick}>

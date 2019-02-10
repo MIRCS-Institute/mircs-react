@@ -1,4 +1,5 @@
 import {action, extendObservable} from 'mobx'
+import { goToPath, Path } from '../app/App'
 import {observer} from 'mobx-react'
 import _ from 'lodash'
 import Button from '@material-ui/core/Button'
@@ -9,9 +10,9 @@ import CardHeader from '@material-ui/core/CardHeader'
 import ConfirmDeleteDialog from '../components/ConfirmDeleteDialog'
 import DataSetName from '../components/DataSetName'
 import EditRelationshipDialog from '../components/EditRelationshipDialog'
-import http from '../utils/http'
 import PropTypes from 'prop-types'
 import React from 'react'
+import ServerHttpApi from '../api/net/ServerHttpApi'
 
 /* each individual card will represent a single Relationship */
 const RelationshipCard = observer(class extends React.Component {
@@ -39,8 +40,7 @@ const RelationshipCard = observer(class extends React.Component {
 
   handleDeleteConfirm = action(() => {
     this.showConfirmDeleteDialog = false
-    http
-      .jsonRequest(`/api/relationships/${this.props.relationship._id}`, {method: 'delete'})
+    ServerHttpApi.jsonDelete(`/api/relationships/${this.props.relationship._id}`)
       .then(this.props.onRefresh)
       .catch(this.props.onError)
   })
@@ -61,7 +61,7 @@ const RelationshipCard = observer(class extends React.Component {
   })
 
   handleViewClick = action(() => {
-    return http.jsonRequest(`/api/relationships/${this.props.relationship._id}`, {})
+    goToPath(Path.relationshipMap({ relationshipId: this.props.relationship._id }))
   })
 
   render() {

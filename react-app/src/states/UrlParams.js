@@ -18,9 +18,10 @@ class UrlParamsClass {
           return this._params[param]
         })
       }
-
       return computedParam.get()
     }
+
+    // no param specified, return the whole lot
     return toJS(this._params)
   }
 

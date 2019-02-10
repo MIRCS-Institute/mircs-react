@@ -8,9 +8,9 @@ import Card from '@material-ui/core/Card'
 import CardContent from '@material-ui/core/CardContent'
 import CardHeader from '@material-ui/core/CardHeader'
 import Grid from '@material-ui/core/Grid'
-import http from '../utils/http'
 import PageSkeleton from '../components/PageSkeleton'
 import React from 'react'
+import ServerHttpApi from '../api/net/ServerHttpApi'
 import Typography from '@material-ui/core/Typography'
 
 const Home = observer(class extends React.Component {
@@ -29,7 +29,7 @@ const Home = observer(class extends React.Component {
   }
 
   fetchDataSetRecords = action(() => {
-    http.jsonRequest('/api/datasets')
+    ServerHttpApi.jsonGet('/api/datasets')
       .then(action((response) => {
         this.dataSets = _.get(response, 'bodyJson.list')
       }))
@@ -37,7 +37,7 @@ const Home = observer(class extends React.Component {
   })
 
   fetchRelationshipRecords = action(() => {
-    http.jsonRequest('/api/relationships')
+    ServerHttpApi.jsonGet('/api/relationships')
       .then(action((response) => {
         this.relationships = _.get(response, 'bodyJson.list')
       }))
