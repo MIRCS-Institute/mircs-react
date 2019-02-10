@@ -20,16 +20,27 @@ const DataSetUploadDropzone = observer(class extends React.Component {
     }
 
     const file = acceptedFiles[0]
-    papa.parse(file, {
-      dynamicTyping: true,
-      complete: (results) => {
-        this.handleCsvLoaded(results.data)
-      },
-      error: (error) => {
-        console.error('error parsing csv:', error)
-        return this.props.onError(error)
-      },
-    })
+    if (file.name.endsWith('.json')) {
+      // parse json file
+      const reader = new FileReader()
+      reader.onload = (event) => {
+        let obj = JSON.parse(event.target.result)
+        this.handleJsonLoaded(obj)
+      }
+      reader.readAsText(file)
+    } else {
+      // default to csv file
+      papa.parse(file, {
+        dynamicTyping: true,
+        complete: (results) => {
+          this.handleCsvLoaded(results.data)
+        },
+        error: (error) => {
+          console.error('error parsing csv:', error)
+          return this.props.onError(error)
+        },
+      })
+    }
   })
 
   handleCsvLoaded = (data) => {
@@ -56,6 +67,24 @@ const DataSetUploadDropzone = observer(class extends React.Component {
       }
     })
 
+    this.uploadData(records)
+  }
+
+  handleJsonLoaded = (data) => {
+    if (data.features) {
+      // This looks like a geojson file, pull the data out of the features field
+      this.uploadData(data.features)
+    } else {
+      // Assuming generic array of objects
+      this.uploadData(data)
+    }
+  }
+
+  /**
+   * Uploads records to add to the current dataset.
+   * @param records A JSON formatted object or array of objects.
+   */
+  uploadData = (records) => {
     http.jsonRequest(`/api/datasets/${this.props.dataSet._id}/records`, {
       method: 'post',
       bodyJson: {
@@ -72,7 +101,7 @@ const DataSetUploadDropzone = observer(class extends React.Component {
 
   render() {
     return (
-      <Dropzone onDrop={this.handleDrop} accept='text/csv'
+      <Dropzone onDrop={this.handleDrop} accept='text/csv,application/json'
         activeStyle={{ backgroundColor: 'lightgray' }}
         rejectStyle={{ backgroundColor: 'red', cursor: 'no-drop' }}
       >
