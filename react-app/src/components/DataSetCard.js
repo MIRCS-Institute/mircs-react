@@ -133,7 +133,7 @@ const DataSetCard = observer(class extends React.Component {
           </DataSetUploadDropzone>
         </CardContent>
         <CardActions>
-          <Button variant='contained' onClick={() => goToPath(Path.dataSets({ dataSetId: dataSet._id }))}>
+          <Button variant='contained' onClick={() => goToPath(Path.dataSetRecords({ dataSetId: dataSet._id }))}>
             View Records
           </Button>
           <Button variant='contained' onClick={this.handleEditClick}>
