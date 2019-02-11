@@ -1,4 +1,4 @@
-#!/bin/bash -ex
+#!/bin/bash -ev
 
 #
 # Deploys contents of build dir to Heroku.
@@ -10,10 +10,13 @@ cd $__dirname/..
 HEROKU_PROJECT=$1
 
 echo HEROKU_API_KEY: ${HEROKU_API_KEY}
+echo 'heroku auth:whoami'
 heroku auth:whoami
-heroku auth:login
-heroku auth:whoami
+# heroku auth:login
+# heroku auth:whoami
+# heroku config:set HEROKU_API_KEY=${HEROKU_API_KEY}
 
+echo 'heroku git:clone -a ${HEROKU_PROJECT}'
 heroku git:clone -a ${HEROKU_PROJECT}
 
 ./bin/prepare-deploy.sh
