@@ -7,22 +7,24 @@
 __dirname="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 cd $__dirname/..
 
-HEROKU_PROJECT=$1
+HEROKU_APP_NAME=$1
 
 echo HEROKU_API_KEY: ${HEROKU_API_KEY}
 echo 'heroku auth:whoami'
 heroku auth:whoami
-# heroku auth:login
-# heroku auth:whoami
+echo 'heroku auth:login'
+heroku auth:login
+echo 'heroku auth:whoami'
+heroku auth:whoami
 # heroku config:set HEROKU_API_KEY=${HEROKU_API_KEY}
 
-echo 'heroku git:clone -a ${HEROKU_PROJECT}'
-heroku git:clone -a ${HEROKU_PROJECT}
+echo 'heroku git:clone -a ${HEROKU_APP_NAME}'
+heroku git:clone -a ${HEROKU_APP_NAME}
 
 ./bin/prepare-deploy.sh
 
 # convert the build folder into a Heroku git folder
-mv ${HEROKU_PROJECT}/.git build
+mv ${HEROKU_APP_NAME}/.git build
 
 cd build
 if [ -z "$(git status --porcelain)" ]; then
