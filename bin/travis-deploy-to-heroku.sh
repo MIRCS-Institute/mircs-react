@@ -17,8 +17,8 @@ git init
 git add .
 git commit -m "Travis Build - Commit:${TRAVIS_COMMIT} ${TRAVIS_COMMIT_MESSAGE}"
 
-echo 'git remote add heroku https://:${HEROKU_API_KEY}@git.heroku.com/${HEROKU_APP_NAME}.git'
-git remote add heroku https://:${HEROKU_API_KEY}@git.heroku.com/${HEROKU_APP_NAME}.git
+echo 'heroku git:remote -a ${HEROKU_APP_NAME}'
+heroku git:remote -a ${HEROKU_APP_NAME}
 echo 'git fetch heroku'
 git fetch heroku
 echo 'git rebase heroku/master'
