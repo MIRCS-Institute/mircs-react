@@ -9,24 +9,10 @@ cd $__dirname/..
 
 HEROKU_APP_NAME=$1
 
-echo 'heroku git:clone -a ${HEROKU_APP_NAME}'
-heroku git:clone -a ${HEROKU_APP_NAME}
-
-echo 'ls ${HEROKU_APP_NAME}/.git'
-ls ${HEROKU_APP_NAME}/.git
-
 ./bin/prepare-deploy.sh
-
-# convert the build folder into a Heroku git folder
-mv ${HEROKU_APP_NAME}/.git build
-
 cd build
 
-if [ -z "$(git status --porcelain)" ]; then
-  echo "build directory clean is clean, skipping Heroku deploy."
-else
-  # Uncommitted changes
-  git add .
-  git commit -m "Travis Build - Commit:${TRAVIS_COMMIT} ${TRAVIS_COMMIT_MESSAGE}"
-  git push heroku master
-fi
+git init
+git add .
+git commit -m "Travis Build - Commit:${TRAVIS_COMMIT} ${TRAVIS_COMMIT_MESSAGE}"
+dpl --provider=heroku --app=mircs-develop --api-key=${HEROKU_API_KEY}
