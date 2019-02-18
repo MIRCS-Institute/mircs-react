@@ -1,10 +1,10 @@
 import { action, extendObservable } from 'mobx'
+import { CurrentDataSet } from '../../api/DataSet'
+import { CurrentDataSetRecords } from '../../api/DataSetRecords'
 import { observer } from 'mobx-react'
 import { showSnackbarMessage } from '../../components/SnackbarMessages'
-import _ from 'lodash'
 import Button from '@material-ui/core/Button'
 import ConfirmDeleteDialog from '../../components/ConfirmDeleteDialog'
-import CurrentDataSetRecords from '../../api/CurrentDataSetRecords'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
 import LoadingSpinner from '../../components/LoadingSpinner'
 import PageSkeleton from '../../components/PageSkeleton'
@@ -26,42 +26,14 @@ const Records = observer(class extends React.Component {
 
       viewMode: 'table',
 
-      isLoading: false,
-
       showCreateDialog: false,
       showConfirmDeleteDialog: false,
     })
   }
 
-  componentDidMount() {
-    this.refresh()
+  refresh = () => {
+    CurrentDataSet.res.refresh()
   }
-
-  refresh = action(() => {
-    this.isLoading = true
-    const dataSetId = UrlParams.get('dataSetId')
-    ServerHttpApi.jsonGet(`/api/datasets/${dataSetId}/records`)
-      .then(action((response) => {
-        this.isLoading = false
-        this.records = _.get(response, 'bodyJson.list')
-      }))
-      .catch(showSnackbarMessage)
-      .then(action(() => {
-        this.isLoading = false
-      }))
-
-    ServerHttpApi.jsonGet(`/api/datasets/${dataSetId}/fields`)
-      .then(action((response) => {
-        this.fields = _.get(response, 'bodyJson.list')
-      }))
-      .catch(showSnackbarMessage)
-
-    ServerHttpApi.jsonGet(`/api/datasets/${dataSetId}`)
-      .then(action((response) => {
-        this.dataSet = _.get(response, 'bodyJson')
-      }))
-      .catch(showSnackbarMessage)
-  })
 
   handleDeleteClick = action(() => {
     this.showConfirmDeleteDialog = true
@@ -91,11 +63,12 @@ const Records = observer(class extends React.Component {
   })
 
   render() {
-    const dataSetId = UrlParams.get('dataSetId')
+    const dataSetName = CurrentDataSet.res.get('name')
+    const records = CurrentDataSetRecords.res.get('list', [])
 
     return (<PageSkeleton>
       <header style={styles.header}>
-        <span>{this.dataSet && this.dataSet.name} Records</span>
+        <span>{dataSetName} Records</span>
         <Button variant='contained' color='secondary' style={styles.headerButton} onClick={this.handleDeleteClick}>
           Delete All Records
         </Button>
@@ -109,12 +82,12 @@ const Records = observer(class extends React.Component {
       {CurrentDataSetRecords.res.isLoading() && <LoadingSpinner title='Loading Records...' />}
 
       {this.viewMode === 'cards' &&
-        <RecordsCards dataSetId={dataSetId} records={this.records} onRefresh={this.refresh} onError={this.handleError} />}
+        <RecordsCards records={records} onRefresh={this.refresh} onError={this.handleError} />}
 
       {this.viewMode === 'table' &&
-        <RecordsTable dataSetId={dataSetId} records={this.records} fields={this.fields} onRefresh={this.refresh} onError={this.handleError} />}
+        <RecordsTable records={records} onRefresh={this.refresh} onError={this.handleError} />}
 
-      {this.showConfirmDeleteDialog && <ConfirmDeleteDialog name={`all records in ${this.dataSet.name} data set`} onConfirm={this.handleDeleteConfirm} onCancel={this.handleDeleteCancel}/>}
+      {this.showConfirmDeleteDialog && <ConfirmDeleteDialog name={`all records in ${dataSetName} data set`} onConfirm={this.handleDeleteConfirm} onCancel={this.handleDeleteCancel}/>}
     </PageSkeleton>)
   }
 })
