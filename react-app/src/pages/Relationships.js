@@ -1,42 +1,23 @@
 import { action, extendObservable } from 'mobx'
+import { cachedServerHttpResource } from '../api/resources/ServerHttpResource'
 import { observer } from 'mobx-react'
 import { showSnackbarMessage } from '../components/SnackbarMessages'
-import _ from 'lodash'
 import Button from '@material-ui/core/Button'
 import EditRelationshipDialog from '../components/EditRelationshipDialog'
 import LoadingSpinner from '../components/LoadingSpinner'
 import PageSkeleton from '../components/PageSkeleton'
 import React from 'react'
 import RelationshipCard from '../components/RelationshipCard'
-import ServerHttpApi from '../api/net/ServerHttpApi'
 
 const Relationships = observer(class extends React.Component {
   constructor() {
     super()
     extendObservable(this, {
-      relationships: [],
-      isLoading: false,
-
       showCreateDialog: false,
     })
-  }
 
-  componentDidMount() {
-    this.refresh()
+    this.resource = cachedServerHttpResource('/api/relationships')
   }
-
-  refresh = action(() => {
-    this.isLoading = true
-    ServerHttpApi.jsonGet('/api/relationships')
-      .then(action((response) => {
-        this.isLoading = false
-        this.relationships = _.get(response, 'bodyJson.list')
-      }))
-      .catch(showSnackbarMessage)
-      .then(action(() => {
-        this.isLoading = false
-      }))
-  })
 
   handleCreateClick = action(() => {
     this.showCreateDialog = true
@@ -48,30 +29,38 @@ const Relationships = observer(class extends React.Component {
 
   handleCreateAfterSave = action(() => {
     this.showCreateDialog = false
-    this.refresh()
+    this.resource.refresh()
   })
 
   handleError = action((error) => {
     showSnackbarMessage(error)
-    this.refresh()
+    this.resource.refresh()
   })
 
   render() {
+    const isLoading = this.resource.isPending()
+    const relationships = this.resource.get('list', [])
+
     return (<PageSkeleton>
       <div>
         <Button variant='contained' color='primary' style={{ marginTop: 10 }} onClick={this.handleCreateClick}>
           Create a Relationship
         </Button>
 
-        {!this.isLoading && <p style={styles.description}>
+        {!isLoading && <p style={styles.description}>
           Each card represents a relationship that has been uploaded to the platform.</p>}
 
-        {this.isLoading && <LoadingSpinner title='Loading Relationships...' />}
+        {isLoading && <LoadingSpinner title='Loading Relationships...' />}
 
         <EditRelationshipDialog open={this.showCreateDialog} onCancel={this.handleCreateCancel} afterSave={this.handleCreateAfterSave}/>
 
-        {this.relationships.map((relationship) => (
-          <RelationshipCard key={relationship._id} relationship={relationship} onRefresh={this.refresh} onError={this.handleError}/>
+        {relationships.map((relationship) => (
+          <RelationshipCard
+            key={relationship._id}
+            relationship={relationship}
+            onRefresh={this.resource.refresh}
+            onError={this.handleError}
+          />
         ))}
       </div>
     </PageSkeleton>)

@@ -14,23 +14,23 @@ class AbstractResource {
     throw new Error('must be implemented by subclass')
   }
 
-  get(path, defaultValue) {
+  get = (path, defaultValue) => {
     return _.get(this.current(), path, defaultValue)
   }
 
-  get isPending() {
+  isPending = () => {
     return this.state === ResourceState.PENDING
   }
 
-  get isReady() {
+  isReady = () => {
     return this.state === ResourceState.READY
   }
 
-  get isError() {
+  isError = () => {
     return this.state === ResourceState.ERROR
   }
 
-  match(methods) {
+  match = (methods) => {
     // calling `current()` before the switch to register any callers of `match()` as dependent on
     // the mobx resource
     const current = this.current()

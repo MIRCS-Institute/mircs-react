@@ -37,7 +37,7 @@ class ServerHttpResource extends AbstractResource {
     return this._path
   }
 
-  refresh = action(() => {
+  refresh = () => {
     return ServerHttpApi.jsonGet(this._path)
       .then(action((response) => {
         this._current = response.bodyJson
@@ -58,7 +58,7 @@ class ServerHttpResource extends AbstractResource {
           this._current = this._emptyValue
         }
       }))
-  })
+  }
 
   current() {
     return this._current
