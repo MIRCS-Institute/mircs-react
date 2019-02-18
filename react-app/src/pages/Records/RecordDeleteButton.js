@@ -1,10 +1,10 @@
 import { action, extendObservable } from 'mobx'
 import { observer } from 'mobx-react'
 import Button from '@material-ui/core/Button'
-import ConfirmDeleteDialog from '../components/ConfirmDeleteDialog'
+import ConfirmDeleteDialog from '../../components/ConfirmDeleteDialog'
 import PropTypes from 'prop-types'
 import React from 'react'
-import ServerHttpApi from '../api/net/ServerHttpApi'
+import ServerHttpApi from '../../api/net/ServerHttpApi'
 
 const RecordDeleteButton = observer(class extends React.Component {
   static propTypes = {
