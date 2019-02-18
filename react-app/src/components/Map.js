@@ -170,64 +170,88 @@ const Map = observer(class extends React.Component {
     this.markers = L.layerGroup()
 
     _.each(UiStore.records, (record) => {
-      // use one side of the join or the other, at this point we don't know which has the geocoordinate
-      const point = this.makePoint(record)
-      if (point) {
-        points.push(point)
-        let found = false
+      if (!record.geometry) {
+        // This is not a polygon
 
-        // Look for search terms, and use appropriate marker if term found
-        // TODO: get smarter about how we search to improve performance.  Only search for latest search term, and don't reset the existing markers.  etc.
-        if (UiStore.searchStrings.length > 0) {
-          const recordString = JSON.stringify(record).toLowerCase()
-          UiStore.searchStrings.forEach((element, index) => {
-            if (element.includes(':')) {
-              // This is a specific field/value search such as 'Surname: Smith'
-              const highlightField = element.substring(0, element.indexOf(':'))
-              const highlightValue = element.substring(element.indexOf(':')+2)
-              if (record.data) {
-                // relationship data
-                _.each(record.data, (leftSideRecords) => {
-                  _.each(leftSideRecords, (card) => {
-                    if (_.get(card, highlightField) === highlightValue) {
-                      this.makeMarker(point, record, index)
-                      found = true
-                    }
+        // use one side of the join or the other, at this point we don't know which has the geocoordinate
+        const point = this.makePoint(record)
+        if (point) {
+          points.push(point)
+          let found = false
+
+          // Look for search terms, and use appropriate marker if term found
+          // TODO: get smarter about how we search to improve performance.  Only search for latest search term, and don't reset the existing markers.  etc.
+          if (UiStore.searchStrings.length > 0) {
+            const recordString = JSON.stringify(record).toLowerCase()
+            UiStore.searchStrings.forEach((element, index) => {
+              if (element.includes(':')) {
+                // This is a specific field/value search such as 'Surname: Smith'
+                const highlightField = element.substring(0, element.indexOf(':'))
+                const highlightValue = element.substring(element.indexOf(':') + 2)
+                if (record.data) {
+                  // relationship data
+                  _.each(record.data, (leftSideRecords) => {
+                    _.each(leftSideRecords, (card) => {
+                      if (_.get(card, highlightField) === highlightValue) {
+                        this.makeMarker(point, record, index)
+                        found = true
+                      }
+                    })
                   })
-                })
-                _.each(record.data, (rightSideRecords) => {
-                  _.each(rightSideRecords, (card) => {
-                    if (_.get(card, highlightField) === highlightValue) {
-                      this.makeMarker(point, record, index)
-                      found = true
-                    }
+                  _.each(record.data, (rightSideRecords) => {
+                    _.each(rightSideRecords, (card) => {
+                      if (_.get(card, highlightField) === highlightValue) {
+                        this.makeMarker(point, record, index)
+                        found = true
+                      }
+                    })
                   })
-                })
+                } else {
+                  // no relationship
+                  if (_.get(record, highlightField) === highlightValue) {
+                    this.makeMarker(point, record, index)
+                    found = true
+                  }
+                }
               } else {
-                // no relationship
-                if (_.get(record, highlightField) === highlightValue) {
+                if (recordString.includes(element.toLowerCase())) {
                   this.makeMarker(point, record, index)
                   found = true
                 }
               }
-            } else {
-              if (recordString.includes(element.toLowerCase())) {
-                this.makeMarker(point, record, index)
-                found = true
-              }
+            })
+          }
+
+          if (!found) {
+            L.marker(point, {icon: this.iconX})
+              .addTo(this.markers)
+              .on('click', () => {
+                this.updateSelected(point, record)
+              })
+          }
+
+          if (found)
+            foundPoints.push(point)
+
+        }
+      } else {
+        // This is a polygon
+        let shape = []
+        let polygons = record.geometry.coordinates.slice()
+        for (let i=0; i<polygons.length; i++) {
+          let polygon = []
+          let polyPoints = polygons[i].slice()
+          for (let j=0; j<polyPoints.length; j++) {
+            const point = [polyPoints[j].slice()[1],polyPoints[j].slice()[0]]
+            if (j===0) {
+              points.push(point)
             }
-          })
+            polygon.push(point)
+          }
+          shape.push(polygon)
         }
 
-        if (!found) {
-          L.marker(point, {icon: this.iconX})
-            .addTo(this.markers)
-            .on('click', () => { this.updateSelected(point, record) })
-        }
-
-        if (found)
-          foundPoints.push(point)
-
+        L.polygon(shape, {color: 'red'}).addTo(this.map);
       }
     })
 
@@ -314,7 +338,9 @@ const Map = observer(class extends React.Component {
   centerMapOnPoints = (points) => {
     const multiPoint = turf.multiPoint(points)
     const bbox = turf.bbox(multiPoint)
-    this.map.fitBounds([[bbox[0], bbox[1]], [ bbox[2], bbox[3]]])
+    if (bbox[0]<361) {
+      this.map.fitBounds([[bbox[0], bbox[1]], [ bbox[2], bbox[3]]])
+    }
   }
 
   refreshMap = () => {
