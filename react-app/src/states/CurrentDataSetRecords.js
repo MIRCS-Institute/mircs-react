@@ -3,7 +3,7 @@ import CurrentResource from '../api/resources/CurrentResource'
 import UrlParams from './UrlParams'
 
 class CurrentDataSetRecordsClass extends CurrentResource {
-  createResource() {
+  createCurrentResourceInstance() {
     const dataSetId = UrlParams.get('dataSetId')
     if (dataSetId) {
       return cachedServerHttpResource(`/api/datasets/${dataSetId}/records`)

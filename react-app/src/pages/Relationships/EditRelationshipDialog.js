@@ -284,7 +284,7 @@ const FieldChooser = observer(class extends React.Component {
           // due to the asynchronous nature of http requests, we check to see that this response is
           // regarding the one requested, otherwise we ignore it
           if (fetchingDataSetId === this.props.dataSetId) {
-            this.fields = response.bodyJson.fields
+            this.fields = response.bodyJson.list
           }
         }))
         .catch(action((error) => {

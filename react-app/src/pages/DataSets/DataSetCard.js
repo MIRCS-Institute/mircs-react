@@ -46,7 +46,7 @@ const DataSetCard = observer(class extends React.Component {
 
     ServerHttpApi.jsonGet(`/api/datasets/${this.props.dataSet._id}/fields`)
       .then(action((response) => {
-        this.fields = _.get(response, 'bodyJson.fields')
+        this.fields = _.get(response, 'bodyJson.list')
       }))
       .catch(onError)
   }

@@ -52,7 +52,7 @@ const Records = observer(class extends React.Component {
 
     ServerHttpApi.jsonGet(`/api/datasets/${dataSetId}/fields`)
       .then(action((response) => {
-        this.fields = _.get(response, 'bodyJson.fields')
+        this.fields = _.get(response, 'bodyJson.list')
       }))
       .catch(showSnackbarMessage)
 
