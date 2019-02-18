@@ -60,7 +60,7 @@ function appPathReplace(path, params) {
   if (params === false) {
     return path
   }
-  params = _.extend({ pageId: 'index' }, toJS(UrlParams.get()), params)
+  params = _.extend({}, toJS(UrlParams.get()), params)
   return pathReplace(path, params)
 }
 
