@@ -4,6 +4,7 @@ import { showSnackbarMessage } from '../components/SnackbarMessages'
 import _ from 'lodash'
 import Button from '@material-ui/core/Button'
 import ConfirmDeleteDialog from '../components/ConfirmDeleteDialog'
+import CurrentDataSetRecords from '../states/CurrentDataSetRecords'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
 import LoadingSpinner from '../components/LoadingSpinner'
 import PageSkeleton from '../components/PageSkeleton'
@@ -105,7 +106,7 @@ const Records = observer(class extends React.Component {
         </RadioGroup>
       </header>
 
-      {this.isLoading && <LoadingSpinner title='Loading Records...' />}
+      {CurrentDataSetRecords.res.isLoading() && <LoadingSpinner title='Loading Records...' />}
 
       {this.viewMode === 'cards' &&
         <RecordsCards dataSetId={dataSetId} records={this.records} onRefresh={this.refresh} onError={this.handleError} />}
