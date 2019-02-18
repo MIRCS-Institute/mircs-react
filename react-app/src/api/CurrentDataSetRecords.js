@@ -1,6 +1,6 @@
-import { cachedServerHttpResource } from '../api/resources/ServerHttpResource'
-import CurrentResource from '../api/resources/CurrentResource'
-import UrlParams from './UrlParams'
+import { cachedServerHttpResource } from './resources/ServerHttpResource'
+import CurrentResource from './resources/CurrentResource'
+import UrlParams from '../states/UrlParams'
 
 class CurrentDataSetRecordsClass extends CurrentResource {
   createCurrentResourceInstance() {
