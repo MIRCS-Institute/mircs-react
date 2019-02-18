@@ -1,12 +1,12 @@
 import { action, extendObservable } from 'mobx'
-import { cachedServerHttpResource } from '../api/resources/ServerHttpResource'
+import { cachedServerHttpResource } from '../../api/resources/ServerHttpResource'
 import { observer } from 'mobx-react'
-import { showSnackbarMessage } from '../components/SnackbarMessages'
+import { showSnackbarMessage } from '../../components/SnackbarMessages'
 import Button from '@material-ui/core/Button'
-import DataSetCard from '../components/DataSetCard'
-import EditDataSetDialog from '../components/EditDataSetDialog'
-import LoadingSpinner from '../components/LoadingSpinner'
-import PageSkeleton from '../components/PageSkeleton'
+import DataSetCard from './DataSetCard'
+import EditDataSetDialog from './EditDataSetDialog'
+import LoadingSpinner from '../../components/LoadingSpinner'
+import PageSkeleton from '../../components/PageSkeleton'
 import React from 'react'
 
 const DataSets = observer(class extends React.Component {

@@ -5,7 +5,7 @@ import Dropzone from 'react-dropzone'
 import papa from 'papaparse'
 import PropTypes from 'prop-types'
 import React from 'react'
-import ServerHttpApi from '../api/net/ServerHttpApi'
+import ServerHttpApi from '../../api/net/ServerHttpApi'
 
 const DataSetUploadDropzone = observer(class extends React.Component {
   static propTypes = {
