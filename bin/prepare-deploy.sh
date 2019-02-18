@@ -12,3 +12,7 @@ cd $__dirname/..
 rm -rf build
 cp -R server build
 cp -R react-app/build build/public
+
+# remove non-production resources
+rm -f build/README.md
+rm -rf build/bin

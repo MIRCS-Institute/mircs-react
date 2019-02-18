@@ -1,7 +1,7 @@
 #!/bin/bash -ev
 
 #
-# Deploys contents of build dir to Heroku.
+# Prepares and deploys contents of build dir to Heroku.
 #
 
 __dirname="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
