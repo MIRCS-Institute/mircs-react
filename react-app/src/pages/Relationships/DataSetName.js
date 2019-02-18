@@ -1,9 +1,9 @@
 import { action, extendObservable } from 'mobx'
 import { observer } from 'mobx-react'
-import { showSnackbarMessage } from './SnackbarMessages'
+import { showSnackbarMessage } from '../../components/SnackbarMessages'
 import PropTypes from 'prop-types'
 import React from 'react'
-import ServerHttpApi from '../api/net/ServerHttpApi'
+import ServerHttpApi from '../../api/net/ServerHttpApi'
 
 const DataSetName = observer(class extends React.Component {
   static propTypes = {

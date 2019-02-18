@@ -1,5 +1,5 @@
 import {action, extendObservable} from 'mobx'
-import { goToPath, Path } from '../app/App'
+import { goToPath, Path } from '../../app/App'
 import {observer} from 'mobx-react'
 import _ from 'lodash'
 import Button from '@material-ui/core/Button'
@@ -7,12 +7,12 @@ import Card from '@material-ui/core/Card'
 import CardActions from '@material-ui/core/CardActions'
 import CardContent from '@material-ui/core/CardContent'
 import CardHeader from '@material-ui/core/CardHeader'
-import ConfirmDeleteDialog from '../components/ConfirmDeleteDialog'
-import DataSetName from '../components/DataSetName'
-import EditRelationshipDialog from '../components/EditRelationshipDialog'
+import ConfirmDeleteDialog from '../../components/ConfirmDeleteDialog'
+import DataSetName from './DataSetName'
+import EditRelationshipDialog from './EditRelationshipDialog'
 import PropTypes from 'prop-types'
 import React from 'react'
-import ServerHttpApi from '../api/net/ServerHttpApi'
+import ServerHttpApi from '../../api/net/ServerHttpApi'
 
 /* each individual card will represent a single Relationship */
 const RelationshipCard = observer(class extends React.Component {

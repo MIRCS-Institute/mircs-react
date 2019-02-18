@@ -1,16 +1,16 @@
 import { action, extendObservable } from 'mobx'
 import { observer } from 'mobx-react'
-import { showSnackbarMessage } from '../components/SnackbarMessages'
+import { showSnackbarMessage } from '../../components/SnackbarMessages'
 import _ from 'lodash'
 import Button from '@material-ui/core/Button'
 import Dialog from '@material-ui/core/Dialog'
 import DialogActions from '@material-ui/core/DialogActions'
 import DialogContent from '@material-ui/core/DialogContent'
 import DialogTitle from '@material-ui/core/DialogTitle'
-import LoadingSpinner from '../components/LoadingSpinner'
+import LoadingSpinner from '../../components/LoadingSpinner'
 import PropTypes from 'prop-types'
 import React from 'react'
-import ServerHttpApi from '../api/net/ServerHttpApi'
+import ServerHttpApi from '../../api/net/ServerHttpApi'
 
 const ChooseDataSetDialog = observer(class extends React.Component {
   static propTypes = {

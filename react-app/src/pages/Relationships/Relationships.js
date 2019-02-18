@@ -1,13 +1,13 @@
 import { action, extendObservable } from 'mobx'
-import { cachedServerHttpResource } from '../api/resources/ServerHttpResource'
+import { cachedServerHttpResource } from '../../api/resources/ServerHttpResource'
 import { observer } from 'mobx-react'
-import { showSnackbarMessage } from '../components/SnackbarMessages'
+import { showSnackbarMessage } from '../../components/SnackbarMessages'
 import Button from '@material-ui/core/Button'
-import EditRelationshipDialog from '../components/EditRelationshipDialog'
-import LoadingSpinner from '../components/LoadingSpinner'
-import PageSkeleton from '../components/PageSkeleton'
+import EditRelationshipDialog from './EditRelationshipDialog'
+import LoadingSpinner from '../../components/LoadingSpinner'
+import PageSkeleton from '../../components/PageSkeleton'
 import React from 'react'
-import RelationshipCard from '../components/RelationshipCard'
+import RelationshipCard from './RelationshipCard'
 
 const Relationships = observer(class extends React.Component {
   constructor() {
