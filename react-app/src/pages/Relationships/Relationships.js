@@ -38,7 +38,7 @@ const Relationships = observer(class extends React.Component {
   })
 
   render() {
-    const isLoading = this.resource.isPending()
+    const isLoading = this.resource.isLoading()
     const relationships = this.resource.get('list', [])
 
     return (<PageSkeleton>

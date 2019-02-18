@@ -38,7 +38,7 @@ const DataSets = observer(class extends React.Component {
   })
 
   render() {
-    const isLoading = this.resource.isPending()
+    const isLoading = this.resource.isLoading()
     const dataSets = this.resource.get('list', [])
 
     return (<PageSkeleton>

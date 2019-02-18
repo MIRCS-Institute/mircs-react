@@ -5,7 +5,7 @@ import ResourceState from './ResourceState'
 class AbstractResource {
   constructor() {
     extendObservable(this, {
-      state: ResourceState.PENDING,
+      state: ResourceState.LOADING,
       error: null,
     })
   }
@@ -18,8 +18,8 @@ class AbstractResource {
     return _.get(this.current(), path, defaultValue)
   }
 
-  isPending = () => {
-    return this.state === ResourceState.PENDING
+  isLoading = () => {
+    return this.state === ResourceState.LOADING
   }
 
   isReady = () => {
@@ -36,9 +36,9 @@ class AbstractResource {
     const current = this.current()
 
     switch (this.state) {
-      case ResourceState.PENDING:
-        if (_.isFunction(methods && methods.pending)) {
-          return methods.pending()
+      case ResourceState.LOADING:
+        if (_.isFunction(methods && methods.loading)) {
+          return methods.loading()
         }
         break
       case ResourceState.READY:

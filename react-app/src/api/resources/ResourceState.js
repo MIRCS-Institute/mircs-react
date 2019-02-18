@@ -1,5 +1,5 @@
 export default {
-  PENDING: 'pending',
+  LOADING: 'loading',
   READY: 'ready',
   ERROR: 'error',
 }
