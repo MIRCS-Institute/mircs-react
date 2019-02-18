@@ -8,13 +8,12 @@ import CardActions from '@material-ui/core/CardActions'
 import CardContent from '@material-ui/core/CardContent'
 import CardHeader from '@material-ui/core/CardHeader'
 import ConfirmDeleteDialog from '../../components/ConfirmDeleteDialog'
-import DataSetUploadDropzone from './DataSetUploadDropzone'
 import EditDataSetDialog from './EditDataSetDialog'
 import PropTypes from 'prop-types'
 import React from 'react'
 import ServerHttpApi from '../../api/net/ServerHttpApi'
+import UploadDataSetFileButton from './UploadDataSetFileButton'
 
-/* each individual card will represent a single Data Set */
 const DataSetCard = observer(class extends React.Component {
   static propTypes = {
     dataSet: PropTypes.object,
@@ -83,57 +82,52 @@ const DataSetCard = observer(class extends React.Component {
 
   render() {
     const { dataSet } = this.props
+    const dataSetId = _.get(dataSet, '_id')
 
     return (
       <Card style={styles.card}>
         <CardHeader title={dataSet.name}/>
         <CardContent>
-          <DataSetUploadDropzone
-            dataSet={dataSet}
-            onDataSetUpdated={this.refreshStats}
-            onError={this.props.onError}>
-
-            <div>
-              <strong>Name:</strong>
-              {dataSet.name}
-            </div>
-            {dataSet.description && <div>
-              <strong>Description:</strong>
-              {dataSet.description}
-            </div>}
-            {this.stats && <div>
-              <strong>Stats:</strong>
-              {_.map(this.stats, (value, key) => (
-                <div key={key} style={{
+          <div>
+            <strong>Name:</strong>
+            {dataSet.name}
+          </div>
+          {dataSet.description && <div>
+            <strong>Description:</strong>
+            {dataSet.description}
+          </div>}
+          {this.stats && <div>
+            <strong>Stats:</strong>
+            {_.map(this.stats, (value, key) => (
+              <div key={key} style={{
+                marginLeft: 10,
+              }}>{key}: {value}</div>
+            ))}
+          </div>}
+          {this.fields && <div>
+            <strong>Fields:</strong>
+            {_.map(this.fields, (field) => (
+              <div
+                key={field._id}
+                style={{
                   marginLeft: 10,
-                }}>{key}: {value}</div>
-              ))}
-            </div>}
-            {this.fields && <div>
-              <strong>Fields:</strong>
-              {_.map(this.fields, (field) => (
-                <div
-                  key={field._id}
-                  style={{
-                    marginLeft: 10,
-                  }}>{field._id}
-                  ({field.value})</div>
-              ))}
-            </div>}
+                }}>{field._id}
+                ({field.value})</div>
+            ))}
+          </div>}
 
-            <EditDataSetDialog
-              open={this.showEditDialog}
-              dataSet={dataSet}
-              onCancel={this.handleEditCancel}
-              afterSave={this.handleEditAfterSave}/> {this.showConfirmDeleteDialog && <ConfirmDeleteDialog
-              name={dataSet.name}
-              onConfirm={this.handleDeleteConfirm}
-              onCancel={this.handleDeleteCancel}/>}
+          <EditDataSetDialog
+            open={this.showEditDialog}
+            dataSet={dataSet}
+            onCancel={this.handleEditCancel}
+            afterSave={this.handleEditAfterSave}/> {this.showConfirmDeleteDialog && <ConfirmDeleteDialog
+            name={dataSet.name}
+            onConfirm={this.handleDeleteConfirm}
+            onCancel={this.handleDeleteCancel}/>}
 
-          </DataSetUploadDropzone>
         </CardContent>
         <CardActions>
-          <Button variant='contained' onClick={() => goToPath(Path.dataSetRecords({ dataSetId: dataSet._id }))}>
+          <Button variant='contained' onClick={() => goToPath(Path.dataSetRecords({ dataSetId }))}>
             View Records
           </Button>
           <Button variant='contained' onClick={this.handleEditClick}>
@@ -142,6 +136,11 @@ const DataSetCard = observer(class extends React.Component {
           <Button variant='contained' color='secondary' onClick={this.handleDeleteClick}>
             Delete Data Set
           </Button>
+          <UploadDataSetFileButton
+            dataSetId={dataSetId}
+            onDataSetUpdated={this.refreshStats}
+            onError={this.props.onError}
+          />
         </CardActions>
       </Card>
     )
