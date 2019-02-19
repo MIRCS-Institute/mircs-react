@@ -1,4 +1,6 @@
 import { action } from 'mobx'
+import { CurrentDataSetRecords } from '../api/DataSetRecords'
+import { CurrentRelationshipJoin } from '../api/RelationshipJoin'
 import { observer } from 'mobx-react'
 import { withStyles } from '@material-ui/core/styles'
 import _ from 'lodash'
@@ -27,18 +29,20 @@ const MapFilter = observer(class extends React.Component {
     UiStore.highlightField = event.target.value
     let valueCounts = [] // An array of objects used to keep a count of each of all of the values of this field, eg {value:'foo',count:7}
     let thisValue
-    _.each(UiStore.records, (record) => { // Loop through all the records
-      if (record.data) { // Check if there is a relationship to work with
-        _.each(record.data, (card) => { // Loop through all the records found in the relationship
-          thisValue = _.get(card.values().next().value, event.target.value) // Try to find the value of the requested field in the current card
-          this.countFieldValue(valueCounts, thisValue)
-        })
-      } else {
-        thisValue = _.get(record, event.target.value) // Try to find the value of the requested field in the current card
-        this.countFieldValue(valueCounts, thisValue)
-      }
+
+    CurrentDataSetRecords.res.get('list', []).forEach((record) => {
+      thisValue = _.get(record, event.target.value) // Try to find the value of the requested field in the current card
+      this.countFieldValue(valueCounts, thisValue)
     })
-    valueCounts = _.sortBy(valueCounts, [function(o) { return -o.count }])
+
+    CurrentRelationshipJoin.res.get('list', []).forEach((record) => {
+      _.each(record.data, (card) => { // Loop through all the records found in the relationship
+        thisValue = _.get(card.values().next().value, event.target.value) // Try to find the value of the requested field in the current card
+        this.countFieldValue(valueCounts, thisValue)
+      })
+    })
+
+    valueCounts = _.sortBy(valueCounts, (o) => -o.count)
     UiStore.searchStrings = []
     for (let i=0; i<7; i++) {
       if (valueCounts[i]) {

@@ -1,12 +1,12 @@
 import {action, autorun} from 'mobx'
+import { CurrentDataSetRecords } from '../api/DataSetRecords'
+import { CurrentRelationshipJoin } from '../api/RelationshipJoin'
 import { observer } from 'mobx-react'
-import { showSnackbarMessage } from './SnackbarMessages'
 import { withStyles } from '@material-ui/core/styles'
 import _ from 'lodash'
 import Layout from '../utils/Layout'
 import PropTypes from 'prop-types'
 import React from 'react'
-import ServerHttpApi from '../api/net/ServerHttpApi'
 import turf from 'turf'
 import UiStore from '../states/UiStore'
 
@@ -26,22 +26,10 @@ const Map = observer(class extends React.Component {
   componentDidMount() {
     this.startMap()
     this.autorunDisposer = autorun(() => {
-      if (UiStore) {
-        this.setupTileLayer(UiStore.tileLayerName)
-      }
+      this.setupTileLayer(UiStore.tileLayerName)
     })
     this.autorunDisposer2 = autorun(() => {
-      if (this.props.selected && this.props.selected.dataSetId) {
-        this.fetchDataSetForMap(this.props.selected.dataSetId)
-      }
-    })
-    this.autorunDisposer3 = autorun(() => {
-      if (this.props.selected && this.props.selected.relationshipId) {
-        this.fetchRelationshipDataForMap(this.props.selected.relationshipId)
-      }
-    })
-    this.autorunDisposer4 = autorun(() => {
-      if (UiStore.records.length > 0) {
+      if (CurrentDataSetRecords.res.get('list', []).length + CurrentRelationshipJoin.res.get('list', []).length) {
         this.mapPoints()
       }
     })
@@ -51,8 +39,6 @@ const Map = observer(class extends React.Component {
     this.stopMap()
     this.autorunDisposer()
     this.autorunDisposer2()
-    this.autorunDisposer3()
-    this.autorunDisposer4()
   }
 
   componentDidUpdate() {
@@ -74,24 +60,6 @@ const Map = observer(class extends React.Component {
     L.control.scale({position: 'bottomleft'}).addTo(this.map)
 
     this.setupTileLayer(UiStore.tileLayerName)
-  }
-
-  fetchDataSetForMap = (dataSetId) => {
-    this.refreshMap()
-    ServerHttpApi.jsonGet(`/api/datasets/${dataSetId}/records`)
-      .then(action((response) => {
-        UiStore.records.replace(_.get(response, 'bodyJson.list'))
-      }))
-      .catch(showSnackbarMessage)
-  }
-
-  fetchRelationshipDataForMap = (relationshipId) => {
-    this.refreshMap()
-    ServerHttpApi.jsonGet(`/api/relationships/${relationshipId}/join`)
-      .then(action((response) => {
-        UiStore.records.replace(_.get(response, 'bodyJson.list'))
-      }))
-      .catch(showSnackbarMessage)
   }
 
   buildPopupHTML(record) {
@@ -169,7 +137,10 @@ const Map = observer(class extends React.Component {
     }
     this.markers = L.layerGroup()
 
-    _.each(UiStore.records, (record) => {
+    const dataSetRecords = CurrentDataSetRecords.res.get('list')
+    const relationshipJoin = CurrentRelationshipJoin.res.get('list')
+    const records = dataSetRecords || relationshipJoin || []
+    records.forEach((record) => {
       if (!record.geometry) {
         // This is not a polygon
 
@@ -309,11 +280,14 @@ const Map = observer(class extends React.Component {
   })
 
   fetchFieldNames = action(() => {
-    // Get the fields names in the records.  We only check the first record (good enough for now).
-    if (UiStore.records[0].data) {
-      UiStore.fieldNames = _.keys(UiStore.records[0].data[0].values().next().value)
-    } else {
-      UiStore.fieldNames = _.keys(UiStore.records[0])
+    // Get the fields names in the records. We only check the first record (good enough for now).
+    const dataSetRecords = CurrentDataSetRecords.res.get('list', [])
+    if (dataSetRecords.length) {
+      UiStore.fieldNames = _.keys(dataSetRecords[0])
+    }
+    const relationshipJoin = CurrentRelationshipJoin.res.get('list', [])
+    if (relationshipJoin[0]) {
+      UiStore.fieldNames = _.keys(relationshipJoin[0].data[0].values().next().value)
     }
   })
 
