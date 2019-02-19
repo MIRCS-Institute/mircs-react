@@ -22,6 +22,7 @@
     "FileReader": "^0.10.2",
     "axios": "^0.17.1",
     "chai": "^4.2.0",
+    "eslint": "5.12.0",
     "eslint-plugin-sort-imports-es6-autofix": "^0.3.0",
     "fs": "0.0.1-security",
     "jss": "^9.8.7",
