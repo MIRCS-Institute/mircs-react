@@ -15,9 +15,8 @@ const UploadDataSetFileButton = observer(class extends React.Component {
   }
 
   handleFilesSelected = (files) => {
-    console.log('handleFilesSelected', files)
     const file = files[0]
-    if (file.name.endsWith('.json')) {
+    if (file.name.endsWith('json')) {
       // parse json file
       const reader = new FileReader()
       reader.onload = (event) => {
