@@ -1,5 +1,5 @@
 import { action, extendObservable } from 'mobx'
-import { cachedServerHttpResource } from '../../api/resources/ServerHttpResource'
+import { getRelationshipsRes } from '../../api/Relationships'
 import { observer } from 'mobx-react'
 import { showSnackbarMessage } from '../../components/SnackbarMessages'
 import Button from '@material-ui/core/Button'
@@ -15,8 +15,6 @@ const Relationships = observer(class extends React.Component {
     extendObservable(this, {
       showCreateDialog: false,
     })
-
-    this.resource = cachedServerHttpResource('/api/relationships')
   }
 
   handleCreateClick = action(() => {
@@ -29,17 +27,18 @@ const Relationships = observer(class extends React.Component {
 
   handleCreateAfterSave = action(() => {
     this.showCreateDialog = false
-    this.resource.refresh()
+    getRelationshipsRes().refresh()
   })
 
   handleError = action((error) => {
     showSnackbarMessage(error)
-    this.resource.refresh()
+    getRelationshipsRes().refresh()
   })
 
   render() {
-    const isLoading = this.resource.isLoading()
-    const relationships = this.resource.get('list', [])
+    const resource = getRelationshipsRes()
+    const isLoading = resource.isLoading()
+    const relationships = resource.get('list', [])
 
     return (<PageSkeleton>
       <div>
@@ -58,7 +57,7 @@ const Relationships = observer(class extends React.Component {
           <RelationshipCard
             key={relationship._id}
             relationship={relationship}
-            onRefresh={this.resource.refresh}
+            onRefresh={resource.refresh}
             onError={this.handleError}
           />
         ))}

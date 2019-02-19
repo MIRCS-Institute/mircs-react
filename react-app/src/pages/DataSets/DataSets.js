@@ -1,5 +1,5 @@
 import { action, extendObservable } from 'mobx'
-import { cachedServerHttpResource } from '../../api/resources/ServerHttpResource'
+import { getDataSetsRes } from '../../api/DataSets'
 import { observer } from 'mobx-react'
 import { showSnackbarMessage } from '../../components/SnackbarMessages'
 import Button from '@material-ui/core/Button'
@@ -15,8 +15,6 @@ const DataSets = observer(class extends React.Component {
     extendObservable(this, {
       showCreateDialog: false,
     })
-
-    this.resource = cachedServerHttpResource('/api/datasets')
   }
 
   handleCreateClick = action(() => {
@@ -29,17 +27,18 @@ const DataSets = observer(class extends React.Component {
 
   handleCreateAfterSave = action(() => {
     this.showCreateDialog = false
-    this.resource.refresh()
+    getDataSetsRes().refresh()
   })
 
   handleError = action((error) => {
     showSnackbarMessage(error)
-    this.resource.refresh()
+    getDataSetsRes().refresh()
   })
 
   render() {
-    const isLoading = this.resource.isLoading()
-    const dataSets = this.resource.get('list', [])
+    const resource = getDataSetsRes()
+    const isLoading = resource.isLoading()
+    const dataSets = resource.get('list', [])
 
     return (<PageSkeleton>
       <div>
@@ -55,7 +54,7 @@ const DataSets = observer(class extends React.Component {
         <EditDataSetDialog open={this.showCreateDialog} onCancel={this.handleCreateCancel} afterSave={this.handleCreateAfterSave}/>
 
         {dataSets.map((dataSet) => (
-          <DataSetCard key={dataSet._id} dataSet={dataSet} onRefresh={this.resource.refresh} onError={this.handleError}/>
+          <DataSetCard key={dataSet._id} dataSet={dataSet} onRefresh={resource.refresh} onError={this.handleError}/>
         ))}
       </div>
     </PageSkeleton>)

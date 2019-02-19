@@ -1,7 +1,6 @@
-import { action, extendObservable } from 'mobx'
+import { extendObservable } from 'mobx'
+import { getDataSetsRes } from '../../api/DataSets'
 import { observer } from 'mobx-react'
-import { showSnackbarMessage } from '../../components/SnackbarMessages'
-import _ from 'lodash'
 import Button from '@material-ui/core/Button'
 import Dialog from '@material-ui/core/Dialog'
 import DialogActions from '@material-ui/core/DialogActions'
@@ -10,7 +9,6 @@ import DialogTitle from '@material-ui/core/DialogTitle'
 import LoadingSpinner from '../../components/LoadingSpinner'
 import PropTypes from 'prop-types'
 import React from 'react'
-import ServerHttpApi from '../../api/net/ServerHttpApi'
 
 const ChooseDataSetDialog = observer(class extends React.Component {
   static propTypes = {
@@ -31,25 +29,9 @@ const ChooseDataSetDialog = observer(class extends React.Component {
     })
   }
 
-  refresh = action(() => {
-    this.isLoading = true
-    ServerHttpApi.jsonGet('/api/datasets')
-      .then(action((response) => {
-        this.dataSets = _.get(response, 'bodyJson.list')
-      }))
-      .catch(showSnackbarMessage)
-      .then(action(() => {
-        this.isLoading = false
-      }))
-  })
-
-  componentDidUpdate(prevProps) {
-    if (this.props.open && !prevProps.open) {
-      this.refresh()
-    }
-  }
-
   render() {
+    const dataSets = getDataSetsRes().get('list', [])
+
     return (
       <Dialog open={this.props.open} fullWidth={true}>
         <DialogTitle>Choose Data Set</DialogTitle>
@@ -62,7 +44,7 @@ const ChooseDataSetDialog = observer(class extends React.Component {
               None
             </Button>
           </div>
-          {this.dataSets && this.dataSets.map((dataSet) => (
+          {dataSets.map((dataSet) => (
             <div key={dataSet._id}>
               <Button onClick={() => { this.props.onChoose(dataSet) }}>
                 {dataSet.name} {dataSet.description && `- ${dataSet.description}`}

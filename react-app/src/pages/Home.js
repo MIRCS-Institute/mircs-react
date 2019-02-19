@@ -1,4 +1,5 @@
-import { cachedServerHttpResource } from '../api/resources/ServerHttpResource'
+import { getDataSetsRes } from '../api/DataSets'
+import { getRelationshipsRes } from '../api/Relationships'
 import { goToPath, Path } from '../app/App'
 import {observer} from 'mobx-react'
 import Button from '@material-ui/core/Button'
@@ -12,8 +13,8 @@ import Typography from '@material-ui/core/Typography'
 
 const Home = observer(class extends React.Component {
   render() {
-    const dataSets = cachedServerHttpResource('/api/datasets').get('list', [])
-    const relationships = cachedServerHttpResource('/api/relationships').get('list', [])
+    const dataSets = getDataSetsRes().get('list', [])
+    const relationships = getRelationshipsRes().get('list', [])
 
     return (<PageSkeleton>
       <Grid container spacing={16}>
