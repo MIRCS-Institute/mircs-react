@@ -251,7 +251,7 @@ const Map = observer(class extends React.Component {
           shape.push(polygon)
         }
 
-        L.polygon(shape, {color: 'red'}).addTo(this.map);
+        L.polygon(shape, {color: 'red'}).addTo(this.map)
       }
     })
 
