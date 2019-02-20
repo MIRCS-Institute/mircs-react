@@ -1,5 +1,4 @@
 import { observer } from 'mobx-react'
-import { toJS } from 'mobx'
 import { withStyles } from '@material-ui/core'
 import _ from 'lodash'
 import Card from '@material-ui/core/Card'
