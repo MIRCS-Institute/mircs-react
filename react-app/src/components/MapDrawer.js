@@ -1,4 +1,5 @@
 import { observer } from 'mobx-react'
+import { toJS } from 'mobx'
 import { withStyles } from '@material-ui/core'
 import _ from 'lodash'
 import Card from '@material-ui/core/Card'
@@ -30,35 +31,11 @@ const MapDrawer = observer(class extends React.Component {
     this.setState({ open: false })
   }
 
-  buildRecordHTML(record) {
-    return _.map(record, (value, field) => {
-      if (field[0] === '_') {
-        return ''
-      }
-      if (!value) {
-        return ''
-      }
-
-      // Try to highlight any search terms within the card
-      let highlightedValue = value
-      UiStore.searchStrings.forEach((s, i) => {
-        const regex = new RegExp(UiStore.searchStrings[i], 'giy')
-        while (regex.test(highlightedValue)) {
-          highlightedValue = highlightedValue.substring(0, regex.lastIndex - RegExp.lastMatch.length)
-            + '<span class="search'+i+'">' + RegExp.lastMatch + '</span>'
-            + highlightedValue.substring(regex.lastIndex)
-        }
-      })
-
-      return `<strong>${field}:</strong> <span>${highlightedValue}</span><br>`
-    }).join('')
-  }
-
   render() {
     const { classes } = this.props
     const { open } = this.state
 
-    let pieChart = ''
+    let pieChart = null
 
     if (UiStore.highlightField !== 'none') {
       const pieChartData = []
@@ -74,7 +51,7 @@ const MapDrawer = observer(class extends React.Component {
     }
 
 
-    if (UiStore.selected.records) {
+    if (UiStore.selected.records && UiStore.selected.records.length > 0) {
       return (
         <Paper
           anchor='left'
@@ -92,17 +69,35 @@ const MapDrawer = observer(class extends React.Component {
           {UiStore.selected.records.map((record, i) => (
             <Card className={classes.card} key={i}>
               <CardContent>
-                <Typography component='p' dangerouslySetInnerHTML={{__html: this.buildRecordHTML(record)}}>
-                </Typography>
+                {_.map(record.properties || record, (value, field) => {
+                  if (field[0] === '_' || !value) {
+                    return null
+                  }
+
+                  // highlight any search terms within the card
+                  let __html = value
+                  UiStore.searchStrings.forEach((s, i) => {
+                    const regex = new RegExp(UiStore.searchStrings[i], 'giy')
+                    while (regex.test(__html)) {
+                      __html = __html.substring(0, regex.lastIndex - RegExp.lastMatch.length)
+                        + '<span class="search'+i+'">' + RegExp.lastMatch + '</span>'
+                        + __html.substring(regex.lastIndex)
+                    }
+                  })
+
+                  return <Typography key={field}>
+                    <strong>{field}:</strong>
+                    <span dangerouslySetInnerHTML={{ __html }}/>
+                  </Typography>
+                })}
               </CardContent>
             </Card>
           ))}
 
-          <StreetviewCard></StreetviewCard>
+          <StreetviewCard/>
 
         </Paper>
       )
-
     } else {
       return (
         <Paper
