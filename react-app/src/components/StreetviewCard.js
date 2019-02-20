@@ -24,11 +24,13 @@ const StreetviewCard = observer(class extends React.Component {
     })
   }
 
+  componentWillUnmount() {
+    this.autorunDisposer()
+  }
+
   getCard = () => {
 
-    this.setState(() => {
-      return { loading: true }
-    })
+    this.setState({ loading: true })
 
     const APIkey = 'AIzaSyAJWwSkfp9-BbsUWYtN9uH3NVFbroZs_F0'
 
@@ -52,9 +54,7 @@ const StreetviewCard = observer(class extends React.Component {
         .catch(showSnackbarMessage)
         .then(() => {
           // Trigger a refresh
-          this.setState(() => {
-            return { loading: false }
-          })
+          this.setState({ loading: false })
         })
     }
   }
