@@ -1,4 +1,4 @@
-import {action, autorun} from 'mobx'
+import {action, autorun, toJS} from 'mobx'
 import { CurrentDataSetRecords } from '../api/DataSetRecords'
 import { CurrentRelationshipJoin } from '../api/RelationshipJoin'
 import { observer } from 'mobx-react'
@@ -41,10 +41,6 @@ const Map = observer(class extends React.Component {
     this.autorunDisposer2()
   }
 
-  componentDidUpdate() {
-    // this.setupTileLayer()
-  }
-
   startMap = () => {
     this.map = L.map(this.mapNodeRef.current, {
       center: [
@@ -54,12 +50,28 @@ const Map = observer(class extends React.Component {
     })
 
     this.map.on('click', action(() => {
-      UiStore.selected = []
+      if (this.skipMapClick) {
+        this.skipMapClick = false
+        return
+      }
+      UiStore.selected = {}
     }))
 
     L.control.scale({position: 'bottomleft'}).addTo(this.map)
 
     this.setupTileLayer(UiStore.tileLayerName)
+  }
+
+  stopMap = action(() => {
+    if (this.map) {
+      this.map.remove()
+      this.map = null
+    }
+  })
+
+  refreshMap = () => {
+    this.stopMap()
+    this.startMap()
   }
 
   buildPopupHTML(record) {
@@ -140,8 +152,25 @@ const Map = observer(class extends React.Component {
     const dataSetRecords = CurrentDataSetRecords.res.get('list')
     const relationshipJoin = CurrentRelationshipJoin.res.get('list')
     const records = dataSetRecords || relationshipJoin || []
+
+    const geojsonStyle = {
+      color: '#ff7800',
+      weight: 5,
+      opacity: 0.65,
+    }
+
     records.forEach((record) => {
-      if (!record.geometry) {
+      if (record.geometry) {
+        // This is a geojson element
+        const jsRecord = toJS(record)
+
+        L.geoJSON(jsRecord, { style: geojsonStyle })
+          .addTo(this.markers)
+          .on('click', () => {
+            this.skipMapClick = true
+            this.updateSelected(null, record)
+          })
+      } else {
         // This is not a polygon
 
         // use one side of the join or the other, at this point we don't know which has the geocoordinate
@@ -193,36 +222,16 @@ const Map = observer(class extends React.Component {
             })
           }
 
-          if (!found) {
+          if (found) {
+            foundPoints.push(point)
+          } else {
             L.marker(point, {icon: this.iconX})
               .addTo(this.markers)
               .on('click', () => {
                 this.updateSelected(point, record)
               })
           }
-
-          if (found)
-            foundPoints.push(point)
-
         }
-      } else {
-        // This is a polygon
-        let shape = []
-        let polygons = record.geometry.coordinates.slice()
-        for (let i=0; i<polygons.length; i++) {
-          let polygon = []
-          let polyPoints = polygons[i].slice()
-          for (let j=0; j<polyPoints.length; j++) {
-            const point = [polyPoints[j].slice()[1],polyPoints[j].slice()[0]]
-            if (j===0) {
-              points.push(point)
-            }
-            polygon.push(point)
-          }
-          shape.push(polygon)
-        }
-
-        L.polygon(shape, {color: 'red'}).addTo(this.map)
       }
     })
 
@@ -317,18 +326,6 @@ const Map = observer(class extends React.Component {
     }
   }
 
-  refreshMap = () => {
-    this.stopMap()
-    this.startMap()
-  }
-
-  stopMap = action(() => {
-    if (this.map) {
-      this.map.remove()
-      this.map = null
-    }
-  })
-
   setupTileLayer = (newLayerName) => {
     if (this.tileLayer) {
       this.tileLayer.remove()
@@ -338,7 +335,7 @@ const Map = observer(class extends React.Component {
     switch (newLayerName) {
       case 'Mapbox':
         this.tileLayer = L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
-          minZoom: 8,
+          // minZoom: 8,
           attribution: 'Map data &copy; <a href="https://openstreetmap.org">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://mapbox.com">Mapbox</a>',
           id: 'mapbox.streets',
           accessToken: 'pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw',
