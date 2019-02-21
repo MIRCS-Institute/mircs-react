@@ -26,6 +26,7 @@ const DataSetCard = observer(class extends React.Component {
     extendObservable(this, {
       showEditDialog: false,
       showConfirmDeleteDialog: false,
+      showConfirmDeleteRecordsDialog: false,
       stats: null,
       fields: null,
     })
@@ -59,11 +60,33 @@ const DataSetCard = observer(class extends React.Component {
   })
 
   handleDeleteConfirm = action(() => {
-    const { onRefresh, onError, dataSet } = this.props
     this.showConfirmDeleteDialog = false
-    ServerHttpApi.jsonDelete(`/api/datasets/${dataSet._id}`)
-      .then(onRefresh)
-      .catch(onError)
+    const { dataSet } = this.props
+    const dataSetId = _.get(dataSet, '_id')
+    ServerHttpApi.jsonDelete(`/api/datasets/${dataSetId}`)
+      .then(action(() => {
+        this.refreshStats()
+      }))
+      .catch(this.handleError)
+  })
+
+  handleDeleteRecordsClick = action(() => {
+    this.showConfirmDeleteRecordsDialog = true
+  })
+
+  handleDeleteRecordsCancel = action(() => {
+    this.showConfirmDeleteRecordsDialog = false
+  })
+
+  handleDeleteRecordsConfirm = action(() => {
+    this.showConfirmDeleteRecordsDialog = false
+    const { dataSet } = this.props
+    const dataSetId = _.get(dataSet, '_id')
+    ServerHttpApi.jsonDelete(`/api/datasets/${dataSetId}/records`)
+      .then(action(() => {
+        this.refreshStats()
+      }))
+      .catch(this.handleError)
   })
 
   handleEditClick = action(() => {
@@ -83,6 +106,7 @@ const DataSetCard = observer(class extends React.Component {
   render() {
     const { dataSet } = this.props
     const dataSetId = _.get(dataSet, '_id')
+    const dataSetName = _.get(dataSet, 'name')
 
     return (
       <Card style={styles.card}>
@@ -120,10 +144,20 @@ const DataSetCard = observer(class extends React.Component {
             open={this.showEditDialog}
             dataSet={dataSet}
             onCancel={this.handleEditCancel}
-            afterSave={this.handleEditAfterSave}/> {this.showConfirmDeleteDialog && <ConfirmDeleteDialog
+            afterSave={this.handleEditAfterSave}
+          />
+
+          {this.showConfirmDeleteDialog && <ConfirmDeleteDialog
             name={dataSet.name}
             onConfirm={this.handleDeleteConfirm}
-            onCancel={this.handleDeleteCancel}/>}
+            onCancel={this.handleDeleteCancel}
+          />}
+
+          {this.showConfirmDeleteRecordsDialog && <ConfirmDeleteDialog
+            name={`all records in ${dataSetName} data set`}
+            onConfirm={this.handleDeleteRecordsConfirm}
+            onCancel={this.handleDeleteRecordsCancel}
+          />}
 
         </CardContent>
         <CardActions>
@@ -135,6 +169,9 @@ const DataSetCard = observer(class extends React.Component {
           </Button>
           <Button variant='contained' color='secondary' onClick={this.handleDeleteClick}>
             Delete Data Set
+          </Button>
+          <Button variant='contained' color='secondary' onClick={this.handleDeleteRecordsClick}>
+            Delete All Records
           </Button>
           <UploadDataSetFileButton
             dataSetId={dataSetId}
