@@ -49,19 +49,19 @@ const FileButton = observer(class extends React.Component {
       // asynchronously re-add the input field on next tick
       setTimeout(action(() => {
         this.hasInput = true
-      }), 0)
+      }))
     }
 
     return <React.Fragment>
       <Button {...buttonProps} onClick={this.handleClick}/>
-      <input
+      {this.hasInput && <input
         onChange={this.handleInputChange}
         ref={this.inputRef}
         accept={accept}
         multiple={multiple}
         style={{display: 'none'}}
         type='file'
-      />
+      />}
     </React.Fragment>
   }
 })
