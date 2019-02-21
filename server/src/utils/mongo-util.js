@@ -95,7 +95,7 @@ MongoUtil.refreshFields = (db, collectionName) => {
         return resolve(fields)
       }
 
-      // in the case of geojson we use properties for the fields
+      // in the case of GeoJSON we use properties for the fields
       if (typeof item.properties === 'object') {
         item = item.properties
       }
@@ -153,7 +153,12 @@ MongoUtil.joinRecords = (relationship) => {
         let exclude = false
         _.each(relationship.joinElements, (joinElement) => {
           const joinElementKey = joinElement[dataSetIndex]
-          const keyValue = data[joinElementKey]
+          let properties = data
+          if (typeof data.properties === 'object') {
+            // GeoJSON object, look to the properties
+            properties = data.properties
+          }
+          const keyValue = properties[joinElementKey]
           if (_.isUndefined(keyValue) || _.isNull(keyValue)) {
             exclude = true
           } else {
