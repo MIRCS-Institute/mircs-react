@@ -33,9 +33,9 @@ const EditDataSetDialog = observer(class extends React.Component {
     })
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.open) {
-      const dataSetCopy = _.clone(nextProps.dataSet) || {}
+  componentDidUpdate(prevProps) {
+    if (this.props.open && !prevProps.open) {
+      const dataSetCopy = _.clone(this.props.dataSet) || {}
       ensureString(dataSetCopy, 'name')
       ensureString(dataSetCopy, 'description')
 

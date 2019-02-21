@@ -160,11 +160,11 @@ const Map = observer(class extends React.Component {
     }
 
     records.forEach((record) => {
-      if (record.geometry) {
+      const geojson = getGeoJson(record)
+      if (geojson) {
         // This is a geojson element
-        const jsRecord = toJS(record)
 
-        L.geoJSON(jsRecord, { style: geojsonStyle })
+        L.geoJSON(toJS(geojson), { style: geojsonStyle })
           .addTo(this.markers)
           .on('click', () => {
             this.skipMapClick = true
@@ -190,17 +190,9 @@ const Map = observer(class extends React.Component {
                 const highlightValue = element.substring(element.indexOf(':') + 2)
                 if (record.data) {
                   // relationship data
-                  _.each(record.data, (leftSideRecords) => {
-                    _.each(leftSideRecords, (card) => {
-                      if (_.get(card, highlightField) === highlightValue) {
-                        this.makeMarker(point, record, index)
-                        found = true
-                      }
-                    })
-                  })
-                  _.each(record.data, (rightSideRecords) => {
-                    _.each(rightSideRecords, (card) => {
-                      if (_.get(card, highlightField) === highlightValue) {
+                  _.each(record.data, (joinRecords) => {
+                    _.each(joinRecords, (record) => {
+                      if (_.get(record, highlightField) === highlightValue) {
                         this.makeMarker(point, record, index)
                         found = true
                       }
@@ -239,11 +231,31 @@ const Map = observer(class extends React.Component {
 
     this.fetchFieldNames()
 
-    if (foundPoints.length > 0)
+    if (foundPoints.length > 0) {
       this.centerMapOnPoints(foundPoints)
-    else
+    } else {
       this.centerMapOnPoints(points)
+    }
     this.updatePoints(points)
+
+    function getGeoJson(record) {
+      let result
+      if (record.geometry) {
+        result = record
+      } else if (record.data) {
+        record.data.forEach((dataItems) => {
+          if (result) {
+            return
+          }
+          dataItems.forEach((dataItem) => {
+            if (dataItem.geometry) {
+              result = dataItem
+            }
+          })
+        })
+      }
+      return result
+    }
   }
 
   makeMarker = (point, record, index) => {

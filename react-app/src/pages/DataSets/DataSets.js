@@ -51,10 +51,19 @@ const DataSets = observer(class extends React.Component {
 
         {isLoading && <LoadingSpinner title='Loading Data Sets...' />}
 
-        <EditDataSetDialog open={this.showCreateDialog} onCancel={this.handleCreateCancel} afterSave={this.handleCreateAfterSave}/>
+        <EditDataSetDialog
+          open={this.showCreateDialog}
+          onCancel={this.handleCreateCancel}
+          afterSave={this.handleCreateAfterSave}
+        />
 
         {dataSets.map((dataSet) => (
-          <DataSetCard key={dataSet._id} dataSet={dataSet} onRefresh={resource.refresh} onError={this.handleError}/>
+          <DataSetCard
+            key={dataSet._id}
+            dataSet={dataSet}
+            onRefresh={resource.refresh}
+            onError={this.handleError}
+          />
         ))}
       </div>
     </PageSkeleton>)
