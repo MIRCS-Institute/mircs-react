@@ -108,7 +108,9 @@ MongoUtil.refreshFields = (db, collectionName) => {
           _.each(fields, (value, key) => {
             fieldDocs.push({ _id: key, value: value })
           })
-          return fieldsCollection.insertMany(fieldDocs)
+          if (fieldDocs.length > 0) {
+            return fieldsCollection.insertMany(fieldDocs)
+          }
         })
     })
 }
