@@ -95,6 +95,11 @@ MongoUtil.refreshFields = (db, collectionName) => {
         return resolve(fields)
       }
 
+      // in the case of geojson we use properties for the fields
+      if (typeof item.properties === 'object') {
+        item = item.properties
+      }
+
       _.each(item, (value, key) => {
         fields[key] = typeof this[key]
       })
