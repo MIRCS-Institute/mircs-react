@@ -164,81 +164,20 @@ const MapFilter = observer(class extends React.Component {
         <div className={classes.root}>
           {store.searchStrings.map( (data, i) => {
             const labelValue = data + ' (' + UiStore.foundRecords[i].length + ')'
-            if (i===0) {
-              return (
-                <Chip
-                  key={data}
-                  label={labelValue}
-                  onDelete={() => this.handleSearchDelete(data)}
-                  className={classes.chip0}
-                  color='primary'
-                />
-              )
-            } else if (i===1) {
-              return (
-                <Chip
-                  key={data}
-                  label={labelValue}
-                  onDelete={() => this.handleSearchDelete(data)}
-                  className={classes.chip1}
-                />
-              )
-            } else if (i===2) {
-              return (
-                <Chip
-                  key={data}
-                  label={labelValue}
-                  onDelete={() => this.handleSearchDelete(data)}
-                  className={classes.chip2}
-                />
-              )
-            } else if (i===3) {
-              return (
-                <Chip
-                  key={data}
-                  label={labelValue}
-                  onDelete={() => this.handleSearchDelete(data)}
-                  className={classes.chip3}
-                  color='primary'
-                />
-              )
-            } else if (i===4) {
-              return (
-                <Chip
-                  key={data}
-                  label={labelValue}
-                  onDelete={() => this.handleSearchDelete(data)}
-                  className={classes.chip4}
-                  color='primary'
-                />
-              )
-            } else if (i===5) {
-              return (
-                <Chip
-                  key={data}
-                  label={labelValue}
-                  onDelete={() => this.handleSearchDelete(data)}
-                  className={classes.chip5}
-                />
-              )
-            } else if (i===6) {
-              return (
-                <Chip
-                  key={data}
-                  label={labelValue}
-                  onDelete={() => this.handleSearchDelete(data)}
-                  className={classes.chip6}
-                  color='primary'
-                />
-              )
+            const divStyle = {
+              margin: 5,
+              backgroundColor: Layout.colours[i],
             }
+            let colour = 'primary'
+            if ([1,2,5].indexOf(i) > -1)
+              colour = 'default'
             return (
               <Chip
                 key={data}
                 label={labelValue}
                 onDelete={() => this.handleSearchDelete(data)}
-                className={classes.chipx}
-                color='primary'
+                style={divStyle}
+                color={colour}
               />
             )
           })}
@@ -259,37 +198,6 @@ const styles = {
     padding: 5,
     marginTop: 16,
     marginLeft: 5,
-  },
-  chip0: {
-    margin: 5,
-    backgroundColor: Layout.colours[0],
-  },
-  chip1: {
-    margin: 5,
-    backgroundColor: Layout.colours[1],
-  },
-  chip2: {
-    margin: 5,
-    backgroundColor: Layout.colours[2],
-  },
-  chip3: {
-    margin: 5,
-    backgroundColor: Layout.colours[3],
-  },
-  chip4: {
-    margin: 5,
-    backgroundColor: Layout.colours[4],
-  },
-  chip5: {
-    margin: 5,
-    backgroundColor: Layout.colours[5],
-  },
-  chip6: {
-    margin: 5,
-    backgroundColor: Layout.colours[6],
-  },
-  chipx: {
-    margin: 5,
   },
 }
 

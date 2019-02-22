@@ -44,9 +44,9 @@ const Map = observer(class extends React.Component {
   startMap = () => {
     this.map = L.map(this.mapNodeRef.current, {
       center: [
-        44.6458, -63.5778,
+        45.25, -63,
       ],
-      zoom: 13,
+      zoom: 8,
     })
 
     this.map.on('click', action(() => {
@@ -155,7 +155,7 @@ const Map = observer(class extends React.Component {
 
     const geojsonStyle = {
       color: '#ff7800',
-      weight: 5,
+      weight: 1,
       opacity: 0.65,
     }
 
@@ -186,13 +186,16 @@ const Map = observer(class extends React.Component {
             UiStore.searchStrings.forEach((element, index) => {
               if (element.includes(':')) {
                 // This is a specific field/value search such as 'Surname: Smith'
-                const highlightField = element.substring(0, element.indexOf(':'))
-                const highlightValue = element.substring(element.indexOf(':') + 2)
+                const separatorLocation = element.indexOf(':')
+                const highlightField = element.substring(0, separatorLocation)
+                const highlightValue = element.substring(separatorLocation + 2)
                 if (record.data) {
                   // relationship data
                   _.each(record.data, (joinRecords) => {
                     _.each(joinRecords, (record) => {
-                      if (_.get(record, highlightField) === highlightValue) {
+                      // We specifically want non-type safe equality checking
+                      // eslint-disable-next-line
+                      if (_.get(record, highlightField) == highlightValue) {
                         this.makeMarker(point, record, index)
                         found = true
                       }
@@ -200,7 +203,8 @@ const Map = observer(class extends React.Component {
                   })
                 } else {
                   // no relationship
-                  if (_.get(record, highlightField) === highlightValue) {
+                  // eslint-disable-next-line
+                  if (_.get(record, highlightField) == highlightValue) {
                     this.makeMarker(point, record, index)
                     found = true
                   }
