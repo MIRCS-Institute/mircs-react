@@ -1,4 +1,5 @@
-import {extendObservable} from 'mobx'
+import {action, extendObservable} from 'mobx'
+import _ from 'lodash'
 
 class UiStore {
   constructor() {
@@ -25,6 +26,29 @@ class UiStore {
       selected: {},
     })
   }
+
+  resetFieldNames = action( () => {
+    this.fieldNames = []
+  })
+
+  addFieldNames = action((record) => {
+    // Use the provided sample record to gather field names.  Names starting with an underscore are ignored.
+    if (record) {
+      let properties = record
+      // Get the properties from server relationships
+      if (record.data)
+        properties = record.data[0].values().next().value
+      // Get the properties from geojson
+      if (record.properties)
+        properties = record.properties
+      // Add any relevant property names to the list
+      _.each(properties, (property, key) => {
+        if (!key.startsWith('_') && this.fieldNames.indexOf(key)===-1)
+          this.fieldNames.push(key)
+      })
+    }
+  })
+
 }
 
 export default new UiStore()

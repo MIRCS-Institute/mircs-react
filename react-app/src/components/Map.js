@@ -1,6 +1,7 @@
 import {action, autorun, toJS} from 'mobx'
 import { CurrentDataSetRecords } from '../api/DataSetRecords'
 import { CurrentRelationshipJoin } from '../api/RelationshipJoin'
+import { CurrentRelationshipRecords } from '../api/RelationshipRecords'
 import { getDataSetRecordsRes } from '../api/DataSetRecords'
 import { getRelationshipsRes } from '../api/Relationships'
 import { observer } from 'mobx-react'
@@ -154,34 +155,8 @@ const Map = observer(class extends React.Component {
 
     const dataSetRecords = CurrentDataSetRecords.res.get('list')
     const relationshipJoin = CurrentRelationshipJoin.res.get('list')
+    const relationshipRecords = CurrentRelationshipRecords.res.linkMap
     const records = dataSetRecords || relationshipJoin || []
-
-
-    // Fetch any related records if a relationship wasn't already selected.
-    if (dataSetRecords) {
-      // Get all relationships
-      const relationships = getRelationshipsRes().get('list', [])
-      const relatedSets = []
-
-      // Loop through the relationships and look for any that include our current dataset.
-      relationships.forEach((relationship) => {
-        if (relationship.dataSets[0] === UrlParams.get('dataSetId')) {
-          relatedSets.push({ "dataSetId":relationship.dataSets[1],"joinElements":relationship.joinElements})
-        } else if (relationship.dataSets[1] === UrlParams.get('dataSetId')) {
-          // flip the join elements because we assume that current is at index 0 later.
-          relatedSets.push({ "dataSetId":relationship.dataSets[0],"joinElements":reverseJoinElements(relationship.joinElements)})
-        }
-      })
-
-      // Now loop through our related sets and add related records to our linkMap
-      relatedSets.forEach((relatedSet) => {
-        const relatedSetRecords = getDataSetRecordsRes(relatedSet.dataSetId).get('list', [])
-        handleJoin(dataSetRecords, relatedSetRecords, relatedSet.joinElements, this.linkMap)
-        this.addFieldNames(relatedSetRecords[0])
-        console.log(relatedSetRecords.length)
-      })
-    }
-
 
     const geojsonStyle = {
       color: '#ff7800',
@@ -291,80 +266,6 @@ const Map = observer(class extends React.Component {
       return result
     }
 
-
-    function reverseJoinElements(original) {
-      const result = []
-      original.forEach((element) => {
-        result.push([element[1],element[0]])
-      })
-      return result
-    }
-
-
-
-    function getJoinKey(record, joinElements, tableIndex) {
-      let key = ''
-      let exclude = false
-      // Build a single join value including multifield joins concatenated with _.  eg. either value1 or value1_value2
-      joinElements.forEach( (joinElement) => {
-        let properties = record
-        if (typeof record.properties === 'object') {
-          // GeoJSON object, look to the properties
-          properties = record.properties
-        }
-        const keyValue = properties[joinElement[tableIndex]]
-        if (_.isUndefined(keyValue) || _.isNull(keyValue)) {
-          exclude = true
-        } else {
-          if (key.length > 0) {
-            key += '_'
-          }
-          key += keyValue
-        }
-      })
-      if (exclude) {
-        return null
-      } else {
-        return key
-      }
-    }
-
-
-
-    // join the columns of the datasets determined by the key parameters described in the Relationship
-    function handleJoin(leftRecords, rightRecords, joinElements, linkMap) {
-      // idMap is a map of key values and record _id's.  The gui map will refer to a location by _id as different relationships
-      // may use different fields for their joins.  So we will use idMap to corelate the join key value to an _id.
-      const leftIdMap = {}
-      leftRecords.forEach( (leftRecord, leftIndex) => {
-        const leftKey = getJoinKey(leftRecord, joinElements, 0)
-        // If we were able to build a relevant key, add it to the map
-        if (!_.isNull(leftKey)) {
-          leftIdMap[leftKey] = leftRecord._id
-        }
-      })
-
-      // Now loop through the related data and add any records to the linkMap when they have a relationship
-      rightRecords.forEach( (rightRecord, rightIndex) => {
-        const rightKey = getJoinKey(rightRecord, joinElements, 1)
-        const leftRecordId = leftIdMap[rightKey]
-        let properties = rightRecord
-        if (typeof rightRecord.properties === 'object') {
-          // GeoJSON object, look to the properties
-          properties = rightRecord.properties
-        }
-        // Add any matching records to our linkMap
-        if (leftRecordId) {
-          if (!linkMap[leftRecordId]) {
-            linkMap[leftRecordId] = []
-          }
-          linkMap[leftRecordId].push(properties)
-        }
-      })
-      console.log(linkMap)
-    }
-
-
   }
 
   makeMarker = (point, record, index) => {
@@ -392,7 +293,7 @@ const Map = observer(class extends React.Component {
       newSelected.records.push(record)
       // Also check for local relationship records
       if (record._id) {
-        _.each(this.linkMap[record._id], (linkRecord) => {
+        _.each(CurrentRelationshipRecords.res.linkMap[record._id], (linkRecord) => {
           newSelected.records.push(linkRecord)
         })
       }
@@ -413,28 +314,6 @@ const Map = observer(class extends React.Component {
     UiStore.searchStrings.forEach(() => {
       UiStore.foundRecords.push([])
     })
-  })
-
-  resetFieldNames = action( () => {
-    UiStore.fieldNames = []
-  })
-
-  addFieldNames = action((record) => {
-    // Use the provided sample record to gather field names.  Names starting with an underscore are ignored.
-    if (record) {
-      let properties = record
-      // Get the properties from server relationships
-      if (record.data)
-        properties = record.data[0].values().next().value
-      // Get the properties from geojson
-      if (record.properties)
-        properties = record.properties
-      // Add any relevant property names to the list
-      _.each(properties, (property, key) => {
-        if (!key.startsWith('_') && UiStore.fieldNames.indexOf(key)===-1)
-          UiStore.fieldNames.push(key)
-      })
-    }
   })
 
   makePoint = (record) => {
