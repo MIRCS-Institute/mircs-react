@@ -299,7 +299,7 @@ const Map = observer(class extends React.Component {
   }
 
   getPolygonStyle = (geojson, foundPoints) => {
-    let fillColor = "#FFFFFF"
+    let fillColor = "#555"
     let found = false
     if (UiStore.searchStrings.length > 0) {
       const records = [ geojson.properties ]

@@ -4,6 +4,7 @@ import _ from 'lodash'
 import Card from '@material-ui/core/Card'
 import CardContent from '@material-ui/core/CardContent'
 import Layout from '../utils/Layout'
+import linkifyHtml from 'linkifyjs/html'
 import Paper from '@material-ui/core/Paper'
 import PieChart from 'react-simple-pie-chart'
 import PropTypes from 'prop-types'
@@ -74,7 +75,7 @@ const MapDrawer = observer(class extends React.Component {
                   }
 
                   // highlight any search terms within the card
-                  let __html = value
+                  let __html = linkifyHtml(''+value)
                   UiStore.searchStrings.forEach((s, i) => {
                     let searchString = UiStore.searchStrings[i]
                     if (searchString.includes(':')) {
