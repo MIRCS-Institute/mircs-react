@@ -27,8 +27,14 @@ class UiStore {
     })
   }
 
-  resetFieldNames = action( () => {
+  reset = action( () => {
+    this.tileLayerName = 'Mapbox'
+    this.searchStrings = []
     this.fieldNames = []
+    this.highlightField = 'none'
+    this.foundRecords = []
+    this.points = []
+    this.selected = {}
   })
 
   addFieldNames = action((record) => {

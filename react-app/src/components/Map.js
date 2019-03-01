@@ -64,6 +64,8 @@ const Map = observer(class extends React.Component {
     L.control.scale({position: 'bottomleft'}).addTo(this.map)
 
     this.setupTileLayer(UiStore.tileLayerName)
+
+    UiStore.reset()
   }
 
   stopMap = action(() => {
@@ -153,23 +155,30 @@ const Map = observer(class extends React.Component {
     }
     this.markers = L.layerGroup()
 
+    // This is the main set of records for the shapes or markers on the map
     const dataSetRecords = CurrentDataSetRecords.res.get('list')
+    // This is the deprecated list of server joined records
     const relationshipJoin = CurrentRelationshipJoin.res.get('list')
+    // This is the client side joined records
     const relationshipRecords = CurrentRelationshipRecords.res.linkMap
     const records = dataSetRecords || relationshipJoin || []
-
-    const geojsonStyle = {
-      color: '#ff7800',
-      weight: 1,
-      opacity: 0.65,
-    }
 
     records.forEach((record) => {
       const geojson = getGeoJson(record)
       if (geojson) {
         // This is a geojson element
+        const firstPoint = this.getFirstPoint(geojson)
+        if (firstPoint)
+          points.push(firstPoint)
 
-        L.geoJSON(toJS(geojson), { style: geojsonStyle })
+        L.geoJSON(toJS(geojson), {
+          style: this.getPolygonStyle(geojson, foundPoints),
+          pointToLayer: function (feature, latlng) {
+            return L.circleMarker(latlng, {
+              radius: 8,
+            });
+          }
+        })
           .addTo(this.markers)
           .on('click', () => {
             this.skipMapClick = true
@@ -201,7 +210,7 @@ const Map = observer(class extends React.Component {
                       // We specifically want non-type safe equality checking
                       // eslint-disable-next-line
                       if (_.get(record, highlightField) == highlightValue) {
-                        this.makeMarker(point, record, index)
+                        this.makeFoundMarker(point, record, index)
                         found = true
                       }
                     })
@@ -210,13 +219,13 @@ const Map = observer(class extends React.Component {
                   // no relationship
                   // eslint-disable-next-line
                   if (_.get(record, highlightField) == highlightValue) {
-                    this.makeMarker(point, record, index)
+                    this.makeFoundMarker(point, record, index)
                     found = true
                   }
                 }
               } else {
                 if (recordString.includes(element.toLowerCase())) {
-                  this.makeMarker(point, record, index)
+                  this.makeFoundMarker(point, record, index)
                   found = true
                 }
               }
@@ -238,7 +247,7 @@ const Map = observer(class extends React.Component {
 
     this.markers.addTo(this.map)
 
-    this.addFieldNames(records[0])
+    UiStore.addFieldNames(records[0])
 
     if (foundPoints.length > 0) {
       this.centerMapOnPoints(foundPoints)
@@ -268,13 +277,77 @@ const Map = observer(class extends React.Component {
 
   }
 
-  makeMarker = (point, record, index) => {
+  makeFoundMarker = (point, record, index) => {
     L.marker(point, {icon: this.icons[index < 7 ? index : 7], zIndexOffset: (index * 100) + 500})
       .addTo(this.markers)
       .on('click', () => {
         this.updateSelected(point, record)
       })
     this.addFoundRecord(record, index)
+  }
+
+  getFirstPoint = (geoJson) => {
+    if (geoJson.geometry.type === 'Point')
+      return geoJson.geometry.coordinates.slice().reverse()
+    if (geoJson.geometry.type === 'Polygon')
+      return geoJson.geometry.coordinates[0][0].slice().reverse()
+    if (geoJson.geometry.type === 'MultiPolygon')
+      if (geoJson.geometry.coordinates[0])
+        if (geoJson.geometry.coordinates[0][0])
+          return geoJson.geometry.coordinates[0][0][0].slice().reverse()
+    return null
+  }
+
+  getPolygonStyle = (geojson, foundPoints) => {
+    let fillColor = "#FFFFFF"
+    let found = false
+    if (UiStore.searchStrings.length > 0) {
+      const records = [ geojson.properties ]
+      if (geojson._id) {
+        _.each(CurrentRelationshipRecords.res.linkMap[geojson._id], (linkRecord) => {
+          records.push(linkRecord)
+        })
+      }
+
+      UiStore.searchStrings.forEach((element, index) => {
+        //console.log('Searching for '+element)
+        if (element.includes(':')) {
+          // This is a specific field/value search such as 'Surname: Smith'
+          const separatorLocation = element.indexOf(':')
+          const highlightField = element.substring(0, separatorLocation)
+          const highlightValue = element.substring(separatorLocation + 2)
+          _.each(records, (record) => {
+            // eslint-disable-next-line
+            if (_.get(record, highlightField) == highlightValue) {
+              found = true
+              fillColor = Layout.colours[index]
+              this.addFoundRecord(record, index)
+            }
+          })
+        } else {
+          if (records.length > 1)
+            _.each(records, (record) => {
+              if (JSON.stringify(record).toLowerCase().includes(element.toLowerCase())) {
+                found = true
+                fillColor = Layout.colours[index]
+                this.addFoundRecord(record, index)
+              }
+            })
+        }
+      })
+    }
+
+    if (found) {
+      foundPoints.push(this.getFirstPoint(geojson))
+    }
+
+    return {
+      color: '#BB0707',
+      weight: 1,
+      opacity: 0.25,
+      fillColor: fillColor,
+      fillOpacity: 0.3,
+    }
   }
 
   updateSelected = action((point, record) => {

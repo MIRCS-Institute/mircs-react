@@ -76,11 +76,21 @@ const MapDrawer = observer(class extends React.Component {
                   // highlight any search terms within the card
                   let __html = value
                   UiStore.searchStrings.forEach((s, i) => {
-                    const regex = new RegExp(UiStore.searchStrings[i], 'giy')
-                    while (regex.test(__html)) {
-                      __html = __html.substring(0, regex.lastIndex - RegExp.lastMatch.length)
-                        + '<span class="search'+i+'">' + RegExp.lastMatch + '</span>'
-                        + __html.substring(regex.lastIndex)
+                    let searchString = UiStore.searchStrings[i]
+                    if (searchString.includes(':')) {
+                      const separatorLocation = searchString.indexOf(':')
+                      const highlightField = searchString.substring(0, separatorLocation)
+                      const highlightValue = searchString.substring(separatorLocation + 2)
+                      if (field === highlightField && (''+value).toLowerCase() === (''+highlightValue).toLowerCase()) {
+                        __html = '<span class="search' + i + '">' + value + '</span>'
+                      }
+                    } else {
+                      const regex = new RegExp(UiStore.searchStrings[i], 'giy')
+                      while (regex.test(__html)) {
+                        __html = __html.substring(0, regex.lastIndex - RegExp.lastMatch.length)
+                          + '<span class="search' + i + '">' + RegExp.lastMatch + '</span>'
+                          + __html.substring(regex.lastIndex)
+                      }
                     }
                   })
 

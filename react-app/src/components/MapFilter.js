@@ -10,6 +10,7 @@ import MenuItem from '@material-ui/core/MenuItem'
 import React from 'react'
 import TextField from '@material-ui/core/TextField'
 import UiStore from '../states/UiStore'
+import {CurrentRelationshipRecords} from '../api/RelationshipRecords'
 
 const MapFilter = observer(class extends React.Component {
   handleKeyDown = (event) => {
@@ -38,6 +39,14 @@ const MapFilter = observer(class extends React.Component {
     CurrentRelationshipJoin.res.get('list', []).forEach((record) => {
       _.each(record.data, (card) => { // Loop through all the records found in the relationship
         thisValue = _.get(card.values().next().value, event.target.value) // Try to find the value of the requested field in the current card
+        this.countFieldValue(valueCounts, thisValue)
+      })
+    })
+
+    const linkMap = CurrentRelationshipRecords.res.linkMap
+    _.each(linkMap, (value, key) => {
+      _.each(value, (card) => {
+        thisValue = _.get(card, event.target.value) // Try to find the value of the requested field in the current card
         this.countFieldValue(valueCounts, thisValue)
       })
     })
