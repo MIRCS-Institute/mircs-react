@@ -2,8 +2,6 @@ import {action, autorun, toJS} from 'mobx'
 import { CurrentDataSetRecords } from '../api/DataSetRecords'
 import { CurrentRelationshipJoin } from '../api/RelationshipJoin'
 import { CurrentRelationshipRecords } from '../api/RelationshipRecords'
-import { getDataSetRecordsRes } from '../api/DataSetRecords'
-import { getRelationshipsRes } from '../api/Relationships'
 import { observer } from 'mobx-react'
 import { withStyles } from '@material-ui/core/styles'
 import _ from 'lodash'
@@ -12,7 +10,6 @@ import PropTypes from 'prop-types'
 import React from 'react'
 import turf from 'turf'
 import UiStore from '../states/UiStore'
-import UrlParams from '../states/UrlParams'
 
 const L = window.L
 
@@ -160,7 +157,7 @@ const Map = observer(class extends React.Component {
     // This is the deprecated list of server joined records
     const relationshipJoin = CurrentRelationshipJoin.res.get('list')
     // This is the client side joined records
-    const relationshipRecords = CurrentRelationshipRecords.res.linkMap
+    //const relationshipRecords = CurrentRelationshipRecords.res.linkMap
     const records = dataSetRecords || relationshipJoin || []
 
     records.forEach((record) => {

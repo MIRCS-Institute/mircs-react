@@ -1,5 +1,4 @@
 import { CurrentDataSetRecords, getDataSetRecordsRes } from './DataSetRecords'
-import { cachedServerHttpResource } from './resources/ServerHttpResource'
 import { getRelationshipsRes } from './Relationships'
 import _ from 'lodash'
 import CurrentResource from './resources/CurrentResource'
@@ -40,7 +39,6 @@ class CurrentRelationshipRecordsClass extends CurrentResource {
 
       // Now loop through our related sets and add related records to our linkMap
       relatedSets.forEach((relatedSet) => {
-        const listObject = {data: []}
         const relatedSetRecords = getDataSetRecordsRes(relatedSet.dataSetId).get('list', [])
         this.handleJoin(dataSetRecords, relatedSetRecords, relatedSet.joinElements, this.linkMap)
         UiStore.addFieldNames(relatedSetRecords[0])
