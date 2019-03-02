@@ -75,6 +75,13 @@ const createCollection = async (collectionName, options) => {
   await db.createCollection(collectionName, options)
 }
 
+const insertIntoCollection = async (collectionName, record) => {
+  const db = await getDb()
+  const viewsCollection = db.collection(collectionName)
+  const result = await viewsCollection.insertOne(record)
+  return result.ops[0]
+}
+
 /*
 finds and returns documents in a collection matching the passed query
 @see http://mongodb.github.io/node-mongodb-native/2.2/api/Collection.html#find
@@ -83,6 +90,33 @@ const find = async (collectionName, query) => {
   const db = await getDb()
   const result = await db.collection(collectionName).find(query).toArray()
   return result
+}
+
+const findById = async (collectionName, id) => {
+  let _id
+  try {
+    _id = ObjectID(id)
+  } catch(exception) {
+    console.error(exception)
+    throw new Error(`Invalid ObjectID: '${id}'`)
+  }
+
+  const list = await MongoUtil.find(collectionName, { _id })
+  return list[0]
+}
+
+const deleteById = async (collectionName, id) => {
+  let _id
+  try {
+    _id = ObjectID(id)
+  } catch(exception) {
+    console.error(exception)
+    throw new Error(`Invalid ObjectID: '${id}'`)
+  }
+
+  const db = await MongoUtil.getDb()
+  const collection = db.collection(collectionName)
+  await collection.deleteOne({ _id })
 }
 
 /*
@@ -223,7 +257,10 @@ module.exports = {
 
   getDb,
   createCollection,
+  insertIntoCollection,
   find,
+  findById,
+  deleteById,
   
   initialize,
   validateRelationship,
