@@ -50,12 +50,7 @@ const Records = observer(class extends React.Component {
       .then(action(() => {
         this.refresh()
       }))
-      .catch(this.handleError)
-  })
-
-  handleError = action((error) => {
-    showSnackbarMessage(error)
-    this.refresh()
+      .catch(showSnackbarMessage)
   })
 
   handleViewModeChange = action((event) => {
@@ -82,10 +77,10 @@ const Records = observer(class extends React.Component {
       {CurrentDataSetRecords.res.isLoading() && <LoadingSpinner title='Loading Records...' />}
 
       {this.viewMode === 'cards' &&
-        <RecordsCards records={records} onRefresh={this.refresh} onError={this.handleError} />}
+        <RecordsCards records={records} onRefresh={this.refresh}/>}
 
       {this.viewMode === 'table' &&
-        <RecordsTable records={records} onRefresh={this.refresh} onError={this.handleError} />}
+        <RecordsTable records={records} onRefresh={this.refresh}/>}
 
       <ConfirmDeleteDialog 
         open={this.showConfirmDeleteDialog}

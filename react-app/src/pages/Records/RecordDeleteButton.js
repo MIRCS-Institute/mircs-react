@@ -1,5 +1,6 @@
 import { action, extendObservable } from 'mobx'
 import { observer } from 'mobx-react'
+import { showSnackbarMessage } from '../../components/SnackbarMessages'
 import Button from '@material-ui/core/Button'
 import ConfirmDeleteDialog from '../../components/ConfirmDeleteDialog'
 import PropTypes from 'prop-types'
@@ -13,7 +14,6 @@ const RecordDeleteButton = observer(class extends React.Component {
     record: PropTypes.object,
 
     onRefresh: PropTypes.func.isRequired,
-    onError: PropTypes.func.isRequired,
   }
 
   constructor() {
@@ -35,7 +35,7 @@ const RecordDeleteButton = observer(class extends React.Component {
     this.showConfirmDeleteDialog = false
     ServerHttpApi.jsonDelete(`/api/datasets/${this.props.dataSetId}/records/${this.props.record._id}`)
       .then(this.props.onRefresh)
-      .catch(this.props.onError)
+      .catch(showSnackbarMessage)
   })
 
   render() {

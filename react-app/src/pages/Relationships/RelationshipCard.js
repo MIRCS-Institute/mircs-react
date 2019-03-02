@@ -1,6 +1,7 @@
 import {action, extendObservable} from 'mobx'
 import { goToPath, Path } from '../../app/App'
 import {observer} from 'mobx-react'
+import { showSnackbarMessage } from '../../components/SnackbarMessages'
 import _ from 'lodash'
 import Button from '@material-ui/core/Button'
 import Card from '@material-ui/core/Card'
@@ -19,7 +20,6 @@ const RelationshipCard = observer(class extends React.Component {
   static propTypes = {
     relationship: PropTypes.object,
     onRefresh: PropTypes.func.isRequired,
-    onError: PropTypes.func.isRequired,
   }
 
   constructor() {
@@ -42,7 +42,7 @@ const RelationshipCard = observer(class extends React.Component {
     this.showConfirmDeleteDialog = false
     ServerHttpApi.jsonDelete(`/api/relationships/${this.props.relationship._id}`)
       .then(this.props.onRefresh)
-      .catch(this.props.onError)
+      .catch(showSnackbarMessage)
   })
 
   handleEditClick = action(() => {

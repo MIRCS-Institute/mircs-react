@@ -1,6 +1,7 @@
 import {action, extendObservable} from 'mobx'
 import { goToPath, Path } from '../../app/App'
 import {observer} from 'mobx-react'
+import { showSnackbarMessage } from '../../components/SnackbarMessages'
 import _ from 'lodash'
 import Button from '@material-ui/core/Button'
 import Card from '@material-ui/core/Card'
@@ -18,7 +19,6 @@ const DataSetCard = observer(class extends React.Component {
   static propTypes = {
     dataSet: PropTypes.object,
     onRefresh: PropTypes.func,
-    onError: PropTypes.func,
   }
 
   constructor() {
@@ -37,18 +37,17 @@ const DataSetCard = observer(class extends React.Component {
   }
 
   refreshStats = () => {
-    const { onError } = this.props
     ServerHttpApi.jsonGet(`/api/datasets/${this.props.dataSet._id}/stats`)
       .then(action((response) => {
         this.stats = _.get(response, 'bodyJson')
       }))
-      .catch(onError)
+      .catch(showSnackbarMessage)
 
     ServerHttpApi.jsonGet(`/api/datasets/${this.props.dataSet._id}/fields`)
       .then(action((response) => {
         this.fields = _.get(response, 'bodyJson.list')
       }))
-      .catch(onError)
+      .catch(showSnackbarMessage)
   }
 
   handleDeleteClick = action(() => {
@@ -67,7 +66,7 @@ const DataSetCard = observer(class extends React.Component {
       .then(action(() => {
         this.refreshStats()
       }))
-      .catch(this.handleError)
+      .catch(showSnackbarMessage)
   })
 
   handleDeleteRecordsClick = action(() => {
@@ -86,7 +85,7 @@ const DataSetCard = observer(class extends React.Component {
       .then(action(() => {
         this.refreshStats()
       }))
-      .catch(this.handleError)
+      .catch(showSnackbarMessage)
   })
 
   handleEditClick = action(() => {
@@ -181,7 +180,6 @@ const DataSetCard = observer(class extends React.Component {
           <UploadDataSetFileButton
             dataSetId={dataSetId}
             onDataSetUpdated={this.refreshStats}
-            onError={this.props.onError}
           />
         </CardActions>
       </Card>

@@ -1,5 +1,6 @@
 import { action } from 'mobx'
 import { observer } from 'mobx-react'
+import { showSnackbarMessage } from '../../components/SnackbarMessages'
 import _ from 'lodash'
 import FileButton from '../../components/FileButton'
 import papa from 'papaparse'
@@ -11,7 +12,6 @@ const UploadDataSetFileButton = observer(class extends React.Component {
   static propTypes = {
     dataSetId: PropTypes.string.isRequired,
     onDataSetUpdated: PropTypes.func.isRequired,
-    onError: PropTypes.func.isRequired,
   }
 
   handleFilesSelected = (files) => {
@@ -31,10 +31,7 @@ const UploadDataSetFileButton = observer(class extends React.Component {
         complete: (results) => {
           this.handleCsvLoaded(results.data)
         },
-        error: (error) => {
-          console.error('error parsing csv:', error)
-          return this.props.onError(error)
-        },
+        error: showSnackbarMessage,
       })
     }
   }
@@ -48,7 +45,7 @@ const UploadDataSetFileButton = observer(class extends React.Component {
       }
     })
     if (illegalHeaders.length) {
-      return this.props.onError(new Error('Headers cannot contain dots (i.e. .) or null characters, and they must not start with a dollar sign (i.e. $). Illegal headers: ' + illegalHeaders.join(', ')))
+      return showSnackbarMessage(new Error('Headers cannot contain dots (i.e. .) or null characters, and they must not start with a dollar sign (i.e. $). Illegal headers: ' + illegalHeaders.join(', ')))
     }
 
     const records = []
@@ -85,9 +82,7 @@ const UploadDataSetFileButton = observer(class extends React.Component {
       .then(action(() => {
         this.props.onDataSetUpdated()
       }))
-      .catch(action((error) => {
-        this.props.onError(error)
-      }))
+      .catch(showSnackbarMessage)
   }
 
   render() {

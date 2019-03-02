@@ -1,7 +1,6 @@
 import { action, extendObservable } from 'mobx'
 import { getDataSetsRes } from '../../api/DataSets'
 import { observer } from 'mobx-react'
-import { showSnackbarMessage } from '../../components/SnackbarMessages'
 import Button from '@material-ui/core/Button'
 import DataSetCard from './DataSetCard'
 import EditDataSetDialog from './EditDataSetDialog'
@@ -27,11 +26,6 @@ const DataSets = observer(class extends React.Component {
 
   handleCreateAfterSave = action(() => {
     this.showCreateDialog = false
-    getDataSetsRes().refresh()
-  })
-
-  handleError = action((error) => {
-    showSnackbarMessage(error)
     getDataSetsRes().refresh()
   })
 
@@ -62,7 +56,6 @@ const DataSets = observer(class extends React.Component {
             key={dataSet._id}
             dataSet={dataSet}
             onRefresh={resource.refresh}
-            onError={this.handleError}
           />
         ))}
       </div>

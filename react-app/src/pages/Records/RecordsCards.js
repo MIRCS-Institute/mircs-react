@@ -10,7 +10,6 @@ const RecordsCards = observer(class extends React.Component {
     records: PropTypes.oneOfType([ PropTypes.array, PropTypes.object ]).isRequired,
 
     onRefresh: PropTypes.func.isRequired,
-    onError: PropTypes.func.isRequired,
   }
 
   render() {
@@ -20,7 +19,7 @@ const RecordsCards = observer(class extends React.Component {
       <div>
         {this.props.records.map((record) => (
           <RecordCard key={record._id} dataSetId={dataSetId} record={record}
-            onRefresh={this.props.onRefresh} onError={this.props.onError}/>
+            onRefresh={this.props.onRefresh}/>
         ))}
       </div>
     )

@@ -1,7 +1,6 @@
 import { action, extendObservable } from 'mobx'
 import { getRelationshipsRes } from '../../api/Relationships'
 import { observer } from 'mobx-react'
-import { showSnackbarMessage } from '../../components/SnackbarMessages'
 import Button from '@material-ui/core/Button'
 import EditRelationshipDialog from './EditRelationshipDialog'
 import LoadingSpinner from '../../components/LoadingSpinner'
@@ -30,11 +29,6 @@ const Relationships = observer(class extends React.Component {
     getRelationshipsRes().refresh()
   })
 
-  handleError = action((error) => {
-    showSnackbarMessage(error)
-    getRelationshipsRes().refresh()
-  })
-
   render() {
     const resource = getRelationshipsRes()
     const isLoading = resource.isLoading()
@@ -58,7 +52,6 @@ const Relationships = observer(class extends React.Component {
             key={relationship._id}
             relationship={relationship}
             onRefresh={resource.refresh}
-            onError={this.handleError}
           />
         ))}
       </div>
