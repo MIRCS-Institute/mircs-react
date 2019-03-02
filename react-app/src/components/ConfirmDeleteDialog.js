@@ -49,7 +49,7 @@ const ConfirmDeleteDialog = observer(class extends React.Component {
         <DialogTitle>Delete {name}</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            To delete {name} enter &quote;delete&quote; below:
+            To delete {name} enter 'delete' below:
           </DialogContentText>
           <TextField 
             id='delete' 
