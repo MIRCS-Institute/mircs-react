@@ -32,9 +32,5 @@ module.exports = function(router) {
           res.status(200).send(result)
         })
         .catch(next)
-        .then(() => {
-          db.close()
-        })
-
     })
 }

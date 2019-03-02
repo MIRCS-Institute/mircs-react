@@ -41,8 +41,6 @@ const createUser = async () => {
   } catch (exception) {
     console.error('Error creating user: \n\n', exception)
   }
-
-  await db.close()
 }
 
 createUser()

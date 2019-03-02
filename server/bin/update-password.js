@@ -49,8 +49,6 @@ const createUser = async () => {
   } catch (exception) {
     console.error('Error updating password: \n\n', exception)
   }
-
-  await db.close()
 }
 
 createUser()

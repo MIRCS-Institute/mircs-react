@@ -1,32 +1,49 @@
 const _ = require('lodash')
 const Environment = require('../utils/environment.js')
 const MongoClient = require('mongodb').MongoClient
+const ObjectID = require('mongodb').ObjectID
 
 const MONGO_SERVER_URL = Environment.getRequired('MONGO_SERVER_URL')
 
-const MongoUtil = {}
+const AUTHENTICATION_COLLECTION = 'Authentication'
+const DATA_SETS_COLLECTION = 'DataSets'
+const RELATIONSHIPS_COLLECTION = 'Relationships'
+const VIEWS_COLLECTION = 'Views'
+const DATA_SETS_COLLECTION_PREFIX = 'dataset_'
+const DATA_SETS_FIELDS_COLLECTION_SUFFIX = '_fields'
 
-MongoUtil.AUTHENTICATION_COLLECTION = 'Authentication'
-MongoUtil.DATA_SETS_COLLECTION = 'DataSets'
-MongoUtil.RELATIONSHIPS_COLLECTION = 'Relationships'
-MongoUtil.DATA_SETS_COLLECTION_PREFIX = 'dataset_'
-MongoUtil.DATA_SETS_FIELDS_COLLECTION_SUFFIX = '_fields'
+// MongoClient connection pool
+let db
 
-/* creates common collections */
-MongoUtil.initialize = async () => {
-  const db = await MongoClient.connect(MONGO_SERVER_URL)
+/*
+Connects to MongoDB and returns a promise that resolves to a Database object connected to
+our database.
 
-  const auth = await db.createCollection(MongoUtil.AUTHENTICATION_COLLECTION)
-  await auth.createIndex({ email: 1 }, { unique: true })
+@see https://mongodb.github.io/node-mongodb-native/2.2/api/Db.html
 
-  await MongoUtil.createCollection(MongoUtil.DATA_SETS_COLLECTION)
-
-  await MongoUtil.createCollection(MongoUtil.RELATIONSHIPS_COLLECTION)
-
-  await db.close()
+@see https://mongodb.github.io/node-mongodb-native/driver-articles/mongoclient.html#mongoclient-connection-pooling
+  "To reduce the number of connection pools created by your application, we recommend calling 
+  MongoClient.connect once and reusing the database variable returned by the callback"
+*/
+const getDb = async () => {
+  if (!db) {
+    db = await MongoClient.connect(MONGO_SERVER_URL)
+  }
+  return db
 }
 
-MongoUtil.validateRelationship = (relationship) => {
+const initialize = async () => {
+  db = await getDb()
+
+  const auth = await db.createCollection(AUTHENTICATION_COLLECTION)
+  await auth.createIndex({ email: 1 }, { unique: true })
+
+  await createCollection(DATA_SETS_COLLECTION)
+
+  await createCollection(RELATIONSHIPS_COLLECTION)
+}
+
+const validateRelationship = (relationship) => {
   if (!_.isString(relationship.name)) {
     throw new Error('name is required')
   }
@@ -43,45 +60,35 @@ MongoUtil.validateRelationship = (relationship) => {
   })
 }
 
-/*
-Connects to MongoDB and returns a promise that resolves to a Database object connected to
-our database.
-
-Configuration is gathered from the environment.js module.
-
-Note: the returned db instance should be closed when finished.
-
-@see http://mongodb.github.io/node-mongodb-native/2.2/api/Db.html
-*/
-MongoUtil.getDb = async () => {
-  return MongoClient.connect(MONGO_SERVER_URL)
+const validateView = (view) => {
+  if (!_.isString(view.name)) {
+    throw new Error('name is required')
+  }
 }
 
 /*
 creates a new collection in the database
 @see http://mongodb.github.io/node-mongodb-native/2.2/api/Db.html#createCollection
  */
-MongoUtil.createCollection = async (collectionName, options) => {
-  const db = await MongoUtil.getDb()
+const createCollection = async (collectionName, options) => {
+  const db = await getDb()
   await db.createCollection(collectionName, options)
-  await db.close()
 }
 
 /*
 finds and returns documents in a collection matching the passed query
 @see http://mongodb.github.io/node-mongodb-native/2.2/api/Collection.html#find
 */
-MongoUtil.find = async (collectionName, query) => {
-  const db = await MongoUtil.getDb()
+const find = async (collectionName, query) => {
+  const db = await getDb()
   const result = await db.collection(collectionName).find(query).toArray()
-  await db.close()
   return result
 }
 
 /*
 update the fields collection associated with a collection
 */
-MongoUtil.refreshFields = (db, collectionName) => {
+const refreshFields = (db, collectionName) => {
   return new Promise((resolve, reject) => {
     const cursor = db.collection(collectionName).find()
     const fields = {}
@@ -106,7 +113,7 @@ MongoUtil.refreshFields = (db, collectionName) => {
     })
   })
     .then((fields) => {
-      const fieldsCollection = db.collection(collectionName + MongoUtil.DATA_SETS_FIELDS_COLLECTION_SUFFIX)
+      const fieldsCollection = db.collection(collectionName + DATA_SETS_FIELDS_COLLECTION_SUFFIX)
       return fieldsCollection.remove({})
         .then(() => {
           const fieldDocs = []
@@ -123,7 +130,7 @@ MongoUtil.refreshFields = (db, collectionName) => {
 /*
 from a relationship object fetch the set of joined records
  */
-MongoUtil.joinRecords = (relationship) => {
+const joinRecords = (relationship) => {
   if (_.get(relationship, 'dataSets.length') !== 2) {
     return Promise.reject(new Error('currently limited to relationships with 2 data sets'))
   }
@@ -135,8 +142,8 @@ MongoUtil.joinRecords = (relationship) => {
   function collectDataSets() {
     const promises = []
     _.each(relationship.dataSets, (dataSetId) => {
-      const collectionName = MongoUtil.DATA_SETS_COLLECTION_PREFIX + dataSetId
-      promises.push(MongoUtil.find(collectionName, {}))
+      const collectionName = DATA_SETS_COLLECTION_PREFIX + dataSetId
+      promises.push(find(collectionName, {}))
     })
     return Promise.all(promises)
   }
@@ -206,4 +213,21 @@ MongoUtil.joinRecords = (relationship) => {
   }
 }
 
-module.exports = MongoUtil
+module.exports = {
+  AUTHENTICATION_COLLECTION,
+  DATA_SETS_COLLECTION,
+  RELATIONSHIPS_COLLECTION,
+  VIEWS_COLLECTION,
+  DATA_SETS_COLLECTION_PREFIX,
+  DATA_SETS_FIELDS_COLLECTION_SUFFIX,
+
+  getDb,
+  createCollection,
+  find,
+  
+  initialize,
+  validateRelationship,
+  validateView,
+  refreshFields,
+  joinRecords,
+}

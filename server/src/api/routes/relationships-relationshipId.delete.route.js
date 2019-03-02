@@ -25,8 +25,5 @@ module.exports = function(router) {
           res.status(200).send({ result: 'deleted' })
         })
         .catch(next)
-        .then(function() {
-          db.close()
-        })
     })
 }

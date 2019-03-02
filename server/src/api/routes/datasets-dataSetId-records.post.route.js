@@ -59,8 +59,5 @@ module.exports = function(router) {
           res.status(201).send(responseJson)
         })
         .catch(next)
-        .then(() => {
-          db.close()
-        })
     })
 }

@@ -32,8 +32,5 @@ module.exports = function(router) {
           res.status(201).send(relationship)
         })
         .catch(next)
-        .then(() => {
-          db.close()
-        })
     })
 }

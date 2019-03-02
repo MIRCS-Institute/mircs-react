@@ -40,8 +40,5 @@ module.exports = function(router) {
           res.status(201).send(dataSet)
         })
         .catch(next)
-        .then(() => {
-          db.close()
-        })
     })
 }

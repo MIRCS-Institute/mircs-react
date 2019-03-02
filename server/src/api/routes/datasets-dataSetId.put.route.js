@@ -37,8 +37,5 @@ module.exports = function(router) {
           res.status(200).send(updatedDataSet)
         })
         .catch(next)
-        .then(() => {
-          db.close()
-        })
     })
 }
