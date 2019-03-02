@@ -101,7 +101,7 @@ const findById = async (collectionName, id) => {
     throw new Error(`Invalid ObjectID: '${id}'`)
   }
 
-  const list = await MongoUtil.find(collectionName, { _id })
+  const list = await find(collectionName, { _id })
   return list[0]
 }
 
@@ -114,7 +114,7 @@ const deleteById = async (collectionName, id) => {
     throw new Error(`Invalid ObjectID: '${id}'`)
   }
 
-  const db = await MongoUtil.getDb()
+  const db = await getDb()
   const collection = db.collection(collectionName)
   await collection.deleteOne({ _id })
 }

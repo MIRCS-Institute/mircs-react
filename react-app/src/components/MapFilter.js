@@ -1,6 +1,7 @@
 import { action } from 'mobx'
 import { CurrentDataSetRecords } from '../api/DataSetRecords'
 import { CurrentRelationshipJoin } from '../api/RelationshipJoin'
+import {CurrentRelationshipRecords} from '../api/RelationshipRecords'
 import { observer } from 'mobx-react'
 import { withStyles } from '@material-ui/core/styles'
 import _ from 'lodash'
@@ -10,7 +11,6 @@ import MenuItem from '@material-ui/core/MenuItem'
 import React from 'react'
 import TextField from '@material-ui/core/TextField'
 import UiStore from '../states/UiStore'
-import {CurrentRelationshipRecords} from '../api/RelationshipRecords'
 
 const MapFilter = observer(class extends React.Component {
   handleKeyDown = (event) => {
@@ -44,7 +44,7 @@ const MapFilter = observer(class extends React.Component {
     })
 
     const linkMap = CurrentRelationshipRecords.res.linkMap
-    _.each(linkMap, (value, key) => {
+    _.each(linkMap, (value) => {
       _.each(value, (card) => {
         thisValue = _.get(card, event.target.value) // Try to find the value of the requested field in the current card
         this.countFieldValue(valueCounts, thisValue)

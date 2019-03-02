@@ -173,8 +173,8 @@ const Map = observer(class extends React.Component {
           pointToLayer: function (feature, latlng) {
             return L.circleMarker(latlng, {
               radius: 8,
-            });
-          }
+            })
+          },
         })
           .addTo(this.markers)
           .on('click', () => {
@@ -296,7 +296,7 @@ const Map = observer(class extends React.Component {
   }
 
   getPolygonStyle = (geojson, foundPoints) => {
-    let fillColor = "#555"
+    let fillColor = '#555'
     let found = false
     if (UiStore.searchStrings.length > 0) {
       const records = [ geojson.properties ]

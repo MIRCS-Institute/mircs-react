@@ -12,7 +12,7 @@ const MapStatus = observer(class extends React.Component {
 
         {UiStore.foundRecords.map((records, i) => {
           const divStyle = {
-            color: Layout.colours[i]
+            color: Layout.colours[i],
           }
           return (
             <span key={i} style={divStyle}> - {records.length} "{UiStore.searchStrings[i]}"s </span>

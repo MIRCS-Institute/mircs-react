@@ -2,8 +2,8 @@ import { CurrentDataSetRecords, getDataSetRecordsRes } from './DataSetRecords'
 import { getRelationshipsRes } from './Relationships'
 import _ from 'lodash'
 import CurrentResource from './resources/CurrentResource'
-import UrlParams from '../states/UrlParams'
 import UiStore from '../states/UiStore'
+import UrlParams from '../states/UrlParams'
 
 class CurrentRelationshipRecordsClass extends CurrentResource {
 
@@ -27,12 +27,12 @@ class CurrentRelationshipRecordsClass extends CurrentResource {
       // Loop through the relationships and look for any that include our current dataset.
       relationships.forEach((relationship) => {
         if (relationship.dataSets[0] === UrlParams.get('dataSetId')) {
-          relatedSets.push({"dataSetId": relationship.dataSets[1], "joinElements": relationship.joinElements})
+          relatedSets.push({'dataSetId': relationship.dataSets[1], 'joinElements': relationship.joinElements})
         } else if (relationship.dataSets[1] === UrlParams.get('dataSetId')) {
           // flip the join elements because we assume that current is at index 0 later.
           relatedSets.push({
-            "dataSetId": relationship.dataSets[0],
-            "joinElements": this.reverseJoinElements(relationship.joinElements)
+            'dataSetId': relationship.dataSets[0],
+            'joinElements': this.reverseJoinElements(relationship.joinElements),
           })
         }
       })
@@ -66,7 +66,7 @@ class CurrentRelationshipRecordsClass extends CurrentResource {
     // idMap is a map of key values and record _id's.  The gui map will refer to a location by _id as different relationships
     // may use different fields for their joins.  So we will use idMap to corelate the join key value to an _id.
     const leftIdMap = {}
-    leftRecords.forEach( (leftRecord, leftIndex) => {
+    leftRecords.forEach( (leftRecord) => {
       const leftKey = this.getJoinKey(leftRecord, joinElements, 0)
       // If we were able to build a relevant key, add it to the map
       if (!_.isNull(leftKey)) {
@@ -75,7 +75,7 @@ class CurrentRelationshipRecordsClass extends CurrentResource {
     })
 
     // Now loop through the related data and add any records to the linkMap when they have a relationship
-    rightRecords.forEach( (rightRecord, rightIndex) => {
+    rightRecords.forEach( (rightRecord) => {
       const rightKey = this.getJoinKey(rightRecord, joinElements, 1)
       const leftRecordId = leftIdMap[rightKey]
       let properties = rightRecord
