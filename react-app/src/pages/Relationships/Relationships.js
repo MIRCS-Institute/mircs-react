@@ -51,7 +51,6 @@ const Relationships = observer(class extends React.Component {
           <RelationshipCard
             key={relationship._id}
             relationship={relationship}
-            onRefresh={resource.refresh}
           />
         ))}
       </div>

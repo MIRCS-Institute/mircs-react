@@ -12,11 +12,10 @@ const RecordCard = observer(class extends React.Component {
   static propTypes = {
     record: PropTypes.object,
     dataSetId: PropTypes.string,
-    onRefresh: PropTypes.func,
   }
 
   render() {
-    const { record, dataSetId, onRefresh } = this.props
+    const { record, dataSetId } = this.props
 
     return (
       <Card style={styles.card}>
@@ -29,10 +28,8 @@ const RecordCard = observer(class extends React.Component {
 
         </CardContent>
         <CardActions>
-          <RecordEditButton dataSetId={dataSetId} record={record}
-            onRefresh={onRefresh}/>
-          <RecordDeleteButton dataSetId={dataSetId} recordId={record._id}
-            onRefresh={onRefresh}/>
+          <RecordEditButton dataSetId={dataSetId} record={record}/>
+          <RecordDeleteButton dataSetId={dataSetId} recordId={record._id}/>
         </CardActions>
       </Card>
     )

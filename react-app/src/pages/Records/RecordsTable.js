@@ -15,7 +15,6 @@ import UrlParams from '../../states/UrlParams'
 const RecordsTable = observer(class extends React.Component {
   static propTypes = {
     records: PropTypes.oneOfType([ PropTypes.array, PropTypes.object ]).isRequired,
-    onRefresh: PropTypes.func.isRequired,
   }
 
   render() {
@@ -42,10 +41,8 @@ const RecordsTable = observer(class extends React.Component {
                 </TableCell>
               ))}
               <TableCell style={{ ...Layout.row }}>
-                <RecordDeleteButton dataSetId={dataSetId} recordId={record._id}
-                  onRefresh={this.props.onRefresh}/>
-                <RecordEditButton dataSetId={dataSetId} record={record}
-                  onRefresh={this.props.onRefresh}/>
+                <RecordDeleteButton dataSetId={dataSetId} recordId={record._id}/>
+                <RecordEditButton dataSetId={dataSetId} record={record}/>
               </TableCell>
             </TableRow>
           ))}

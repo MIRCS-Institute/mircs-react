@@ -8,8 +8,6 @@ const RecordsCards = observer(class extends React.Component {
   static propTypes = {
     // cannot use PropTypes.arrayOf(PropTypes.object) because we use mobx observables
     records: PropTypes.oneOfType([ PropTypes.array, PropTypes.object ]).isRequired,
-
-    onRefresh: PropTypes.func.isRequired,
   }
 
   render() {
@@ -18,8 +16,7 @@ const RecordsCards = observer(class extends React.Component {
     return (
       <div>
         {this.props.records.map((record) => (
-          <RecordCard key={record._id} dataSetId={dataSetId} record={record}
-            onRefresh={this.props.onRefresh}/>
+          <RecordCard key={record._id} dataSetId={dataSetId} record={record}/>
         ))}
       </div>
     )

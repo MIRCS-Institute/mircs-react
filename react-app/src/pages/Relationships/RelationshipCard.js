@@ -1,4 +1,5 @@
 import {action, extendObservable} from 'mobx'
+import { getRelationshipsRes } from '../../api/Relationships'
 import { goToPath, Path } from '../../app/App'
 import {observer} from 'mobx-react'
 import { showSnackbarMessage } from '../../components/SnackbarMessages'
@@ -19,7 +20,6 @@ import ServerHttpApi from '../../api/net/ServerHttpApi'
 const RelationshipCard = observer(class extends React.Component {
   static propTypes = {
     relationship: PropTypes.object,
-    onRefresh: PropTypes.func.isRequired,
   }
 
   constructor() {
@@ -41,7 +41,9 @@ const RelationshipCard = observer(class extends React.Component {
   handleDeleteConfirm = action(() => {
     this.showConfirmDeleteDialog = false
     ServerHttpApi.jsonDelete(`/api/relationships/${this.props.relationship._id}`)
-      .then(this.props.onRefresh)
+      .then(() => {
+        return getRelationshipsRes().refresh()
+      })
       .catch(showSnackbarMessage)
   })
 
@@ -55,9 +57,7 @@ const RelationshipCard = observer(class extends React.Component {
 
   handleEditAfterSave = action(() => {
     this.showEditDialog = false
-    this
-      .props
-      .onRefresh()
+    getRelationshipsRes().refresh()
   })
 
   render() {

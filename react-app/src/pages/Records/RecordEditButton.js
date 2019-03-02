@@ -1,4 +1,5 @@
 import { action, extendObservable } from 'mobx'
+import { CurrentDataSet } from '../../api/DataSet'
 import { observer } from 'mobx-react'
 import Button from '@material-ui/core/Button'
 import EditRecordDialog from './EditRecordDialog'
@@ -9,8 +10,6 @@ const RecordEditButton = observer(class extends React.Component {
   static propTypes = {
     dataSetId: PropTypes.string.isRequired,
     record: PropTypes.object.isRequired,
-
-    onRefresh: PropTypes.func.isRequired,
   }
 
   constructor() {
@@ -30,17 +29,23 @@ const RecordEditButton = observer(class extends React.Component {
 
   handleEditAfterSave = action(() => {
     this.showEditDialog = false
-    this.props.onRefresh()
+    CurrentDataSet.res.refresh()
   })
 
   render() {
-    return (
+    return <div>
       <Button variant='contained' onClick={this.handleEditClick}>
         Edit Record
-
-        <EditRecordDialog open={this.showEditDialog} dataSetId={this.props.dataSetId} record={this.props.record} onCancel={this.handleEditCancel} afterSave={this.handleEditAfterSave}/>
       </Button>
-    )
+
+      <EditRecordDialog 
+        open={this.showEditDialog} 
+        dataSetId={this.props.dataSetId} 
+        record={this.props.record} 
+        onCancel={this.handleEditCancel} 
+        afterSave={this.handleEditAfterSave}
+      />
+    </div>
   }
 })
 

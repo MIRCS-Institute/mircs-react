@@ -31,10 +31,6 @@ const Records = observer(class extends React.Component {
     })
   }
 
-  refresh = () => {
-    CurrentDataSet.res.refresh()
-  }
-
   handleDeleteClick = action(() => {
     this.showConfirmDeleteDialog = true
   })
@@ -47,9 +43,9 @@ const Records = observer(class extends React.Component {
     this.showConfirmDeleteDialog = false
     const dataSetId = UrlParams.get('dataSetId')
     ServerHttpApi.jsonDelete(`/api/datasets/${dataSetId}/records`)
-      .then(action(() => {
-        this.refresh()
-      }))
+      .then(() => {
+        return CurrentDataSetRecords.res.refresh()
+      })
       .catch(showSnackbarMessage)
   })
 
@@ -76,11 +72,8 @@ const Records = observer(class extends React.Component {
 
       {CurrentDataSetRecords.res.isLoading() && <LoadingSpinner title='Loading Records...' />}
 
-      {this.viewMode === 'cards' &&
-        <RecordsCards records={records} onRefresh={this.refresh}/>}
-
-      {this.viewMode === 'table' &&
-        <RecordsTable records={records} onRefresh={this.refresh}/>}
+      {this.viewMode === 'cards' && <RecordsCards records={records}/>}
+      {this.viewMode === 'table' && <RecordsTable records={records}/>}
 
       <ConfirmDeleteDialog 
         open={this.showConfirmDeleteDialog}

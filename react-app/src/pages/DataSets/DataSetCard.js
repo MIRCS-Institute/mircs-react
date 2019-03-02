@@ -1,4 +1,6 @@
 import {action, extendObservable} from 'mobx'
+import { getDataSetRecordsRes } from '../../api/DataSetRecords'
+import { getDataSetsRes } from '../../api/DataSets'
 import { goToPath, Path } from '../../app/App'
 import {observer} from 'mobx-react'
 import { showSnackbarMessage } from '../../components/SnackbarMessages'
@@ -18,7 +20,6 @@ import UploadDataSetFileButton from './UploadDataSetFileButton'
 const DataSetCard = observer(class extends React.Component {
   static propTypes = {
     dataSet: PropTypes.object,
-    onRefresh: PropTypes.func,
   }
 
   constructor() {
@@ -37,13 +38,16 @@ const DataSetCard = observer(class extends React.Component {
   }
 
   refreshStats = () => {
-    ServerHttpApi.jsonGet(`/api/datasets/${this.props.dataSet._id}/stats`)
+    const dataSetId = this.props.dataSet._id
+    getDataSetRecordsRes(dataSetId).refresh()
+
+    ServerHttpApi.jsonGet(`/api/datasets/${dataSetId}/stats`)
       .then(action((response) => {
         this.stats = _.get(response, 'bodyJson')
       }))
       .catch(showSnackbarMessage)
 
-    ServerHttpApi.jsonGet(`/api/datasets/${this.props.dataSet._id}/fields`)
+    ServerHttpApi.jsonGet(`/api/datasets/${dataSetId}/fields`)
       .then(action((response) => {
         this.fields = _.get(response, 'bodyJson.list')
       }))
@@ -63,9 +67,9 @@ const DataSetCard = observer(class extends React.Component {
     const { dataSet } = this.props
     const dataSetId = _.get(dataSet, '_id')
     ServerHttpApi.jsonDelete(`/api/datasets/${dataSetId}`)
-      .then(action(() => {
-        this.refreshStats()
-      }))
+      .then(() => {
+        return getDataSetsRes().refresh()
+      })
       .catch(showSnackbarMessage)
   })
 
@@ -97,9 +101,9 @@ const DataSetCard = observer(class extends React.Component {
   })
 
   handleEditAfterSave = action(() => {
-    const { onRefresh } = this.props
     this.showEditDialog = false
-    onRefresh()
+    const dataSetId = this.props.dataSet._id
+    getDataSetRecordsRes(dataSetId).refresh()
   })
 
   render() {

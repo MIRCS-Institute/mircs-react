@@ -55,7 +55,6 @@ const DataSets = observer(class extends React.Component {
           <DataSetCard
             key={dataSet._id}
             dataSet={dataSet}
-            onRefresh={resource.refresh}
           />
         ))}
       </div>
