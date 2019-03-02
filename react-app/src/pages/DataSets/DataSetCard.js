@@ -164,6 +164,9 @@ const DataSetCard = observer(class extends React.Component {
           <Button variant='contained' onClick={() => goToPath(Path.dataSetRecords({ dataSetId }))}>
             View Records
           </Button>
+          <Button variant='contained' onClick={() => goToPath(Path.dataSetMap({ dataSetId }))}>
+            View on Map
+          </Button>
           <Button variant='contained' onClick={this.handleEditClick}>
             Edit Data Set
           </Button>

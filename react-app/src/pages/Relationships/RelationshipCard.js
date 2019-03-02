@@ -60,11 +60,9 @@ const RelationshipCard = observer(class extends React.Component {
       .onRefresh()
   })
 
-  handleViewClick = action(() => {
-    goToPath(Path.relationshipMap({ relationshipId: this.props.relationship._id }))
-  })
-
   render() {
+    const relationshipId = this.props.relationship._id
+
     return (
       <Card style={styles.card}>
         <CardHeader title={this.props.relationship.name}/>
@@ -118,8 +116,8 @@ const RelationshipCard = observer(class extends React.Component {
 
         </CardContent>
         <CardActions>
-          <Button variant='contained' onClick={this.handleViewClick}>
-            View Relationship
+          <Button variant='contained' onClick={() => goToPath(Path.relationshipMap({ relationshipId }))}>
+            View on Map
           </Button>
           <Button variant='contained' onClick={this.handleEditClick}>
             Edit Relationship
