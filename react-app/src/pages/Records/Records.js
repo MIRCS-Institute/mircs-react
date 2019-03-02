@@ -66,7 +66,7 @@ const Records = observer(class extends React.Component {
     const dataSetName = CurrentDataSet.res.get('name')
     const records = CurrentDataSetRecords.res.get('list', [])
 
-    return (<PageSkeleton>
+    return (<PageSkeleton title={`Data Set ${dataSetName}`}>
       <header style={styles.header}>
         <span>{dataSetName} Records</span>
         <Button variant='contained' color='secondary' style={styles.headerButton} onClick={this.handleDeleteClick}>

@@ -40,7 +40,7 @@ const Relationships = observer(class extends React.Component {
     const isLoading = resource.isLoading()
     const relationships = resource.get('list', [])
 
-    return (<PageSkeleton>
+    return (<PageSkeleton title='Relationships'>
       <div>
         <Button variant='contained' color='primary' style={{ marginTop: 10 }} onClick={this.handleCreateClick}>
           Create a Relationship

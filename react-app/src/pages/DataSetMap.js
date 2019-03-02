@@ -1,3 +1,4 @@
+import { CurrentDataSet } from '../api/DataSet'
 import {observer} from 'mobx-react'
 import Layout from '../utils/Layout'
 import Map from '../components/Map'
@@ -11,8 +12,9 @@ import UrlParams from '../states/UrlParams'
 const DataSetMap = observer(class extends React.Component {
   render() {
     const dataSetId = UrlParams.get('dataSetId')
+    const dataSetName = CurrentDataSet.res.get('name')
 
-    return (<PageSkeleton>
+    return (<PageSkeleton title={dataSetName}>
       <div style={{ ...Layout.absoluteFill, ...Layout.row }}>
         <MapDrawer />
         <div style={{ ...Layout.column, flex: 1 }}>
