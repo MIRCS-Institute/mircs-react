@@ -6,7 +6,6 @@ import CardContent from '@material-ui/core/CardContent'
 import PropTypes from 'prop-types'
 import React from 'react'
 import RecordDeleteButton from './RecordDeleteButton'
-import RecordEditButton from './RecordEditButton'
 
 const RecordCard = observer(class extends React.Component {
   static propTypes = {
@@ -28,7 +27,6 @@ const RecordCard = observer(class extends React.Component {
 
         </CardContent>
         <CardActions>
-          <RecordEditButton dataSetId={dataSetId} record={record}/>
           <RecordDeleteButton dataSetId={dataSetId} recordId={record._id}/>
         </CardActions>
       </Card>

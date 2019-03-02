@@ -4,7 +4,6 @@ import Layout from '../../utils/Layout'
 import PropTypes from 'prop-types'
 import React from 'react'
 import RecordDeleteButton from './RecordDeleteButton'
-import RecordEditButton from './RecordEditButton'
 import Table from '@material-ui/core/Table'
 import TableBody from '@material-ui/core/TableBody'
 import TableCell from '@material-ui/core/TableCell'
@@ -42,7 +41,6 @@ const RecordsTable = observer(class extends React.Component {
               ))}
               <TableCell style={{ ...Layout.row }}>
                 <RecordDeleteButton dataSetId={dataSetId} recordId={record._id}/>
-                <RecordEditButton dataSetId={dataSetId} record={record}/>
               </TableCell>
             </TableRow>
           ))}
