@@ -21,6 +21,11 @@ const ConfirmDeleteDialog = observer(class extends React.Component {
     onCancel: PropTypes.func.isRequired,
     // called once the confirmation string has been entered and the user clicks the Delete button
     onConfirm: PropTypes.func.isRequired,
+    open: PropTypes.bool,
+  }
+
+  static defaultProps = {
+    open: true,
   }
 
   constructor() {
@@ -37,21 +42,31 @@ const ConfirmDeleteDialog = observer(class extends React.Component {
   isDeleteDisabled = () => (this.confirmFieldValue !== 'delete')
 
   render() {
+    const { name, onCancel, onConfirm, open } = this.props
+
     return (
-      <Dialog open={true} onClose={this.props.onCancel} disableBackdropClick>
-        <DialogTitle>Delete {this.props.name}</DialogTitle>
+      <Dialog open={open} onClose={onCancel} disableBackdropClick>
+        <DialogTitle>Delete {name}</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            To delete {this.props.name} enter &quote;delete&quote; below:
+            To delete {name} enter &quote;delete&quote; below:
           </DialogContentText>
-          <TextField autoFocus margin='dense' id='delete' label='enter "delete"' type='text' fullWidth
-            value={this.confirmFieldValue} onChange={this.handleTextChange}/>
+          <TextField 
+            id='delete' 
+            type='text' 
+            autoFocus 
+            margin='dense' 
+            fullWidth
+            label='enter "delete"' 
+            value={this.confirmFieldValue} 
+            onChange={this.handleTextChange}
+          />
         </DialogContent>
         <DialogActions>
-          <Button onClick={this.props.onCancel} color='primary'>
+          <Button onClick={onCancel} color='primary'>
             Cancel
           </Button>
-          <Button onClick={this.props.onConfirm} color='secondary' disabled={this.isDeleteDisabled()}>
+          <Button onClick={onConfirm} color='secondary' disabled={this.isDeleteDisabled()}>
             Delete
           </Button>
         </DialogActions>

@@ -109,10 +109,14 @@ const RelationshipCard = observer(class extends React.Component {
             open={this.showEditDialog}
             relationship={this.props.relationship}
             onCancel={this.handleEditCancel}
-            afterSave={this.handleEditAfterSave}/> {this.showConfirmDeleteDialog && <ConfirmDeleteDialog
+            afterSave={this.handleEditAfterSave}/>
+          
+          <ConfirmDeleteDialog
+            open={this.showConfirmDeleteDialog}
             name={this.props.relationship.name}
             onConfirm={this.handleDeleteConfirm}
-            onCancel={this.handleDeleteCancel}/>}
+            onCancel={this.handleDeleteCancel}
+          />
 
         </CardContent>
         <CardActions>

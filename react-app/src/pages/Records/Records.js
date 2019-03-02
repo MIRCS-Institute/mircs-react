@@ -87,7 +87,12 @@ const Records = observer(class extends React.Component {
       {this.viewMode === 'table' &&
         <RecordsTable records={records} onRefresh={this.refresh} onError={this.handleError} />}
 
-      {this.showConfirmDeleteDialog && <ConfirmDeleteDialog name={`all records in ${dataSetName} data set`} onConfirm={this.handleDeleteConfirm} onCancel={this.handleDeleteCancel}/>}
+      <ConfirmDeleteDialog 
+        open={this.showConfirmDeleteDialog}
+        name={`all records in ${dataSetName} data set`} 
+        onConfirm={this.handleDeleteConfirm} 
+        onCancel={this.handleDeleteCancel}
+      />
     </PageSkeleton>)
   }
 })

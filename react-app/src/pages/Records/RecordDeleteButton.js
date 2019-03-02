@@ -43,7 +43,12 @@ const RecordDeleteButton = observer(class extends React.Component {
       <Button variant='contained' color='secondary' onClick={this.handleDeleteClick}>
         Delete Record
 
-        {this.showConfirmDeleteDialog && <ConfirmDeleteDialog name={this.props.recordId} onConfirm={this.handleDeleteConfirm} onCancel={this.handleDeleteCancel}/>}
+        <ConfirmDeleteDialog 
+          open={this.showConfirmDeleteDialog}
+          name={this.props.recordId} 
+          onConfirm={this.handleDeleteConfirm} 
+          onCancel={this.handleDeleteCancel}
+        />
       </Button>
     )
   }

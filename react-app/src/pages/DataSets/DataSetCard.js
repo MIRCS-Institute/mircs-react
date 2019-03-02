@@ -147,17 +147,19 @@ const DataSetCard = observer(class extends React.Component {
             afterSave={this.handleEditAfterSave}
           />
 
-          {this.showConfirmDeleteDialog && <ConfirmDeleteDialog
+          <ConfirmDeleteDialog
+            open={this.showConfirmDeleteDialog}
             name={dataSet.name}
             onConfirm={this.handleDeleteConfirm}
             onCancel={this.handleDeleteCancel}
-          />}
+          />
 
-          {this.showConfirmDeleteRecordsDialog && <ConfirmDeleteDialog
+          <ConfirmDeleteDialog
+            open={this.showConfirmDeleteRecordsDialog}
             name={`all records in ${dataSetName} data set`}
             onConfirm={this.handleDeleteRecordsConfirm}
             onCancel={this.handleDeleteRecordsCancel}
-          />}
+          />
 
         </CardContent>
         <CardActions>
