@@ -3,6 +3,7 @@ When a route defines :relationshipId in its path this param handler will look up
 to the Request object as `req.dataSet`.
 */
 
+const HttpErrors = require('../../utils/http-errors')
 const MongoUtil = require('../../utils/mongo-util.js')
 
 module.exports = (router) => {
@@ -11,6 +12,9 @@ module.exports = (router) => {
       const _id = MongoUtil.toObjectID(relationshipId)
       const dataSets = await MongoUtil.find(MongoUtil.RELATIONSHIPS_COLLECTION, { _id })
       req.relationship = dataSets[0]
+      if (!req.relationship) {
+        return next(HttpErrors.notFound404(`No Relationship found with id '${relationshipId}'`))
+      }
       next()
     } catch(exception) {
       next(exception)

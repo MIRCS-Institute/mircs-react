@@ -1,16 +1,11 @@
 const MongoUtil = require('../../utils/mongo-util.js')
 
-module.exports = function(router) {
+module.exports = (router) => {
   router.delete('/api/views/:viewId',
     require('../../middleware/require-sign-in'),
-    async function(req, res, next) {
-      const viewId = req.params.viewId
-      if (!req.view) {
-        return res.status(404).send({ error: 'No View found with id ' + viewId })
-      }
-
+    async (req, res, next) => {
       try {
-        await MongoUtil.deleteById(MongoUtil.VIEWS_COLLECTION, viewId)
+        await MongoUtil.deleteById(MongoUtil.VIEWS_COLLECTION, req.params.viewId)
         res.status(200).send({ result: 'deleted' })
       } catch (exception) {
         next(exception)

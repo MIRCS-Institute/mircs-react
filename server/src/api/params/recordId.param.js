@@ -12,11 +12,14 @@ module.exports = (router) => {
       const _id = MongoUtil.toObjectID(recordId)
       const collectionName = req.dataSet && req.dataSet._collectionName
       if (!collectionName) {
-        return next(HttpErrors.notFound404('Data Set contains no _collectionName. dataSet: '+ JSON.stringify(req.dataSet)))
+        return next(HttpErrors.internalServerError500(`Data Set contains no _collectionName. dataSet: ${JSON.stringify(req.dataSet)}`))
       }
 
       const records = await MongoUtil.find(req.dataSet._collectionName, { _id })
       req.record = records[0]
+      if (!req.record) {
+        return next(HttpErrors.notFound404(`No Record found with id '${recordId}'`))
+      }
       next()
     } catch (exception) {
       return next(exception)

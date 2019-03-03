@@ -1,10 +1,7 @@
 
-module.exports = function(router) {
+module.exports = (router) => {
   router.get('/api/views/:viewId',
-    async function(req, res) {
-      if (!req.view) {
-        return res.status(404).send({ error: 'No View found with id ' + req.params.viewId })
-      }
+    (req, res) => {
       res.status(200).send(req.view)
     })
 }

@@ -30,10 +30,24 @@ const notFound404 = (message) => {
   return error
 }
 
+const internalServerError500 = (message) => {
+  const error = new Error(message)
+  error.status = HttpStatusCode.INTERNAL_SERVER_ERROR_500
+  return error
+}
+
+const notImplemented501 = (message) => {
+  const error = new Error(message)
+  error.status = HttpStatusCode.NOT_IMPLEMENTED_501
+  return error
+}
+
 module.exports = {
   badRequest400,
   unauthorized401,
   forbidden403,
   paymentRequired402,
   notFound404,
+  internalServerError500,
+  notImplemented501,
 }
