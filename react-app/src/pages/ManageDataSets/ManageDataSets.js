@@ -2,13 +2,13 @@ import { action, extendObservable } from 'mobx'
 import { getDataSetsRes } from '../../api/DataSets'
 import { observer } from 'mobx-react'
 import Button from '@material-ui/core/Button'
-import DataSetCard from './DataSetCard'
 import EditDataSetDialog from './EditDataSetDialog'
 import LoadingSpinner from '../../components/LoadingSpinner'
+import ManageDataSetCard from './ManageDataSetCard'
 import PageSkeleton from '../../components/PageSkeleton'
 import React from 'react'
 
-const DataSets = observer(class extends React.Component {
+const ManageDataSets = observer(class extends React.Component {
   constructor() {
     super()
     extendObservable(this, {
@@ -52,7 +52,7 @@ const DataSets = observer(class extends React.Component {
         />
 
         {dataSets.map((dataSet) => (
-          <DataSetCard
+          <ManageDataSetCard
             key={dataSet._id}
             dataSet={dataSet}
           />
@@ -68,4 +68,4 @@ const styles = {
   },
 }
 
-export default DataSets
+export default ManageDataSets

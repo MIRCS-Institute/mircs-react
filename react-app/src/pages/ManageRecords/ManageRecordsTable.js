@@ -11,7 +11,7 @@ import TableHead from '@material-ui/core/TableHead'
 import TableRow from '@material-ui/core/TableRow'
 import UrlParams from '../../states/UrlParams'
 
-const RecordsTable = observer(class extends React.Component {
+const ManageRecordsTable = observer(class extends React.Component {
   static propTypes = {
     records: PropTypes.oneOfType([ PropTypes.array, PropTypes.object ]).isRequired,
   }
@@ -50,4 +50,4 @@ const RecordsTable = observer(class extends React.Component {
   }
 })
 
-export default RecordsTable
+export default ManageRecordsTable

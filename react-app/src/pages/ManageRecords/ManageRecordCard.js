@@ -7,7 +7,7 @@ import PropTypes from 'prop-types'
 import React from 'react'
 import RecordDeleteButton from './RecordDeleteButton'
 
-const RecordCard = observer(class extends React.Component {
+const ManageRecordCard = observer(class extends React.Component {
   static propTypes = {
     record: PropTypes.object,
     dataSetId: PropTypes.string,
@@ -34,4 +34,4 @@ const RecordCard = observer(class extends React.Component {
   }
 })
 
-export default RecordCard
+export default ManageRecordCard

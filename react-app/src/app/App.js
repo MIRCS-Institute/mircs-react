@@ -8,17 +8,17 @@ import _ from 'lodash'
 import createHashHistory from 'history/createHashHistory'
 import CssBaseline from '@material-ui/core/CssBaseline'
 import DataSetMap from '../pages/DataSetMap'
-import DataSets from '../pages/DataSets'
 import DefaultTheme from './Theme'
 import ErrorBoundary from './ErrorBoundary'
 import Home from '../pages/Home'
+import ManageDataSets from '../pages/ManageDataSets'
+import ManageRecords from '../pages/ManageRecords'
+import ManageRelationships from '../pages/ManageRelationships'
 import ManageViews from '../pages/ManageViews'
 import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider'
 import pathReplace from '../utils/pathReplace'
 import React from 'react'
-import Records from '../pages/Records'
 import RelationshipMap from '../pages/RelationshipMap'
-import Relationships from '../pages/Relationships'
 import SignedInUser from '../states/SignedInUser'
 import SignIn from '../pages/SignIn'
 import SnackbarMessages from '../components/SnackbarMessages'
@@ -33,9 +33,9 @@ class PathClass {
   view = (params) => { return appPathReplace('/views/:viewId', params) }
 
   manageRoot = (params) => { return appPathReplace('/manage', params) }
-  dataSets = (params) => { return appPathReplace('/manage/datasets', params) }
-  dataSetRecords = (params) => { return appPathReplace('/manage/datasets/:dataSetId', params) }
-  relationships = (params) => { return appPathReplace('/manage/relationships', params) }
+  manageDataSets = (params) => { return appPathReplace('/manage/datasets', params) }
+  manageDataSetRecords = (params) => { return appPathReplace('/manage/datasets/:dataSetId', params) }
+  manageRelationships = (params) => { return appPathReplace('/manage/relationships', params) }
   manageViews = (params) => { return appPathReplace('/manage/views', params) }
 }
 export const Path = new PathClass()
@@ -94,9 +94,9 @@ const RequiresSignIn = observer(() => {
   }
 
   return <Switch>
-    <AppRoute exact path={Path.dataSets(false)} component={DataSets}/>
-    <AppRoute exact path={Path.dataSetRecords(false)} component={Records}/>
-    <AppRoute exact path={Path.relationships(false)} component={Relationships}/>
+    <AppRoute exact path={Path.manageDataSets(false)} component={ManageDataSets}/>
+    <AppRoute exact path={Path.manageDataSetRecords(false)} component={ManageRecords}/>
+    <AppRoute exact path={Path.manageRelationships(false)} component={ManageRelationships}/>
     <AppRoute exact path={Path.manageViews(false)} component={ManageViews}/>
     <AppRoute component={Unknown404}/>
   </Switch>

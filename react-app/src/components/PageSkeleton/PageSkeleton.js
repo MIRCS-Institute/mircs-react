@@ -84,13 +84,13 @@ const SideMenu = ({ toggleDrawerOpen }) => (<List>
     toggleDrawerOpen={toggleDrawerOpen}
   />
   <NavMenuItem
-    route={Path.dataSets()}
+    route={Path.manageDataSets()}
     text='Data Sets'
     icon={<ExtensionIcon />}
     toggleDrawerOpen={toggleDrawerOpen}
   />
   <NavMenuItem
-    route={Path.relationships()}
+    route={Path.manageRelationships()}
     text='Relationships'
     icon={<WeekendIcon />}
     toggleDrawerOpen={toggleDrawerOpen}

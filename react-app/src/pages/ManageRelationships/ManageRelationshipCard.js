@@ -16,7 +16,7 @@ import PropTypes from 'prop-types'
 import React from 'react'
 import ServerHttpApi from '../../api/net/ServerHttpApi'
 
-const RelationshipCard = observer(class extends React.Component {
+const ManageRelationshipCard = observer(class extends React.Component {
   static propTypes = {
     relationship: PropTypes.object,
   }
@@ -126,4 +126,4 @@ const RelationshipCard = observer(class extends React.Component {
   }
 })
 
-export default RelationshipCard
+export default ManageRelationshipCard

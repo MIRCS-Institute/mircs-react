@@ -17,7 +17,7 @@ import React from 'react'
 import ServerHttpApi from '../../api/net/ServerHttpApi'
 import UploadDataSetFileButton from './UploadDataSetFileButton'
 
-const DataSetCard = observer(class extends React.Component {
+const ManageDataSetCard = observer(class extends React.Component {
   static propTypes = {
     dataSet: PropTypes.object,
   }
@@ -166,7 +166,7 @@ const DataSetCard = observer(class extends React.Component {
 
         </CardContent>
         <CardActions>
-          <Button variant='contained' onClick={() => goToPath(Path.dataSetRecords({ dataSetId }))}>
+          <Button variant='contained' onClick={() => goToPath(Path.manageDataSetRecords({ dataSetId }))}>
             View Records
           </Button>
           <Button variant='contained' onClick={() => goToPath(Path.dataSetMap({ dataSetId }))}>
@@ -191,4 +191,4 @@ const DataSetCard = observer(class extends React.Component {
   }
 })
 
-export default DataSetCard
+export default ManageDataSetCard
