@@ -10,7 +10,7 @@ import CardActions from '@material-ui/core/CardActions'
 import CardContent from '@material-ui/core/CardContent'
 import CardHeader from '@material-ui/core/CardHeader'
 import ConfirmDeleteDialog from '../../components/ConfirmDeleteDialog'
-import DataSetName from './DataSetName'
+import DataSetName from '../../components/DataSetName'
 import EditRelationshipDialog from './EditRelationshipDialog'
 import PropTypes from 'prop-types'
 import React from 'react'
@@ -61,7 +61,7 @@ const RelationshipCard = observer(class extends React.Component {
   })
 
   render() {
-    const { relationship } = this.props.relationship
+    const { relationship } = this.props
     const relationshipId = relationship._id
 
     return (
