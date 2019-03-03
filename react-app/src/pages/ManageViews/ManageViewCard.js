@@ -9,12 +9,13 @@ import CardActions from '@material-ui/core/CardActions'
 import CardContent from '@material-ui/core/CardContent'
 import CardHeader from '@material-ui/core/CardHeader'
 import ConfirmDeleteDialog from '../../components/ConfirmDeleteDialog'
+import DataSetName from '../../components/DataSetName'
 import EditViewDialog from './EditViewDialog'
 import PropTypes from 'prop-types'
 import React from 'react'
 import ServerHttpApi from '../../api/net/ServerHttpApi'
 
-const ViewCard = observer(class extends React.Component {
+const ManageViewCard = observer(class extends React.Component {
   static propTypes = {
     view: PropTypes.object,
   }
@@ -63,14 +64,14 @@ const ViewCard = observer(class extends React.Component {
     const viewId = view._id
 
     return (
-      <Card style={styles.card}>
+      <Card style={{ marginBottom: 15 }}>
         <CardHeader title={view.name}/>
         <CardContent>
-          <div>
-            <strong>Name:</strong> {view.name}
-          </div>
           {view.description && <div>
             <strong>Description:</strong> {view.description}
+          </div>}
+          {view.dataSetId && <div>
+            <strong>Data Set:</strong> <DataSetName dataSetId={view.dataSetId}/>
           </div>}
 
           <EditViewDialog
@@ -104,10 +105,4 @@ const ViewCard = observer(class extends React.Component {
   }
 })
 
-const styles = {
-  card: {
-    marginBottom: '15px',
-  },
-}
-
-export default ViewCard
+export default ManageViewCard

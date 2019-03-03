@@ -12,6 +12,7 @@ import DataSets from '../pages/DataSets'
 import DefaultTheme from './Theme'
 import ErrorBoundary from './ErrorBoundary'
 import Home from '../pages/Home'
+import ManageViews from '../pages/ManageViews'
 import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider'
 import pathReplace from '../utils/pathReplace'
 import React from 'react'
@@ -24,7 +25,6 @@ import SnackbarMessages from '../components/SnackbarMessages'
 import Unknown404 from '../pages/Unknown404'
 import UrlParams from '../states/UrlParams'
 import View from '../pages/View/View'
-import Views from '../pages/Views/Views'
 
 class PathClass {
   home = (params) => { return appPathReplace('/', params) }
@@ -36,7 +36,7 @@ class PathClass {
   dataSets = (params) => { return appPathReplace('/manage/datasets', params) }
   dataSetRecords = (params) => { return appPathReplace('/manage/datasets/:dataSetId', params) }
   relationships = (params) => { return appPathReplace('/manage/relationships', params) }
-  views = (params) => { return appPathReplace('/manage/views', params) }
+  manageViews = (params) => { return appPathReplace('/manage/views', params) }
 }
 export const Path = new PathClass()
 
@@ -97,7 +97,7 @@ const RequiresSignIn = observer(() => {
     <AppRoute exact path={Path.dataSets(false)} component={DataSets}/>
     <AppRoute exact path={Path.dataSetRecords(false)} component={Records}/>
     <AppRoute exact path={Path.relationships(false)} component={Relationships}/>
-    <AppRoute exact path={Path.views(false)} component={Views}/>
+    <AppRoute exact path={Path.manageViews(false)} component={ManageViews}/>
     <AppRoute component={Unknown404}/>
   </Switch>
 })

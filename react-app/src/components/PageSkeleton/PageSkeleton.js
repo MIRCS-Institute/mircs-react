@@ -96,7 +96,7 @@ const SideMenu = ({ toggleDrawerOpen }) => (<List>
     toggleDrawerOpen={toggleDrawerOpen}
   />
   <NavMenuItem
-    route={Path.views()}
+    route={Path.manageViews()}
     text='Views'
     icon={<VignetteIcon />}
     toggleDrawerOpen={toggleDrawerOpen}

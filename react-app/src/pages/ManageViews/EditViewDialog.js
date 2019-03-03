@@ -4,6 +4,7 @@ import { showSnackbarMessage } from '../../components/SnackbarMessages'
 import _ from 'lodash'
 import Button from '@material-ui/core/Button'
 import ButtonProgress from '../../components/ButtonProgress'
+import DataSetChooser from '../../components/DataSetChooser'
 import Dialog from '@material-ui/core/Dialog'
 import DialogActions from '@material-ui/core/DialogActions'
 import DialogContent from '@material-ui/core/DialogContent'
@@ -43,6 +44,7 @@ const EditViewDialog = observer(class extends React.Component {
 
         ensureString(viewCopy, 'name')
         ensureString(viewCopy, 'description')
+        ensureString(viewCopy, 'dataSetId')
 
         this.view = viewCopy
         this.isCreate = !this.view._id
@@ -95,11 +97,9 @@ const EditViewDialog = observer(class extends React.Component {
     return true
   }
 
-  handleDataSetChanged = (index) => {
-    return action((dataSet) => {
-      this.view.dataSets[index] = dataSet
-    })
-  }
+  handleDataSetChanged = action((dataSetId) => {
+    this.view.dataSetId = dataSetId
+  })
 
   render() {
     const { open, onCancel } = this.props
@@ -108,10 +108,24 @@ const EditViewDialog = observer(class extends React.Component {
       <Dialog open={open} fullWidth={true}>
         <DialogTitle>{this.isCreate ? 'Create View' : 'Edit View'}</DialogTitle>
         <DialogContent>
-          <TextField autoFocus margin='dense' label='name' type='text' fullWidth
-            value={this.view.name} onChange={this.handleFieldChange('name')}/>
-          <TextField margin='dense' label='description' type='text' fullWidth
-            value={this.view.description} onChange={this.handleFieldChange('description')}/>
+          <TextField 
+            autoFocus 
+            label='name' 
+            value={this.view.name}
+            onChange={this.handleFieldChange('name')}
+            margin='dense' type='text' fullWidth
+          />
+          <TextField 
+            label='description'
+            value={this.view.description} 
+            onChange={this.handleFieldChange('description')}
+            margin='dense' type='text' fullWidth
+          />
+          <DataSetChooser
+            label='Data Set' 
+            dataSetId={this.view.dataSetId} 
+            onDataSetChanged={this.handleDataSetChanged}
+          />
 
         </DialogContent>
         <DialogActions>

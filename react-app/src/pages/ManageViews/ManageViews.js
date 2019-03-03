@@ -1,14 +1,14 @@
-import { action, extendObservable, toJS } from 'mobx'
+import { action, extendObservable } from 'mobx'
 import { getViewsRes } from '../../api/Views'
 import { observer } from 'mobx-react'
 import Button from '@material-ui/core/Button'
 import EditViewDialog from './EditViewDialog'
 import LoadingSpinner from '../../components/LoadingSpinner'
+import ManageViewCard from './ManageViewCard'
 import PageSkeleton from '../../components/PageSkeleton'
 import React from 'react'
-import ViewCard from './ViewCard'
 
-const Views = observer(class extends React.Component {
+const ManageViews = observer(class extends React.Component {
   constructor() {
     super()
     extendObservable(this, {
@@ -34,8 +34,6 @@ const Views = observer(class extends React.Component {
     const isLoading = resource.isLoading()
     const views = resource.get('list', [])
 
-    console.log('views:', toJS(views))
-
     return (<PageSkeleton title='Views'>
       <div style={{ marginTop: 10 }}>
         <Button variant='contained' color='primary' onClick={this.handleCreateClick}>
@@ -51,11 +49,11 @@ const Views = observer(class extends React.Component {
         />
 
         {views.map((view) => (
-          <ViewCard key={view._id} view={view}/>
+          <ManageViewCard key={view._id} view={view}/>
         ))}
       </div>
     </PageSkeleton>)
   }
 })
 
-export default Views
+export default ManageViews

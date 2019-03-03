@@ -65,7 +65,7 @@ const RelationshipCard = observer(class extends React.Component {
     const relationshipId = relationship._id
 
     return (
-      <Card style={styles.card}>
+      <Card style={{ marginBottom: 15 }}>
         <CardHeader title={relationship.name}/>
         <CardContent>
           <div>
@@ -125,11 +125,5 @@ const RelationshipCard = observer(class extends React.Component {
     )
   }
 })
-
-const styles = {
-  card: {
-    marginBottom: '15px',
-  },
-}
 
 export default RelationshipCard

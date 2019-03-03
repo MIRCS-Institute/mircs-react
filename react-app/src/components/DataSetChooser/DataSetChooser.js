@@ -11,7 +11,7 @@ import React from 'react'
 const DataSetChooser = observer(class extends React.Component {
   static propTypes = {
     label: PropTypes.string.isRequired,
-    dataSetId: PropTypes.string.isRequired,
+    dataSetId: PropTypes.string,
     // called when the user changes data set
     onDataSetChanged: PropTypes.func.isRequired,
   }

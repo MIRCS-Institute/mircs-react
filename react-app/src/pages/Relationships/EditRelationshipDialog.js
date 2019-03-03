@@ -7,7 +7,7 @@ import AddCircleIcon from '@material-ui/icons/AddCircle'
 import Button from '@material-ui/core/Button'
 import ButtonProgress from '../../components/ButtonProgress'
 import CancelIcon from '@material-ui/icons/Cancel'
-import DataSetChooser from '../../components/DataSetChooser/DataSetChooser'
+import DataSetChooser from '../../components/DataSetChooser'
 import Dialog from '@material-ui/core/Dialog'
 import DialogActions from '@material-ui/core/DialogActions'
 import DialogContent from '@material-ui/core/DialogContent'
@@ -163,11 +163,19 @@ const EditRelationshipDialog = observer(class extends React.Component {
 
           <Grid container spacing={24}>
             <Grid item xs={5}>
-              <DataSetChooser label='Data Set 1' dataSetId={_.get(this.relationship, 'dataSets[0]')} onDataSetChanged={this.handleDataSetChanged(0)}/>
+              <DataSetChooser 
+                label='Data Set 1' 
+                dataSetId={_.get(this.relationship, 'dataSets[0]')} 
+                onDataSetChanged={this.handleDataSetChanged(0)}
+              />
             </Grid>
 
             <Grid item xs={5}>
-              <DataSetChooser label='Data Set 2' dataSetId={_.get(this.relationship, 'dataSets[1]')} onDataSetChanged={this.handleDataSetChanged(1)}/>
+              <DataSetChooser 
+                label='Data Set 2' 
+                dataSetId={_.get(this.relationship, 'dataSets[1]')} 
+                onDataSetChanged={this.handleDataSetChanged(1)}
+              />
             </Grid>
 
             {this.relationship.joinElements && this.relationship.joinElements.map((joinElement, index) => (

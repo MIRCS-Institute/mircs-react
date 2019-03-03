@@ -17,7 +17,7 @@ const RecordCard = observer(class extends React.Component {
     const { record, dataSetId } = this.props
 
     return (
-      <Card style={styles.card}>
+      <Card style={{ marginBottom: 15 }}>
         <CardContent>
           {_.map(record, (value, key) => (
             <div key={key}>
@@ -33,11 +33,5 @@ const RecordCard = observer(class extends React.Component {
     )
   }
 })
-
-const styles = {
-  card: {
-    marginBottom: '15px',
-  },
-}
 
 export default RecordCard

@@ -112,7 +112,7 @@ const DataSetCard = observer(class extends React.Component {
     const dataSetName = _.get(dataSet, 'name')
 
     return (
-      <Card style={styles.card}>
+      <Card style={{ marginBottom: 15 }}>
         <CardHeader title={dataSet.name}/>
         <CardContent>
           <div>
@@ -190,11 +190,5 @@ const DataSetCard = observer(class extends React.Component {
     )
   }
 })
-
-const styles = {
-  card: {
-    marginBottom: '15px',
-  },
-}
 
 export default DataSetCard

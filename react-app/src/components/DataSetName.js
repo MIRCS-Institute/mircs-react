@@ -5,7 +5,7 @@ import React from 'react'
 
 const DataSetName = observer(class extends React.Component {
   static propTypes = {
-    label: PropTypes.string.isRequired,
+    label: PropTypes.string,
     dataSetId: PropTypes.string,
   }
 
