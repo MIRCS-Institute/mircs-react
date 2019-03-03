@@ -80,7 +80,7 @@ const EditRelationshipDialog = observer(class extends React.Component {
     }
   }
 
-  // creates an change handler function for the field with passed @key
+  // creates a change handler function for the field with passed @key
   handleFieldChange = (key) => {
     return action((event) => {
       this.relationship[key] = event.target.value

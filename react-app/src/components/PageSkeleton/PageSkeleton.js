@@ -23,6 +23,7 @@ import React from 'react'
 import SignedInUser from '../../states/SignedInUser'
 import Toolbar from '@material-ui/core/Toolbar'
 import Typography from '@material-ui/core/Typography'
+import VignetteIcon from '@material-ui/icons/Vignette'
 import WeekendIcon from '@material-ui/icons/Weekend'
 
 const PageSkeleton = observer(class extends React.Component {
@@ -92,6 +93,12 @@ const SideMenu = ({ toggleDrawerOpen }) => (<List>
     route={Path.relationships()}
     text='Relationships'
     icon={<WeekendIcon />}
+    toggleDrawerOpen={toggleDrawerOpen}
+  />
+  <NavMenuItem
+    route={Path.views()}
+    text='Views'
+    icon={<VignetteIcon />}
     toggleDrawerOpen={toggleDrawerOpen}
   />
 </List>)

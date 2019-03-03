@@ -13,10 +13,10 @@ import React from 'react'
 import ServerHttpApi from '../../api/net/ServerHttpApi'
 import TextField from '@material-ui/core/TextField'
 
-const EditDataSetDialog = observer(class extends React.Component {
+const EditViewDialog = observer(class extends React.Component {
   static propTypes = {
-    // optional - specify the dataSet object to modify in the case of edit, can be undefined for dataSet creation
-    dataSet: PropTypes.object,
+    // optional - specify the view object to modify in the case of edit, can be undefined for view creation
+    view: PropTypes.object,
     // called when the edit dialog is dismissed
     onCancel: PropTypes.func.isRequired,
     // called after the save completes
@@ -27,7 +27,7 @@ const EditDataSetDialog = observer(class extends React.Component {
   constructor() {
     super()
     extendObservable(this, {
-      dataSet: {},
+      view: {},
       isCreate: true,
       isSaving: false,
     })
@@ -35,13 +35,17 @@ const EditDataSetDialog = observer(class extends React.Component {
 
   componentDidUpdate(prevProps) {
     if (this.props.open && !prevProps.open) {
-      const dataSetCopy = _.clone(this.props.dataSet) || {}
-      ensureString(dataSetCopy, 'name')
-      ensureString(dataSetCopy, 'description')
-
       action(() => {
-        this.dataSet = dataSetCopy
-        this.isCreate = !this.dataSet._id
+        let viewCopy = {}
+        if (this.props.view) {
+          viewCopy = JSON.parse(JSON.stringify(this.props.view))
+        }
+
+        ensureString(viewCopy, 'name')
+        ensureString(viewCopy, 'description')
+
+        this.view = viewCopy
+        this.isCreate = !this.view._id
 
         this.isSaving = false
       })()
@@ -57,7 +61,7 @@ const EditDataSetDialog = observer(class extends React.Component {
   // creates a change handler function for the field with passed @key
   handleFieldChange = (key) => {
     return action((event) => {
-      this.dataSet[key] = event.target.value
+      this.view[key] = event.target.value
     })
   }
 
@@ -72,36 +76,46 @@ const EditDataSetDialog = observer(class extends React.Component {
       .then(action(() => {
         this.isSaving = false
       }))
+
   })
 
   doSave() {
-    const bodyJson = toJS(this.dataSet)
+    const bodyJson = toJS(this.view)
     if (this.isCreate) {
-      return ServerHttpApi.jsonPost('/api/datasets', bodyJson)
+      return ServerHttpApi.jsonPost('/api/views', bodyJson)
     } else {
-      return ServerHttpApi.jsonPut(`/api/datasets/${this.dataSet._id}`, bodyJson)
+      return ServerHttpApi.jsonPut(`/api/views/${this.view._id}`, bodyJson)
     }
   }
 
   canSave = () => {
-    if (!this.dataSet.name) {
+    if (!this.view.name) {
       return false
     }
     return true
   }
 
+  handleDataSetChanged = (index) => {
+    return action((dataSet) => {
+      this.view.dataSets[index] = dataSet
+    })
+  }
+
   render() {
+    const { open, onCancel } = this.props
+
     return (
-      <Dialog open={this.props.open} fullWidth={true}>
-        <DialogTitle>{this.isCreate ? 'Create Data Set' : 'Edit Data Set'}</DialogTitle>
+      <Dialog open={open} fullWidth={true}>
+        <DialogTitle>{this.isCreate ? 'Create View' : 'Edit View'}</DialogTitle>
         <DialogContent>
           <TextField autoFocus margin='dense' label='name' type='text' fullWidth
-            value={this.dataSet.name} onChange={this.handleFieldChange('name')}/>
+            value={this.view.name} onChange={this.handleFieldChange('name')}/>
           <TextField margin='dense' label='description' type='text' fullWidth
-            value={this.dataSet.description} onChange={this.handleFieldChange('description')}/>
+            value={this.view.description} onChange={this.handleFieldChange('description')}/>
+
         </DialogContent>
         <DialogActions>
-          <Button onClick={this.props.onCancel} color='primary' disabled={this.isSaving}>
+          <Button onClick={onCancel} color='primary' disabled={this.isSaving}>
             Cancel
           </Button>
           <Button onClick={this.handleSave} color='secondary' disabled={!this.canSave()}>
@@ -109,9 +123,10 @@ const EditDataSetDialog = observer(class extends React.Component {
             {this.isSaving && <ButtonProgress/>}
           </Button>
         </DialogActions>
+
       </Dialog>
     )
   }
 })
 
-export default EditDataSetDialog
+export default EditViewDialog

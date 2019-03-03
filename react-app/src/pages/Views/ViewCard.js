@@ -1,5 +1,5 @@
 import {action, extendObservable} from 'mobx'
-import { getRelationshipsRes } from '../../api/Relationships'
+import { getViewsRes } from '../../api/Views'
 import { goToPath, Path } from '../../app/App'
 import {observer} from 'mobx-react'
 import { showSnackbarMessage } from '../../components/SnackbarMessages'
@@ -10,15 +10,14 @@ import CardActions from '@material-ui/core/CardActions'
 import CardContent from '@material-ui/core/CardContent'
 import CardHeader from '@material-ui/core/CardHeader'
 import ConfirmDeleteDialog from '../../components/ConfirmDeleteDialog'
-import DataSetName from './DataSetName'
-import EditRelationshipDialog from './EditRelationshipDialog'
+import EditViewDialog from './EditViewDialog'
 import PropTypes from 'prop-types'
 import React from 'react'
 import ServerHttpApi from '../../api/net/ServerHttpApi'
 
-const RelationshipCard = observer(class extends React.Component {
+const ViewCard = observer(class extends React.Component {
   static propTypes = {
-    relationship: PropTypes.object,
+    view: PropTypes.object,
   }
 
   constructor() {
@@ -39,10 +38,10 @@ const RelationshipCard = observer(class extends React.Component {
 
   handleDeleteConfirm = action(() => {
     this.showConfirmDeleteDialog = false
-    const relationshipId = this.props.relationship._id
-    ServerHttpApi.jsonDelete(`/api/relationships/${relationshipId}`)
+    const viewId = this.props.view._id
+    ServerHttpApi.jsonDelete(`/api/views/${viewId}`)
       .then(() => {
-        return getRelationshipsRes().refresh()
+        return getViewsRes().refresh()
       })
       .catch(showSnackbarMessage)
   })
@@ -57,68 +56,48 @@ const RelationshipCard = observer(class extends React.Component {
 
   handleEditAfterSave = action(() => {
     this.showEditDialog = false
-    getRelationshipsRes().refresh()
+    getViewsRes().refresh()
   })
 
   render() {
-    const { relationship } = this.props.relationship
-    const relationshipId = relationship._id
+    const { view } = this.props
+    const viewId = view._id
 
     return (
       <Card style={styles.card}>
-        <CardHeader title={relationship.name}/>
+        <CardHeader title={view.name}/>
         <CardContent>
           <div>
-            <strong>Name:</strong>
-            {relationship.name}
+            <strong>Name:</strong> {view.name}
           </div>
-          {relationship.description && <div>
-            <strong>Description:</strong>
-            {relationship.description}
+          {view.description && <div>
+            <strong>Description:</strong> {view.description}
           </div>}
 
-          {_.get(relationship, 'dataSets.length') > 0 && <div>
-            <strong>Data Sets:</strong>
-            {relationship.dataSets.map((dataSetId, index) => (
-              <div key={index}>
-                {dataSetId && <span>{index + 1}:
-                  <DataSetName label='' dataSetId={dataSetId}/></span>}
-              </div>
-            ))}
-          </div>}
-
-          {_.get(relationship, 'joinElements.length') > 0 && <div>
-            <strong>Data Sets:</strong>
-            {relationship.joinElements.map((joinElement, index) => (
-              <div key={index}>
-                {index + 1}: (1).[{joinElement[0]}] = (2).[{joinElement[1]}]
-              </div>
-            ))}
-          </div>}
-
-          <EditRelationshipDialog
+          <EditViewDialog
             open={this.showEditDialog}
-            relationship={relationship}
+            view={view}
             onCancel={this.handleEditCancel}
-            afterSave={this.handleEditAfterSave}/>
-          
+            afterSave={this.handleEditAfterSave}
+          />
+
           <ConfirmDeleteDialog
             open={this.showConfirmDeleteDialog}
-            name={relationship.name}
+            name={view.name}
             onConfirm={this.handleDeleteConfirm}
             onCancel={this.handleDeleteCancel}
           />
 
         </CardContent>
         <CardActions>
-          <Button variant='contained' onClick={() => goToPath(Path.relationshipMap({ relationshipId }))}>
-            View on Map
+          <Button variant='contained' onClick={() => goToPath(Path.view({ viewId }))}>
+            View
           </Button>
           <Button variant='contained' onClick={this.handleEditClick}>
-            Edit Relationship
+            Edit View
           </Button>
           <Button variant='contained' color='secondary' onClick={this.handleDeleteClick}>
-            Delete Relationship
+            Delete View
           </Button>
         </CardActions>
       </Card>
@@ -132,4 +111,4 @@ const styles = {
   },
 }
 
-export default RelationshipCard
+export default ViewCard
