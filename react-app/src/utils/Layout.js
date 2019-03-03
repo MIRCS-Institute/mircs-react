@@ -63,6 +63,7 @@ Layout.colours = [
   'green',
   'deepskyblue',
   'darkorchid',
+  'lightgrey',
 ]
 
 export default Layout

@@ -58,6 +58,13 @@ const MapFilter = observer(class extends React.Component {
         UiStore.searchStrings.push(event.target.value + ': ' + valueCounts[i].value)
       }
     }
+    if (valueCounts.length>7) {
+      let otherCount = 0
+      for (let i=7; i<valueCounts.length; i++) {
+        otherCount += valueCounts[i].count
+      }
+      UiStore.searchStrings.push('Other ('+otherCount+')')
+    }
   })
 
   countFieldValue = (valueCounts, thisValue) => {
@@ -128,6 +135,9 @@ const MapFilter = observer(class extends React.Component {
           <MenuItem value='Mapbox'>
             Mapbox
           </MenuItem>
+          <MenuItem value='Mapbox Light'>
+            Mapbox Light
+          </MenuItem>
         </TextField>
 
         <TextField
@@ -172,7 +182,9 @@ const MapFilter = observer(class extends React.Component {
 
         <div className={classes.root}>
           {store.searchStrings.map( (data, i) => {
-            const labelValue = data + ' (' + UiStore.foundRecords[i].length + ')'
+            let labelValue = data + ' (' + UiStore.foundRecords[i].length + ')'
+            if (data.startsWith('Other'))
+              labelValue = data
             const divStyle = {
               margin: 5,
               backgroundColor: Layout.colours[i],

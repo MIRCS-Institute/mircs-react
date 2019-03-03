@@ -42,6 +42,9 @@ const MapDrawer = observer(class extends React.Component {
       for (let i=0; i<UiStore.foundRecords.length; i++) {
         pieChartData.push({ color: Layout.colours[i], value: UiStore.foundRecords[i].length })
       }
+      if (UiStore.searchStrings.length>7) {
+        pieChartData.push({ color: Layout.colours[7], value: UiStore.getOtherCount() })
+      }
       pieChart = <div>
         <Typography variant='h5' align='center'>{UiStore.highlightField}</Typography>
         <PieChart
@@ -96,7 +99,7 @@ const MapDrawer = observer(class extends React.Component {
                   })
 
                   return <Typography key={field}>
-                    <strong>{field}:</strong>
+                    <strong>{field}:</strong>&nbsp;
                     <span dangerouslySetInnerHTML={{ __html }}/>
                   </Typography>
                 })}
