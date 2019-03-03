@@ -3,7 +3,6 @@
 */
 
 const MongoUtil = require('../../utils/mongo-util.js')
-const ObjectID = require('mongodb').ObjectID
 
 module.exports = function(router) {
   router.delete('/api/relationships/:relationshipId',
@@ -19,7 +18,8 @@ module.exports = function(router) {
           db = theDb
 
           const relationshipsCollection = db.collection(MongoUtil.RELATIONSHIPS_COLLECTION)
-          return relationshipsCollection.deleteOne({ _id: ObjectID(req.params.relationshipId) })
+          const _id = MongoUtil.toObjectID(req.params.relationshipId)
+          return relationshipsCollection.deleteOne({ _id })
         })
         .then(function() {
           res.status(200).send({ result: 'deleted' })

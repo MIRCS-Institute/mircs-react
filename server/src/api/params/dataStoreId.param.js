@@ -4,19 +4,12 @@ to the Request object as `req.dataSet`.
 */
 
 const MongoUtil = require('../../utils/mongo-util.js')
-const ObjectID = require('mongodb').ObjectID
 
 module.exports = (router) => {
   router.param('dataSetId', async (req, res, next, dataSetId) => {
     try {
-      dataSetId = ObjectID(dataSetId)
-    } catch(exception) {
-      console.error(exception)
-      return next(new Error(`Invalid ObjectID: '${dataSetId}'`))
-    }
-
-    try {
-      const dataSets = await MongoUtil.find(MongoUtil.DATA_SETS_COLLECTION, { _id: dataSetId })
+      const _id = MongoUtil.toObjectID(dataSetId)
+      const dataSets = await MongoUtil.find(MongoUtil.DATA_SETS_COLLECTION, { _id })
       req.dataSet = dataSets[0]
       next()
     } catch (exception) {

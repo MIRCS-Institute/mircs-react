@@ -3,7 +3,6 @@
 */
 
 const MongoUtil = require('../../utils/mongo-util.js')
-const ObjectID = require('mongodb').ObjectID
 
 module.exports = function(router) {
   router.delete('/api/datasets/:dataSetId/records/:recordId',
@@ -27,7 +26,8 @@ module.exports = function(router) {
           db = theDb
 
           const dataSetCollection = db.collection(collectionName)
-          return dataSetCollection.deleteOne({ _id: ObjectID(req.params.recordId) })
+          const _id = MongoUtil.toObjectID(req.params.recordId)
+          return dataSetCollection.deleteOne({ _id })
         })
         .then(() => {
           return MongoUtil.refreshFields(db, collectionName)

@@ -1,5 +1,6 @@
 const _ = require('lodash')
 const Environment = require('../utils/environment.js')
+const HttpErrors = require('./http-errors')
 const MongoClient = require('mongodb').MongoClient
 const ObjectID = require('mongodb').ObjectID
 
@@ -45,24 +46,24 @@ const initialize = async () => {
 
 const validateRelationship = (relationship) => {
   if (!_.isString(relationship.name)) {
-    throw new Error('name is required')
+    throw HttpErrors.badRequest400('name is required')
   }
   if (!_.isArray(relationship.dataSets)) {
-    throw new Error('dataSets array is required')
+    throw HttpErrors.badRequest400('dataSets array is required')
   }
   if (!_.isArray(relationship.joinElements)) {
-    throw new Error('joinElements array is required')
+    throw HttpErrors.badRequest400('joinElements array is required')
   }
   _.each(relationship.joinElements, (joinElement) => {
     if (relationship.dataSets.length !== joinElement.length) {
-      throw new Error('joinElements arrays must be the same length as dataSets')
+      throw HttpErrors.badRequest400('joinElements arrays must be the same length as dataSets')
     }
   })
 }
 
 const validateView = (view) => {
   if (!_.isString(view.name)) {
-    throw new Error('name is required')
+    throw HttpErrors.badRequest400('name is required')
   }
 }
 
@@ -92,28 +93,23 @@ const find = async (collectionName, query) => {
   return result
 }
 
-const findById = async (collectionName, id) => {
-  let _id
+const toObjectID = (id) => {
   try {
-    _id = ObjectID(id)
+    return ObjectID(id)
   } catch(exception) {
     console.error(exception)
-    throw new Error(`Invalid ObjectID: '${id}'`)
+    throw HttpErrors.badRequest400(`Invalid ObjectID: '${id}' ${exception.message}`)
   }
+}
 
+const findById = async (collectionName, id) => {
+  const _id = toObjectID(id)
   const list = await find(collectionName, { _id })
   return list[0]
 }
 
 const deleteById = async (collectionName, id) => {
-  let _id
-  try {
-    _id = ObjectID(id)
-  } catch(exception) {
-    console.error(exception)
-    throw new Error(`Invalid ObjectID: '${id}'`)
-  }
-
+  const _id = toObjectID(id)
   const db = await getDb()
   const collection = db.collection(collectionName)
   await collection.deleteOne({ _id })
@@ -166,7 +162,7 @@ from a relationship object fetch the set of joined records
  */
 const joinRecords = (relationship) => {
   if (_.get(relationship, 'dataSets.length') !== 2) {
-    return Promise.reject(new Error('currently limited to relationships with 2 data sets'))
+    return Promise.reject(HttpErrors.badRequest400('currently limited to relationships with 2 data sets'))
   }
 
   return collectDataSets() // grab the dataSet records from the database
@@ -259,6 +255,7 @@ module.exports = {
   createCollection,
   insertIntoCollection,
   find,
+  toObjectID,
   findById,
   deleteById,
   
