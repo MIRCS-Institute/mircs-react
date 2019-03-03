@@ -5,7 +5,7 @@ class UiStore {
   constructor() {
     extendObservable(this, {
       // The name of the tile layer to use.
-      tileLayerName: 'Mapbox',
+      tileLayerName: 'Mapbox Light',
 
       // An array of strings that are being searched for
       searchStrings: [],
@@ -28,7 +28,7 @@ class UiStore {
   }
 
   reset = action( () => {
-    this.tileLayerName = 'Mapbox'
+    this.tileLayerName = 'Mapbox Light'
     this.searchStrings = []
     this.fieldNames = []
     this.highlightField = 'none'
@@ -54,6 +54,15 @@ class UiStore {
       })
     }
   })
+
+  getOtherCount = () => {
+    if (this.searchStrings.length<7) {
+      return 0
+    } else {
+      const otherString = this.searchStrings[7]
+      return parseInt(otherString.substring(otherString.lastIndexOf('(') + 1, otherString.lastIndexOf(')')))
+    }
+  }
 
 }
 

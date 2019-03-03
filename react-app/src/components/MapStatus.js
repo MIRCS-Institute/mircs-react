@@ -1,23 +1,32 @@
 import { observer } from 'mobx-react'
 import { withStyles } from '@material-ui/core/styles'
-import Layout from '../utils/Layout'
+import _ from 'lodash'
+import { CurrentDataSetRecords } from '../api/DataSetRecords'
+import { CurrentRelationshipRecords } from '../api/RelationshipRecords'
 import React from 'react'
 import UiStore from '../states/UiStore'
 
 const MapStatus = observer(class extends React.Component {
   render() {
+    let recordCount = 0
+
+    const dataSetRecords = CurrentDataSetRecords.res.get('list')
+    if (dataSetRecords)
+      recordCount += dataSetRecords.length
+
+    // This is the client side joined records
+    const relationshipRecords = CurrentRelationshipRecords.res.linkMap
+    if (relationshipRecords) {
+      _.each(relationshipRecords, (value) => {
+        recordCount += value.length
+      })
+    }
+
     return (
       <center>
         {UiStore.points.length} properties
-
-        {UiStore.foundRecords.map((records, i) => {
-          const divStyle = {
-            color: Layout.colours[i],
-          }
-          return (
-            <span key={i} style={divStyle}> - {records.length} "{UiStore.searchStrings[i]}"s </span>
-          )
-        })}
+        -&nbsp;
+        {recordCount} records
       </center>
     )
   }

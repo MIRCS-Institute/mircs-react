@@ -280,23 +280,31 @@ const Map = observer(class extends React.Component {
       .on('click', () => {
         this.updateSelected(point, record)
       })
-    this.addFoundRecord(record, index)
+    this.addFoundRecord(record, index < 7 ? index : 7)
   }
 
   getFirstPoint = (geoJson) => {
-    if (geoJson.geometry.type === 'Point')
-      return geoJson.geometry.coordinates.slice().reverse()
-    if (geoJson.geometry.type === 'Polygon')
-      return geoJson.geometry.coordinates[0][0].slice().reverse()
-    if (geoJson.geometry.type === 'MultiPolygon')
+    // Sometimes there is a z coordinate so we don't want to do a reverse.  Instead we manually flip just the first and second items in the array.
+    if (geoJson.geometry.type === 'Point') {
+      const coordinates = geoJson.geometry.coordinates.slice()
+      return [ coordinates[1], coordinates[0] ]
+    }
+    if (geoJson.geometry.type === 'Polygon') {
+      const coordinates = geoJson.geometry.coordinates[0][0].slice()
+      return [ coordinates[1], coordinates[0] ]
+    }
+    if (geoJson.geometry.type === 'MultiPolygon') {
       if (geoJson.geometry.coordinates[0])
-        if (geoJson.geometry.coordinates[0][0])
-          return geoJson.geometry.coordinates[0][0][0].slice().reverse()
+        if (geoJson.geometry.coordinates[0][0]) {
+          const coordinates = geoJson.geometry.coordinates[0][0][0].slice()
+          return [ coordinates[1], coordinates[0] ]
+        }
+    }
     return null
   }
 
   getPolygonStyle = (geojson, foundPoints) => {
-    let fillColor = '#555'
+    let fillColor = '#888'
     let found = false
     if (UiStore.searchStrings.length > 0) {
       const records = [ geojson.properties ]
@@ -424,6 +432,15 @@ const Map = observer(class extends React.Component {
           // minZoom: 8,
           attribution: 'Map data &copy; <a href="https://openstreetmap.org">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://mapbox.com">Mapbox</a>',
           id: 'mapbox.streets',
+          accessToken: 'pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw',
+        })
+        break
+
+      case 'Mapbox Light':
+        this.tileLayer = L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
+          // minZoom: 8,
+          attribution: 'Map data &copy; <a href="https://openstreetmap.org">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://mapbox.com">Mapbox</a>',
+          id: 'mapbox.light',
           accessToken: 'pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw',
         })
         break
