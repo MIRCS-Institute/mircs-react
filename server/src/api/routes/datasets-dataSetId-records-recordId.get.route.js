@@ -2,7 +2,7 @@
   - fetch a single record
 */
 
-module.exports = function(router) {
+module.exports = (router) => {
   router.get('/api/datasets/:dataSetId/records/:recordId',
     function(req, res) {
       if (!req.dataSet) {

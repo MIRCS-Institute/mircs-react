@@ -8,7 +8,7 @@ const MongoUtil = require('../../utils/mongo-util.js')
 module.exports = function(router) {
   router.post('/api/relationships',
     require('../../middleware/require-sign-in'),
-    function(req, res, next) {
+    (req, res, next) => {
       const newRelationship = _.clone(req.body)
       try {
         MongoUtil.validateRelationship(newRelationship)

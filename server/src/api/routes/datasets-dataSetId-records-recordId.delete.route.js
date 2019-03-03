@@ -32,7 +32,7 @@ module.exports = function(router) {
         .then(() => {
           return MongoUtil.refreshFields(db, collectionName)
         })
-        .then(function() {
+        .then(() => {
           res.status(200).send({ result: 'deleted' })
         })
         .catch(next)

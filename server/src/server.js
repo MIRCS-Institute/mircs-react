@@ -37,7 +37,7 @@ app.use(express.json({ limit: '50mb' }))
 app.use(createRouterForDir(path.join(__dirname, 'api')))
 
 // return 404 for unknown commands
-app.all('*', function(req, res) {
+app.all('*', (req, res) => {
   log.info('404 - Unknown command', {
     method: req.method,
     path: req.path,
@@ -51,7 +51,7 @@ app.all('*', function(req, res) {
 
 MongoUtil.initialize()
   .then(() => {
-    app.listen(PORT, function() {
+    app.listen(PORT, () => {
       log.info(`expressjs server is listening on port ${PORT}...`)
     })
   })

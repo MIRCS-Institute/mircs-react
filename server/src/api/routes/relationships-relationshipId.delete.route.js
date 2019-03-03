@@ -21,7 +21,7 @@ module.exports = function(router) {
           const _id = MongoUtil.toObjectID(req.params.relationshipId)
           return relationshipsCollection.deleteOne({ _id })
         })
-        .then(function() {
+        .then(() => {
           res.status(200).send({ result: 'deleted' })
         })
         .catch(next)
