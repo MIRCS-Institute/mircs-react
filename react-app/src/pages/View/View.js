@@ -1,22 +1,19 @@
 import { CurrentView } from '../../api/View'
 import {observer} from 'mobx-react'
+import DataSetName from '../../components/DataSetName'
 import Layout from '../../utils/Layout'
 import PageSkeleton from '../../components/PageSkeleton'
 import React from 'react'
-import UrlParams from '../../states/UrlParams'
 
 const View = observer(class extends React.Component {
   render() {
-    const viewId = UrlParams.get('viewId')
-    const viewName = CurrentView.res.get('name')
-
-    return (<PageSkeleton title={viewName}>
+    return <PageSkeleton title={CurrentView.res.get('name')}>
       <div style={{ ...Layout.absoluteFill, ...Layout.row }}>
         <div style={{ ...Layout.column, flex: 1 }}>
-          {viewId}
+          <DataSetName dataSetId={CurrentView.res.get('dataSetId')}/>
         </div>
       </div>
-    </PageSkeleton>)
+    </PageSkeleton>
   }
 })
 

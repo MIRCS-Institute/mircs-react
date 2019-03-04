@@ -1,89 +1,70 @@
-import { getDataSetsRes } from '../../api/DataSets'
-import { getRelationshipsRes } from '../../api/Relationships'
-import { goToPath, Path } from '../../app/App'
+import { getViewsRes } from '../../api/Views'
+import { NavLink } from 'react-router-dom'
 import {observer} from 'mobx-react'
-import Button from '@material-ui/core/Button'
-import Card from '@material-ui/core/Card'
-import CardContent from '@material-ui/core/CardContent'
-import CardHeader from '@material-ui/core/CardHeader'
-import Grid from '@material-ui/core/Grid'
-import PageSkeleton from '../../components/PageSkeleton'
+import { Path } from '../../app/App'
+import Layout from '../../utils/Layout'
+import LoadingSpinner from '../../components/LoadingSpinner'
+import MircsLogo from '../../resources/mircs_logo-blue_plus_with_web_yellow.jpg'
 import React from 'react'
 import Typography from '@material-ui/core/Typography'
+import ViewCard from './ViewCard'
 
 const Home = observer(class extends React.Component {
   render() {
-    const dataSets = getDataSetsRes().get('list', [])
-    const relationships = getRelationshipsRes().get('list', [])
+    const viewsResource = getViewsRes()
+    const views = viewsResource.get('list', [])
 
-    return (<PageSkeleton>
-      <Grid container spacing={16}>
-        {dataSets.map((dataSet) => (
-          <Grid key={dataSet._id} item xs={6} md={4}>
-            <Card style={styles.card}>
-              <CardContent>
-                <Typography gutterBottom variant='headline'>
-                  {dataSet.name}
-                </Typography>
-                {dataSet.description && <Typography>
-                  {dataSet.description}
-                </Typography>}
-                <div style={{
-                  textAlign: 'center',
-                }}>
-                  <Button
-                    style={styles.button}
-                    value={dataSet._id}
-                    variant='contained'
-                    color='primary'
-                    onClick={() => goToPath(Path.dataSetMap({ dataSetId: dataSet._id }))}
-                  >
-                    Map
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          </Grid>
-        ))}
+    return <div style={{ ...Layout.column, ...Layout.align('start', 'center') }}>
+      <div style={{ 
+        ...Layout.column, 
+        ...Layout.align('center', 'center'), 
+        maxWidth: 800, 
+      }}>
+        <div style={{ marginTop: 24 }}>
+          <img alt='MIRCS Logo' src={MircsLogo}/>
+        </div>
 
-        {relationships.map((relation) => (
-          <Grid key={relation._id} item xs={6} md={4}>
-            <Card style={styles.card}>
-              <CardHeader title={relation.name}/>
-              <CardContent>
-                {relation.description && <div>
-                  {relation.description}
-                </div>}
-                <div style={{
-                  textAlign: 'center',
-                }}>
-                  <Button
-                    style={styles.button}
-                    variant='contained'
-                    color='primary'
-                    onClick={() => goToPath(Path.relationshipMap({ relationshipId: relation._id }))}
-                  >
-                    Map
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          </Grid>
-        ))}
-      </Grid>
-    </PageSkeleton>)
+        <Typography variant='h3' style={{ textAlign: 'center', maxWidth: 600, marginTop: 12, marginBottom: 36 }}>
+          MIRCS Geo-Genealogy Prototype
+        </Typography>
+
+        {viewsResource.isLoading() && <LoadingSpinner title='Loading...' />}
+
+        <div style={{ ...Layout.row, ...Layout.align('center'), flexWrap: 'wrap' }}>
+          {views.map((view) => (
+            <ViewCard key={view._id} view={view}/>
+          ))}
+        </div>
+
+        <Typography variant='subtitle' style={{ marginTop: 48, marginBottom: 6 }}>
+          Links
+        </Typography>
+        <div style={{ ...Layout.row, ...Layout.align('space-evenly'), alignSelf: 'normal' }}>
+          <div style={linkColumnStyle}>
+            <a href='https://www.mircs.ca' target='blank' style={linkStyle}>
+              MIRCS
+            </a>
+            <a href='https://www.mircs.ca/geo-genealogy/' style={linkStyle}>
+              Geo-Genealogy
+            </a>
+          </div>
+          <div style={linkColumnStyle}>
+            <NavLink to={Path.manageRoot()} style={linkStyle}>Manage</NavLink>
+          </div>
+        </div>
+      </div>
+    </div>
   }
 })
 
-const styles = {
-  button: {
-    margin: 'auto',
-    marginTop: '10px',
-    width: '50%',
-  },
-  card: {
-    margin: '10px',
-  },
+const linkColumnStyle = {
+  ...Layout.column,
+}
+
+const linkStyle = {
+  textDecoration: 'none',
+  color: '#4B6C96',
+  fontWeight: 400,
 }
 
 export default Home
