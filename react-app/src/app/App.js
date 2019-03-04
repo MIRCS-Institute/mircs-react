@@ -11,6 +11,7 @@ import DataSetMap from '../pages/DataSetMap'
 import DefaultTheme from './Theme'
 import ErrorBoundary from './ErrorBoundary'
 import Home from '../pages/Home'
+import Manage from '../pages/Manage/Manage'
 import ManageDataSets from '../pages/ManageDataSets'
 import ManageRecords from '../pages/ManageRecords'
 import ManageRelationships from '../pages/ManageRelationships'
@@ -94,6 +95,7 @@ const RequiresSignIn = observer(() => {
   }
 
   return <Switch>
+    <AppRoute exact path={Path.manageRoot(false)} component={Manage}/>
     <AppRoute exact path={Path.manageDataSets(false)} component={ManageDataSets}/>
     <AppRoute exact path={Path.manageDataSetRecords(false)} component={ManageRecords}/>
     <AppRoute exact path={Path.manageRelationships(false)} component={ManageRelationships}/>

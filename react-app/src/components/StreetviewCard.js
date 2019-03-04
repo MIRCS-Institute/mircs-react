@@ -81,14 +81,8 @@ const StreetviewCard = observer(class extends React.Component {
 })
 
 const styles = () => ({
-  root: {
-    display: 'flex',
-  },
   card: {
     margin: 8,
-  },
-  icon: {
-    fontSize: 14,
   },
 })
 
