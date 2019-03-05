@@ -5,6 +5,7 @@ import { Route } from 'react-router-dom'
 import { Switch } from 'react-router-dom'
 import { toJS } from 'mobx'
 import _ from 'lodash'
+import Acknowledgements from '../pages/Acknowledgements'
 import createHashHistory from 'history/createHashHistory'
 import CssBaseline from '@material-ui/core/CssBaseline'
 import DataSetMap from '../pages/DataSetMap'
@@ -32,6 +33,7 @@ class PathClass {
   dataSetMap = (params) => { return appPathReplace('/datasets/:dataSetId/map', params) }
   relationshipMap = (params) => { return appPathReplace('/relationships/:relationshipId/map', params) }
   view = (params) => { return appPathReplace('/views/:viewId', params) }
+  acknowledgements = (params) => { return appPathReplace('/acknowledgements', params) }
 
   manageRoot = (params) => { return appPathReplace('/manage', params) }
   manageDataSets = (params) => { return appPathReplace('/manage/datasets', params) }
@@ -79,6 +81,7 @@ const App = observer(() => (
           <AppRoute exact path={Path.dataSetMap(false)} component={DataSetMap}/>
           <AppRoute exact path={Path.relationshipMap(false)} component={RelationshipMap}/>
           <AppRoute exact path={Path.view(false)} component={View}/>
+          <AppRoute exact path={Path.acknowledgements(false)} component={Acknowledgements}/>
           <AppRoute path={Path.manageRoot(false)} component={RequiresSignIn}/>
           <AppRoute component={Unknown404}/>
         </Switch>

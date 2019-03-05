@@ -21,7 +21,7 @@ const Home = observer(class extends React.Component {
       <div style={{
         ...Layout.column,
         ...Layout.align('center', 'center'),
-        maxWidth: 800,
+        maxWidth: 1000,
       }}>
         <div style={{ marginTop: 24 }}>
           <img alt='MIRCS Logo' src={MircsLogo}/>
@@ -43,16 +43,17 @@ const Home = observer(class extends React.Component {
         <Typography variant='headline' style={{ marginTop: 48, marginBottom: 6 }}>
           Links
         </Typography>
-        <div style={{ ...Layout.row, ...Layout.align('space-evenly'), alignSelf: 'normal' }}>
+        <div style={{ ...Layout.row, ...Layout.align('space-evenly'), alignSelf: 'normal', marginBottom: 12 }}>
           <div style={linkColumnStyle}>
-            <a href='https://www.mircs.ca' target='blank' style={linkStyle}>
+            <a href='https://www.mircs.ca' target='_blank' rel='noopener noreferrer' style={linkStyle}>
               MIRCS
             </a>
-            <a href='https://www.mircs.ca/geo-genealogy/' style={linkStyle}>
+            <a href='https://www.mircs.ca/geo-genealogy/' target='_blank' rel='noopener noreferrer' style={linkStyle}>
               Geo-Genealogy
             </a>
           </div>
           <div style={linkColumnStyle}>
+            <NavLink to={Path.acknowledgements()} style={linkStyle}>Acknowledgements</NavLink>
             <NavLink to={Path.manageRoot()} style={linkStyle}>Manage</NavLink>
           </div>
         </div>
