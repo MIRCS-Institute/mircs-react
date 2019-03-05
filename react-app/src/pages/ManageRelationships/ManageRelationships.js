@@ -4,11 +4,11 @@ import { observer } from 'mobx-react'
 import Button from '@material-ui/core/Button'
 import EditRelationshipDialog from './EditRelationshipDialog'
 import LoadingSpinner from '../../components/LoadingSpinner'
+import ManageRelationshipCard from './ManageRelationshipCard'
 import PageSkeleton from '../../components/PageSkeleton'
 import React from 'react'
-import RelationshipCard from './RelationshipCard'
 
-const Relationships = observer(class extends React.Component {
+const ManageRelationships = observer(class extends React.Component {
   constructor() {
     super()
     extendObservable(this, {
@@ -48,7 +48,7 @@ const Relationships = observer(class extends React.Component {
         <EditRelationshipDialog open={this.showCreateDialog} onCancel={this.handleCreateCancel} afterSave={this.handleCreateAfterSave}/>
 
         {relationships.map((relationship) => (
-          <RelationshipCard
+          <ManageRelationshipCard
             key={relationship._id}
             relationship={relationship}
           />
@@ -64,4 +64,4 @@ const styles = {
   },
 }
 
-export default Relationships
+export default ManageRelationships

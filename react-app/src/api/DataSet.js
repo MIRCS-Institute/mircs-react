@@ -1,4 +1,5 @@
 import { cachedServerHttpResource } from './resources/ServerHttpResource'
+import { CurrentView } from './View'
 import CurrentResource from './resources/CurrentResource'
 import UrlParams from '../states/UrlParams'
 
@@ -8,9 +9,14 @@ export const getDataSetRes = (dataSetId) => {
   }
 }
 
+export const getCurrentDataSetId = () => {
+  const dataSetId = UrlParams.get('dataSetId') || CurrentView.res.get('dataSetId')
+  return dataSetId
+}
+
 class CurrentDataSetClass extends CurrentResource {
   createCurrentResourceInstance() {
-    return getDataSetRes(UrlParams.get('dataSetId'))
+    return getDataSetRes(getCurrentDataSetId())
   }
 }
 

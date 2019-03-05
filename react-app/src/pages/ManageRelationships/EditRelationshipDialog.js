@@ -1,4 +1,5 @@
 import { action, extendObservable, toJS } from 'mobx'
+import { getDataSetFieldsRes } from '../../api/DataSetFields'
 import { observer } from 'mobx-react'
 import { showSnackbarMessage } from '../../components/SnackbarMessages'
 import _ from 'lodash'
@@ -6,14 +7,12 @@ import AddCircleIcon from '@material-ui/icons/AddCircle'
 import Button from '@material-ui/core/Button'
 import ButtonProgress from '../../components/ButtonProgress'
 import CancelIcon from '@material-ui/icons/Cancel'
-import ChooseDataSetDialog from './ChooseDataSetDialog'
-import DataSetName from './DataSetName'
+import DataSetChooser from '../../components/DataSetChooser'
 import Dialog from '@material-ui/core/Dialog'
 import DialogActions from '@material-ui/core/DialogActions'
 import DialogContent from '@material-ui/core/DialogContent'
 import DialogTitle from '@material-ui/core/DialogTitle'
 import FormControl from '@material-ui/core/FormControl'
-import ForwardIcon from '@material-ui/icons/Forward'
 import Grid from '@material-ui/core/Grid'
 import IconButton from '@material-ui/core/IconButton'
 import Layout from '../../utils/Layout'
@@ -80,7 +79,7 @@ const EditRelationshipDialog = observer(class extends React.Component {
     }
   }
 
-  // creates an change handler function for the field with passed @key
+  // creates a change handler function for the field with passed @key
   handleFieldChange = (key) => {
     return action((event) => {
       this.relationship[key] = event.target.value
@@ -164,11 +163,19 @@ const EditRelationshipDialog = observer(class extends React.Component {
 
           <Grid container spacing={24}>
             <Grid item xs={5}>
-              <DataSetChooser label='Data Set 1' dataSetId={_.get(this.relationship, 'dataSets[0]')} onDataSetChanged={this.handleDataSetChanged(0)}/>
+              <DataSetChooser 
+                label='Data Set 1' 
+                dataSetId={_.get(this.relationship, 'dataSets[0]')} 
+                onDataSetChanged={this.handleDataSetChanged(0)}
+              />
             </Grid>
 
             <Grid item xs={5}>
-              <DataSetChooser label='Data Set 2' dataSetId={_.get(this.relationship, 'dataSets[1]')} onDataSetChanged={this.handleDataSetChanged(1)}/>
+              <DataSetChooser 
+                label='Data Set 2' 
+                dataSetId={_.get(this.relationship, 'dataSets[1]')} 
+                onDataSetChanged={this.handleDataSetChanged(1)}
+              />
             </Grid>
 
             {this.relationship.joinElements && this.relationship.joinElements.map((joinElement, index) => (
@@ -194,13 +201,21 @@ const EditRelationshipDialog = observer(class extends React.Component {
             {this.showNewJoinElements &&
               <Grid container spacing={24}>
                 <Grid item xs={4}>
-                  <FieldChooser dataSetId={_.get(this.relationship, 'dataSets[0]')} field={this.newJoinElements[0]} onChange={action((value) => { this.newJoinElements[0] = value })}/>
+                  <FieldChooser 
+                    dataSetId={_.get(this.relationship, 'dataSets[0]')} 
+                    field={this.newJoinElements[0]} 
+                    onChange={action((value) => { this.newJoinElements[0] = value })}
+                  />
                 </Grid>
                 <Grid item xs={1}>
                   <div>=</div>
                 </Grid>
                 <Grid item xs={4}>
-                  <FieldChooser dataSetId={_.get(this.relationship, 'dataSets[1]')} field={this.newJoinElements[1]} onChange={action((value) => { this.newJoinElements[1] = value })}/>
+                  <FieldChooser 
+                    dataSetId={_.get(this.relationship, 'dataSets[1]')} 
+                    field={this.newJoinElements[1]} 
+                    onChange={action((value) => { this.newJoinElements[1] = value })}
+                  />
                 </Grid>
 
                 <Grid item xs={2} style={{ ...Layout.row }}>
@@ -238,130 +253,43 @@ const EditRelationshipDialog = observer(class extends React.Component {
 
 const FieldChooser = observer(class extends React.Component {
   static propTypes = {
-    dataSetId: PropTypes.string,
-    fieldId: PropTypes.string,
-    field: PropTypes.string,
-    onChange: PropTypes.func,
+    dataSetId: PropTypes.string.isRequired,
+    field: PropTypes.string.isRequired,
+    onChange: PropTypes.func.isRequired,
     disabled: PropTypes.bool,
   }
 
   constructor(props) {
     super(props)
     extendObservable(this, {
-      dataSetId: props.dataSetId,
-      fieldId: props.fieldId,
       field: props.field,
-      fields: null,
-      isLoading: false,
     })
-  }
-
-  componentDidMount() {
-    this.refresh()
-  }
-
-  componentDidUpdate() {
-    action(() => {
-      this.field = this.props.field
-    })()
-
-    if (this.dataSetId !== this.props.dataSetId) {
-      action(() => {
-        this.dataSetId = this.props.dataSetId
-        this.refresh()
-      })()
-    }
-  }
-
-  refresh() {
-    if (!this.dataSetId) {
-      this.fields = null
-    } else {
-      this.isLoading = true
-      const fetchingDataSetId = this.dataSetId
-      ServerHttpApi.jsonGet(`/api/datasets/${fetchingDataSetId}/fields`)
-        .then(action((response) => {
-          // due to the asynchronous nature of http requests, we check to see that this response is
-          // regarding the one requested, otherwise we ignore it
-          if (fetchingDataSetId === this.props.dataSetId) {
-            this.fields = response.bodyJson.list
-          }
-        }))
-        .catch(action((error) => {
-          console.error('Error fetching fields for DataSet', fetchingDataSetId, error)
-          showSnackbarMessage(error)
-        }))
-        .then(action(() => {
-          this.isLoading = false
-        }))
-    }
   }
 
   handleSelect = action((event) => {
     this.field = event.target.value
     this.props.onChange(this.field)
-  });
+  })
 
   render() {
+    const { dataSetId, disabled } = this.props
+    const fields = getDataSetFieldsRes(dataSetId)
+
     return (
-      <FormControl disabled={this.props.disabled}>
+      <FormControl disabled={disabled}>
         <Select native
           value={this.field}
           onChange={this.handleSelect}>
           <option value={''}>
             None
           </option>
-          {this.fields && this.fields.map((field) => (
+          {fields.map((field) => (
             <option key={field._id} value={field._id}>
               {field._id} ({field.value})
             </option>
           ))}
         </Select>
       </FormControl>
-    )
-  }
-})
-
-const DataSetChooser = observer(class extends React.Component {
-  static propTypes = {
-    label: PropTypes.string.isRequired,
-    dataSetId: PropTypes.string,
-    // called when the user changes data set
-    onDataSetChanged: PropTypes.func.isRequired,
-  }
-
-  constructor() {
-    super()
-    extendObservable(this, {
-      isChooseDataSetDialogOpen: false,
-    })
-  }
-
-  onRemoveClick = action(() => {
-    this.props.onDataSetChanged(null)
-  })
-
-  onAddClick = action(() => {
-    this.isChooseDataSetDialogOpen = true
-  })
-
-  handleCancel = action(() => {
-    this.isChooseDataSetDialogOpen = false
-  })
-
-  handleChoose = action((dataSet) => {
-    this.isChooseDataSetDialogOpen = false
-    this.props.onDataSetChanged(dataSet && dataSet._id)
-  })
-
-  render() {
-    return (
-      <div style={{ ...Layout.row, ...Layout.align('start', 'center') }}>
-        <IconButton onClick={this.onAddClick}><ForwardIcon/></IconButton>
-        <DataSetName label={this.props.label} dataSetId={this.props.dataSetId}/>
-
-        <ChooseDataSetDialog open={this.isChooseDataSetDialogOpen} onCancel={this.handleCancel} onChoose={this.handleChoose}/>
-      </div>
     )
   }
 })

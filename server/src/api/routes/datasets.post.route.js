@@ -10,7 +10,7 @@ const MongoUtil = require('../../utils/mongo-util.js')
 module.exports = function(router) {
   router.post('/api/datasets',
     require('../../middleware/require-sign-in'),
-    function(req, res, next) {
+    (req, res, next) => {
       const newDataSet = _.clone(req.body)
       if (!_.isString(newDataSet.name)) {
         return res.status(400).send('name is required')

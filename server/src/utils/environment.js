@@ -52,7 +52,7 @@ function initializeConfigurationVariables(configuration) {
   const missingValues = []
 
   ENVIRONMENT_VALUES = {}
-  _.forEach(CONFIGURATION_VARS, function(meta, key) {
+  _.forEach(CONFIGURATION_VARS, (meta, key) => {
     let value = configuration[key]
     if (_.isUndefined(value) || value === 'undefined') {
       value = meta.default
@@ -96,7 +96,7 @@ function getRequired(path) {
     if (ENVIRONMENT_VALUES.DEBUG) {
       log.level(log.TRACE)
       const toPrint = _.clone(ENVIRONMENT_VALUES)
-      _.each(CONFIGURATION_VARS, function(meta, key) {
+      _.each(CONFIGURATION_VARS, (meta, key) => {
         if (meta.redactOnPrint) {
           toPrint[key] = '[REDACTED]'
         }

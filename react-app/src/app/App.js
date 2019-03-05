@@ -5,34 +5,41 @@ import { Route } from 'react-router-dom'
 import { Switch } from 'react-router-dom'
 import { toJS } from 'mobx'
 import _ from 'lodash'
+import Acknowledgements from '../pages/Acknowledgements'
 import createHashHistory from 'history/createHashHistory'
 import CssBaseline from '@material-ui/core/CssBaseline'
 import DataSetMap from '../pages/DataSetMap'
-import DataSets from '../pages/DataSets'
 import DefaultTheme from './Theme'
 import ErrorBoundary from './ErrorBoundary'
 import Home from '../pages/Home'
+import Manage from '../pages/Manage/Manage'
+import ManageDataSets from '../pages/ManageDataSets'
+import ManageRecords from '../pages/ManageRecords'
+import ManageRelationships from '../pages/ManageRelationships'
+import ManageViews from '../pages/ManageViews'
 import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider'
 import pathReplace from '../utils/pathReplace'
 import React from 'react'
-import Records from '../pages/Records'
 import RelationshipMap from '../pages/RelationshipMap'
-import Relationships from '../pages/Relationships'
 import SignedInUser from '../states/SignedInUser'
 import SignIn from '../pages/SignIn'
 import SnackbarMessages from '../components/SnackbarMessages'
 import Unknown404 from '../pages/Unknown404'
 import UrlParams from '../states/UrlParams'
+import View from '../pages/View/View'
 
 class PathClass {
   home = (params) => { return appPathReplace('/', params) }
   dataSetMap = (params) => { return appPathReplace('/datasets/:dataSetId/map', params) }
   relationshipMap = (params) => { return appPathReplace('/relationships/:relationshipId/map', params) }
+  view = (params) => { return appPathReplace('/views/:viewId', params) }
+  acknowledgements = (params) => { return appPathReplace('/acknowledgements', params) }
 
   manageRoot = (params) => { return appPathReplace('/manage', params) }
-  dataSets = (params) => { return appPathReplace('/manage/datasets', params) }
-  dataSetRecords = (params) => { return appPathReplace('/manage/datasets/:dataSetId', params) }
-  relationships = (params) => { return appPathReplace('/manage/relationships', params) }
+  manageDataSets = (params) => { return appPathReplace('/manage/datasets', params) }
+  manageDataSetRecords = (params) => { return appPathReplace('/manage/datasets/:dataSetId', params) }
+  manageRelationships = (params) => { return appPathReplace('/manage/relationships', params) }
+  manageViews = (params) => { return appPathReplace('/manage/views', params) }
 }
 export const Path = new PathClass()
 
@@ -73,6 +80,8 @@ const App = observer(() => (
           <AppRoute exact path={Path.home(false)} component={Home}/>
           <AppRoute exact path={Path.dataSetMap(false)} component={DataSetMap}/>
           <AppRoute exact path={Path.relationshipMap(false)} component={RelationshipMap}/>
+          <AppRoute exact path={Path.view(false)} component={View}/>
+          <AppRoute exact path={Path.acknowledgements(false)} component={Acknowledgements}/>
           <AppRoute path={Path.manageRoot(false)} component={RequiresSignIn}/>
           <AppRoute component={Unknown404}/>
         </Switch>
@@ -89,9 +98,11 @@ const RequiresSignIn = observer(() => {
   }
 
   return <Switch>
-    <AppRoute exact path={Path.dataSets(false)} component={DataSets}/>
-    <AppRoute exact path={Path.dataSetRecords(false)} component={Records}/>
-    <AppRoute exact path={Path.relationships(false)} component={Relationships}/>
+    <AppRoute exact path={Path.manageRoot(false)} component={Manage}/>
+    <AppRoute exact path={Path.manageDataSets(false)} component={ManageDataSets}/>
+    <AppRoute exact path={Path.manageDataSetRecords(false)} component={ManageRecords}/>
+    <AppRoute exact path={Path.manageRelationships(false)} component={ManageRelationships}/>
+    <AppRoute exact path={Path.manageViews(false)} component={ManageViews}/>
     <AppRoute component={Unknown404}/>
   </Switch>
 })

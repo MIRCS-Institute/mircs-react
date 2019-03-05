@@ -1,14 +1,10 @@
 const _ = require('lodash')
 const MongoUtil = require('../../utils/mongo-util.js')
 
-module.exports = function(router) {
+module.exports = (router) => {
   router.put('/api/views/:viewId',
     require('../../middleware/require-sign-in'),
-    async function(req, res, next) {
-      if (!req.view) {
-        return res.status(404).send({ error: 'No View found with id ' + req.params.viewId })
-      }
-
+    async (req, res, next) => {
       const updatedView = _.clone(req.body)
       try {
         MongoUtil.validateView(updatedView)

@@ -10,14 +10,13 @@ import CardActions from '@material-ui/core/CardActions'
 import CardContent from '@material-ui/core/CardContent'
 import CardHeader from '@material-ui/core/CardHeader'
 import ConfirmDeleteDialog from '../../components/ConfirmDeleteDialog'
-import DataSetName from './DataSetName'
+import DataSetName from '../../components/DataSetName'
 import EditRelationshipDialog from './EditRelationshipDialog'
 import PropTypes from 'prop-types'
 import React from 'react'
 import ServerHttpApi from '../../api/net/ServerHttpApi'
 
-/* each individual card will represent a single Relationship */
-const RelationshipCard = observer(class extends React.Component {
+const ManageRelationshipCard = observer(class extends React.Component {
   static propTypes = {
     relationship: PropTypes.object,
   }
@@ -40,7 +39,8 @@ const RelationshipCard = observer(class extends React.Component {
 
   handleDeleteConfirm = action(() => {
     this.showConfirmDeleteDialog = false
-    ServerHttpApi.jsonDelete(`/api/relationships/${this.props.relationship._id}`)
+    const relationshipId = this.props.relationship._id
+    ServerHttpApi.jsonDelete(`/api/relationships/${relationshipId}`)
       .then(() => {
         return getRelationshipsRes().refresh()
       })
@@ -61,59 +61,50 @@ const RelationshipCard = observer(class extends React.Component {
   })
 
   render() {
-    const relationshipId = this.props.relationship._id
+    const { relationship } = this.props
+    const relationshipId = relationship._id
 
     return (
-      <Card style={styles.card}>
-        <CardHeader title={this.props.relationship.name}/>
+      <Card style={{ marginBottom: 15 }}>
+        <CardHeader title={relationship.name}/>
         <CardContent>
           <div>
             <strong>Name:</strong>
-            {this.props.relationship.name}
+            {relationship.name}
           </div>
-          {this.props.relationship.description && <div>
+          {relationship.description && <div>
             <strong>Description:</strong>
-            {this.props.relationship.description}
+            {relationship.description}
           </div>}
 
-          {_.get(this.props.relationship, 'dataSets.length') > 0 && <div>
+          {_.get(relationship, 'dataSets.length') > 0 && <div>
             <strong>Data Sets:</strong>
-            {this
-              .props
-              .relationship
-              .dataSets
-              .map((dataSetId, index) => (
-                <div key={index}>
-                  {dataSetId && <span>{index + 1}:
-                    <DataSetName label='' dataSetId={dataSetId}/></span>}
-                </div>
-              ))}
-          </div>
-          }
+            {relationship.dataSets.map((dataSetId, index) => (
+              <div key={index}>
+                {dataSetId && <span>{index + 1}:
+                  <DataSetName label='' dataSetId={dataSetId}/></span>}
+              </div>
+            ))}
+          </div>}
 
-          {_.get(this.props.relationship, 'joinElements.length') > 0 && <div>
+          {_.get(relationship, 'joinElements.length') > 0 && <div>
             <strong>Data Sets:</strong>
-            {this
-              .props
-              .relationship
-              .joinElements
-              .map((joinElement, index) => (
-                <div key={index}>
-                  {index + 1}: (1).[{joinElement[0]}] = (2).[{joinElement[1]}]
-                </div>
-              ))}
-          </div>
-          }
+            {relationship.joinElements.map((joinElement, index) => (
+              <div key={index}>
+                {index + 1}: (1).[{joinElement[0]}] = (2).[{joinElement[1]}]
+              </div>
+            ))}
+          </div>}
 
           <EditRelationshipDialog
             open={this.showEditDialog}
-            relationship={this.props.relationship}
+            relationship={relationship}
             onCancel={this.handleEditCancel}
             afterSave={this.handleEditAfterSave}/>
           
           <ConfirmDeleteDialog
             open={this.showConfirmDeleteDialog}
-            name={this.props.relationship.name}
+            name={relationship.name}
             onConfirm={this.handleDeleteConfirm}
             onCancel={this.handleDeleteCancel}
           />
@@ -135,10 +126,4 @@ const RelationshipCard = observer(class extends React.Component {
   }
 })
 
-const styles = {
-  card: {
-    marginBottom: '15px',
-  },
-}
-
-export default RelationshipCard
+export default ManageRelationshipCard
