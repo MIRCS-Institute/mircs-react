@@ -1,5 +1,5 @@
 import { action, extendObservable } from 'mobx'
-import { CurrentDataSet } from '../../api/DataSet'
+import { CurrentDataSet, getCurrentDataSetId } from '../../api/DataSet'
 import { CurrentDataSetRecords } from '../../api/DataSetRecords'
 import { observer } from 'mobx-react'
 import { showSnackbarMessage } from '../../components/SnackbarMessages'
@@ -14,7 +14,6 @@ import Radio from '@material-ui/core/Radio'
 import RadioGroup from '@material-ui/core/RadioGroup'
 import React from 'react'
 import ServerHttpApi from '../../api/net/ServerHttpApi'
-import UrlParams from '../../states/UrlParams'
 
 const ManageRecords = observer(class extends React.Component {
   constructor() {
@@ -41,7 +40,7 @@ const ManageRecords = observer(class extends React.Component {
 
   handleDeleteConfirm = action(() => {
     this.showConfirmDeleteDialog = false
-    const dataSetId = UrlParams.get('dataSetId')
+    const dataSetId = getCurrentDataSetId()
     ServerHttpApi.jsonDelete(`/api/datasets/${dataSetId}/records`)
       .then(() => {
         return CurrentDataSetRecords.res.refresh()
@@ -75,10 +74,10 @@ const ManageRecords = observer(class extends React.Component {
       {this.viewMode === 'cards' && <ManageRecordsCards records={records}/>}
       {this.viewMode === 'table' && <ManageRecordsTable records={records}/>}
 
-      <ConfirmDeleteDialog 
+      <ConfirmDeleteDialog
         open={this.showConfirmDeleteDialog}
-        name={`all records in ${dataSetName} data set`} 
-        onConfirm={this.handleDeleteConfirm} 
+        name={`all records in ${dataSetName} data set`}
+        onConfirm={this.handleDeleteConfirm}
         onCancel={this.handleDeleteCancel}
       />
     </PageSkeleton>)

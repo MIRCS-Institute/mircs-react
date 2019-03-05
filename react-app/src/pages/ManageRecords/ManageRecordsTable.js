@@ -1,4 +1,5 @@
 import { CurrentDataSetFields } from '../../api/DataSetFields'
+import { getCurrentDataSetId } from '../../api/DataSet'
 import { observer } from 'mobx-react'
 import Layout from '../../utils/Layout'
 import PropTypes from 'prop-types'
@@ -9,7 +10,6 @@ import TableBody from '@material-ui/core/TableBody'
 import TableCell from '@material-ui/core/TableCell'
 import TableHead from '@material-ui/core/TableHead'
 import TableRow from '@material-ui/core/TableRow'
-import UrlParams from '../../states/UrlParams'
 
 const ManageRecordsTable = observer(class extends React.Component {
   static propTypes = {
@@ -17,7 +17,7 @@ const ManageRecordsTable = observer(class extends React.Component {
   }
 
   render() {
-    const dataSetId = UrlParams.get('dataSetId')
+    const dataSetId = getCurrentDataSetId()
     const fields = CurrentDataSetFields.res.get('list', [])
 
     return (

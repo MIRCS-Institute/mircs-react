@@ -1,8 +1,8 @@
+import { getCurrentDataSetId } from '../../api/DataSet'
 import { observer } from 'mobx-react'
 import ManageRecordCard from './ManageRecordCard'
 import PropTypes from 'prop-types'
 import React from 'react'
-import UrlParams from '../../states/UrlParams'
 
 const ManageRecordsCards = observer(class extends React.Component {
   static propTypes = {
@@ -11,7 +11,7 @@ const ManageRecordsCards = observer(class extends React.Component {
   }
 
   render() {
-    const dataSetId = UrlParams.get('dataSetId')
+    const dataSetId = getCurrentDataSetId()
 
     return (
       <div>
