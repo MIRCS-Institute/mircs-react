@@ -5,11 +5,14 @@ import { withStyles } from '@material-ui/core'
 import _ from 'lodash'
 import Card from '@material-ui/core/Card'
 import CardContent from '@material-ui/core/CardContent'
+import Environment from '../utils/Environment'
 import http from '../utils/http'
 import OpenInNew from '@material-ui/icons/OpenInNew'
 import React from 'react'
 import Typography from '@material-ui/core/Typography'
 import UiStore from '../states/UiStore'
+
+const GOOGLE_API_KEY = Environment.getRequired('GOOGLE_API_KEY')
 
 const StreetviewCard = observer(class extends React.Component {
   state = {
@@ -32,12 +35,10 @@ const StreetviewCard = observer(class extends React.Component {
 
     this.setState({ loading: true })
 
-    const APIkey = 'AIzaSyAJWwSkfp9-BbsUWYtN9uH3NVFbroZs_F0'
-
     if (UiStore.selected.point) {
       // Check the google maps api metadata to see if there is street view available for this location
       http.jsonRequest('https://maps.googleapis.com/maps/api/streetview/metadata?location='
-        + UiStore.selected.point[0] + ',' + UiStore.selected.point[1] + '&key=' + APIkey,
+        + UiStore.selected.point[0] + ',' + UiStore.selected.point[1] + '&key=' + GOOGLE_API_KEY,
       {mode: 'cors', headers: {}})
         .then((response) => {
           // An 'OK' response means that there's something to see, anything else we'll ignore.
@@ -45,7 +46,7 @@ const StreetviewCard = observer(class extends React.Component {
             // Build a URL to the street view page for this location:
             this.url = 'https://www.google.com/maps/@?api=1&map_action=pano&viewpoint='
                 + UiStore.selected.point[0] + ',' + UiStore.selected.point[1]
-                + '&key=' + APIkey
+                + '&key=' + GOOGLE_API_KEY
           } else {
             this.url = undefined
           }

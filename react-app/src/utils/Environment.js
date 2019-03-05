@@ -19,6 +19,11 @@ const CONFIGURATION_VARS = {
     type: TYPE_STRING,
     description: 'mircs api server url',
   },
+  GOOGLE_API_KEY: {
+    default: 'AIzaSyAJWwSkfp9-BbsUWYtN9uH3NVFbroZs_F0',
+    type: TYPE_STRING,
+    description: 'api key for street view',
+  },
 }
 
 let ENVIRONMENT_VALUES
