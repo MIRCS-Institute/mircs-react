@@ -6,7 +6,7 @@ import { Path } from '../../app/App'
 import DataSetCard from './DataSetCard'
 import Layout from '../../utils/Layout'
 import LoadingSpinner from '../../components/LoadingSpinner'
-import MircsLogo from '../../resources/mircs_logo-blue_plus_with_web_yellow.jpg'
+import MircsLogo from '../../resources/mircs-logo-color.svg'
 import React from 'react'
 import Typography from '@material-ui/core/Typography'
 import ViewCard from './ViewCard'
@@ -23,11 +23,11 @@ const Home = observer(class extends React.Component {
         ...Layout.align('center', 'center'),
         maxWidth: 1000,
       }}>
-        <div style={{ marginTop: 24 }}>
-          <img alt='MIRCS Logo' src={MircsLogo}/>
+        <div style={{ marginTop: 24, marginBottom: 36 }}>
+          <img alt='MIRCS Logo' src={MircsLogo} style={{ height: 200 }}/>
         </div>
 
-        <Typography variant='h3' style={{ textAlign: 'center', maxWidth: 600, marginTop: 12, marginBottom: 36 }}>
+        <Typography variant='h3' style={{ textAlign: 'center', maxWidth: 600, marginBottom: 36 }}>
           MIRCS Geo-Genealogy Prototype
         </Typography>
 
@@ -46,7 +46,7 @@ const Home = observer(class extends React.Component {
         <div style={{ ...Layout.row, ...Layout.align('space-evenly'), alignSelf: 'normal', marginBottom: 12 }}>
           <div style={linkColumnStyle}>
             <a href='https://www.mircs.ca' target='_blank' rel='noopener noreferrer' style={linkStyle}>
-              MIRCS
+              MIRCS Home
             </a>
             <a href='https://www.mircs.ca/geo-genealogy/' target='_blank' rel='noopener noreferrer' style={linkStyle}>
               Geo-Genealogy
