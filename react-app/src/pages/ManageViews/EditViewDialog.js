@@ -1,7 +1,6 @@
 import { action, extendObservable, toJS } from 'mobx'
 import { observer } from 'mobx-react'
 import { showSnackbarMessage } from '../../components/SnackbarMessages'
-import _ from 'lodash'
 import Button from '@material-ui/core/Button'
 import ButtonProgress from '../../components/ButtonProgress'
 import DataSetChooser from '../../components/DataSetChooser'
@@ -9,6 +8,7 @@ import Dialog from '@material-ui/core/Dialog'
 import DialogActions from '@material-ui/core/DialogActions'
 import DialogContent from '@material-ui/core/DialogContent'
 import DialogTitle from '@material-ui/core/DialogTitle'
+import ensureString from '../../utils/ensureString'
 import PropTypes from 'prop-types'
 import React from 'react'
 import ServerHttpApi from '../../api/net/ServerHttpApi'
@@ -51,12 +51,6 @@ const EditViewDialog = observer(class extends React.Component {
 
         this.isSaving = false
       })()
-    }
-
-    function ensureString(object, field) {
-      if (!_.isString(object[field])) {
-        object[field] = ''
-      }
     }
   }
 
@@ -108,22 +102,22 @@ const EditViewDialog = observer(class extends React.Component {
       <Dialog open={open} fullWidth={true}>
         <DialogTitle>{this.isCreate ? 'Create View' : 'Edit View'}</DialogTitle>
         <DialogContent>
-          <TextField 
-            autoFocus 
-            label='name' 
+          <TextField
+            autoFocus
+            label='name'
             value={this.view.name}
             onChange={this.handleFieldChange('name')}
             margin='dense' type='text' fullWidth
           />
-          <TextField 
+          <TextField
             label='description'
-            value={this.view.description} 
+            value={this.view.description}
             onChange={this.handleFieldChange('description')}
             margin='dense' type='text' fullWidth
           />
           <DataSetChooser
-            label='Data Set' 
-            dataSetId={this.view.dataSetId} 
+            label='Data Set'
+            dataSetId={this.view.dataSetId}
             onDataSetChanged={this.handleDataSetChanged}
           />
 

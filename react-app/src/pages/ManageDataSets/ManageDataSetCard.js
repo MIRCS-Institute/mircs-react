@@ -1,8 +1,10 @@
-import {action, extendObservable} from 'mobx'
+import { action, extendObservable } from 'mobx'
+import { getDataSetFieldsRes } from '../../api/DataSetFields'
 import { getDataSetRecordsRes } from '../../api/DataSetRecords'
 import { getDataSetsRes } from '../../api/DataSets'
+import { getDataSetStatsRes } from '../../api/DataSetStats'
 import { goToPath, Path } from '../../app/App'
-import {observer} from 'mobx-react'
+import { observer } from 'mobx-react'
 import { showSnackbarMessage } from '../../components/SnackbarMessages'
 import _ from 'lodash'
 import Button from '@material-ui/core/Button'
@@ -28,30 +30,14 @@ const ManageDataSetCard = observer(class extends React.Component {
       showEditDialog: false,
       showConfirmDeleteDialog: false,
       showConfirmDeleteRecordsDialog: false,
-      stats: null,
-      fields: null,
     })
   }
 
-  componentDidMount() {
-    this.refreshStats()
-  }
-
-  refreshStats = () => {
+  refresh = () => {
     const dataSetId = this.props.dataSet._id
     getDataSetRecordsRes(dataSetId).refresh()
-
-    ServerHttpApi.jsonGet(`/api/datasets/${dataSetId}/stats`)
-      .then(action((response) => {
-        this.stats = _.get(response, 'bodyJson')
-      }))
-      .catch(showSnackbarMessage)
-
-    ServerHttpApi.jsonGet(`/api/datasets/${dataSetId}/fields`)
-      .then(action((response) => {
-        this.fields = _.get(response, 'bodyJson.list')
-      }))
-      .catch(showSnackbarMessage)
+    getDataSetFieldsRes(dataSetId).refresh()
+    getDataSetStatsRes(dataSetId).refresh()
   }
 
   handleDeleteClick = action(() => {
@@ -87,7 +73,7 @@ const ManageDataSetCard = observer(class extends React.Component {
     const dataSetId = _.get(dataSet, '_id')
     ServerHttpApi.jsonDelete(`/api/datasets/${dataSetId}/records`)
       .then(action(() => {
-        this.refreshStats()
+        this.refresh()
       }))
       .catch(showSnackbarMessage)
   })
@@ -111,35 +97,32 @@ const ManageDataSetCard = observer(class extends React.Component {
     const dataSetId = _.get(dataSet, '_id')
     const dataSetName = _.get(dataSet, 'name')
 
+    const stats = getDataSetStatsRes(dataSetId).current()
+    const fields = getDataSetFieldsRes(dataSetId).get('list', [])
+
     return (
       <Card style={{ marginBottom: 15 }}>
         <CardHeader title={dataSet.name}/>
         <CardContent>
-          <div>
-            <strong>Name:</strong>
-            {dataSet.name}
-          </div>
           {dataSet.description && <div>
-            <strong>Description:</strong>
-            {dataSet.description}
+            <strong>Description:</strong> {dataSet.description}
           </div>}
-          {this.stats && <div>
+          {stats && <div>
             <strong>Stats:</strong>
-            {_.map(this.stats, (value, key) => (
+            {_.map(stats, (value, key) => (
               <div key={key} style={{
                 marginLeft: 10,
               }}>{key}: {value}</div>
             ))}
           </div>}
-          {this.fields && <div>
+          {fields && <div>
             <strong>Fields:</strong>
-            {_.map(this.fields, (field) => (
+            {_.map(fields, (field) => (
               <div
                 key={field._id}
                 style={{
                   marginLeft: 10,
-                }}>{field._id}
-                ({field.value})</div>
+                }}> {field._id} ({field.value})</div>
             ))}
           </div>}
 
@@ -183,7 +166,7 @@ const ManageDataSetCard = observer(class extends React.Component {
           </Button>
           <UploadDataSetFileButton
             dataSetId={dataSetId}
-            onDataSetUpdated={this.refreshStats}
+            onDataSetUpdated={this.refresh}
           />
         </CardActions>
       </Card>

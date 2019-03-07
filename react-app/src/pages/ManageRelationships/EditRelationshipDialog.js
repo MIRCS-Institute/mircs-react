@@ -12,6 +12,7 @@ import Dialog from '@material-ui/core/Dialog'
 import DialogActions from '@material-ui/core/DialogActions'
 import DialogContent from '@material-ui/core/DialogContent'
 import DialogTitle from '@material-ui/core/DialogTitle'
+import ensureString from '../../utils/ensureString'
 import FormControl from '@material-ui/core/FormControl'
 import Grid from '@material-ui/core/Grid'
 import IconButton from '@material-ui/core/IconButton'
@@ -70,12 +71,6 @@ const EditRelationshipDialog = observer(class extends React.Component {
 
         this.isSaving = false
       })()
-    }
-
-    function ensureString(object, field) {
-      if (!_.isString(object[field])) {
-        object[field] = ''
-      }
     }
   }
 
@@ -163,17 +158,17 @@ const EditRelationshipDialog = observer(class extends React.Component {
 
           <Grid container spacing={24}>
             <Grid item xs={5}>
-              <DataSetChooser 
-                label='Data Set 1' 
-                dataSetId={_.get(this.relationship, 'dataSets[0]')} 
+              <DataSetChooser
+                label='Data Set 1'
+                dataSetId={_.get(this.relationship, 'dataSets[0]')}
                 onDataSetChanged={this.handleDataSetChanged(0)}
               />
             </Grid>
 
             <Grid item xs={5}>
-              <DataSetChooser 
-                label='Data Set 2' 
-                dataSetId={_.get(this.relationship, 'dataSets[1]')} 
+              <DataSetChooser
+                label='Data Set 2'
+                dataSetId={_.get(this.relationship, 'dataSets[1]')}
                 onDataSetChanged={this.handleDataSetChanged(1)}
               />
             </Grid>
@@ -201,9 +196,9 @@ const EditRelationshipDialog = observer(class extends React.Component {
             {this.showNewJoinElements &&
               <Grid container spacing={24}>
                 <Grid item xs={4}>
-                  <FieldChooser 
-                    dataSetId={_.get(this.relationship, 'dataSets[0]')} 
-                    field={this.newJoinElements[0]} 
+                  <FieldChooser
+                    dataSetId={_.get(this.relationship, 'dataSets[0]')}
+                    field={this.newJoinElements[0]}
                     onChange={action((value) => { this.newJoinElements[0] = value })}
                   />
                 </Grid>
@@ -211,9 +206,9 @@ const EditRelationshipDialog = observer(class extends React.Component {
                   <div>=</div>
                 </Grid>
                 <Grid item xs={4}>
-                  <FieldChooser 
-                    dataSetId={_.get(this.relationship, 'dataSets[1]')} 
-                    field={this.newJoinElements[1]} 
+                  <FieldChooser
+                    dataSetId={_.get(this.relationship, 'dataSets[1]')}
+                    field={this.newJoinElements[1]}
                     onChange={action((value) => { this.newJoinElements[1] = value })}
                   />
                 </Grid>
