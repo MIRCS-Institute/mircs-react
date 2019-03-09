@@ -1,4 +1,5 @@
 import { action, extendObservable } from 'mobx'
+import { getDataSetFieldsRes } from '../../api/DataSetFields'
 import { getDataSetStatsRes } from '../../api/DataSetStats'
 import { goToPath, Path } from '../../app/App'
 import { observer } from 'mobx-react'
@@ -12,6 +13,7 @@ import CardContent from '@material-ui/core/CardContent'
 import CardHeader from '@material-ui/core/CardHeader'
 import ConfirmDeleteDialog from '../../components/ConfirmDeleteDialog'
 import EditDataSetDialog from './EditDataSetDialog'
+import Layout from '../../utils/Layout'
 import PropTypes from 'prop-types'
 import React from 'react'
 import ServerHttpApi from '../../api/net/ServerHttpApi'
@@ -103,24 +105,26 @@ const ManageDataSetCard = observer(class extends React.Component {
           {dataSet.description && <div>
             <strong>Description:</strong> {dataSet.description}
           </div>}
-          {stats && <div>
-            <strong>Stats:</strong>
-            {_.map(stats, (value, key) => (
-              <div key={key} style={{
-                marginLeft: 10,
-              }}>{key}: {value}</div>
-            ))}
-          </div>}
-          {fields && <div>
-            <strong>Fields:</strong>
-            {_.map(fields, (field) => (
-              <div
-                key={field._id}
-                style={{
+          <div style={{ ...Layout.row, ...Layout.align('space-around') }}>
+            {stats && <div>
+              <strong>Stats:</strong>
+              {_.map(stats, (value, key) => (
+                <div key={key} style={{
                   marginLeft: 10,
-                }}> {field._id} ({field.value})</div>
-            ))}
-          </div>}
+                }}>{key}: {value}</div>
+              ))}
+            </div>}
+            {fields && <div>
+              <strong>Fields:</strong>
+              {_.map(fields, (field) => (
+                <div
+                  key={field._id}
+                  style={{
+                    marginLeft: 10,
+                  }}> {field._id} ({field.type})</div>
+              ))}
+            </div>}
+          </div>
 
           <EditDataSetDialog
             open={this.showEditDialog}
