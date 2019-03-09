@@ -183,8 +183,11 @@ const MapFilter = observer(class extends React.Component {
         <div className={classes.root}>
           {store.searchStrings.map( (data, i) => {
             let labelValue = data + ' (' + UiStore.foundRecords[i].length + ')'
-            if (data.startsWith('Other'))
+            let isDeletable = true
+            if (data.startsWith('Other')) {
               labelValue = data
+              isDeletable = false
+            }
             const divStyle = {
               margin: 5,
               backgroundColor: Layout.colours[i],
@@ -192,15 +195,26 @@ const MapFilter = observer(class extends React.Component {
             let colour = 'primary'
             if ([1,2,5].indexOf(i) > -1)
               colour = 'default'
-            return (
-              <Chip
-                key={data}
-                label={labelValue}
-                onDelete={() => this.handleSearchDelete(data)}
-                style={divStyle}
-                color={colour}
-              />
-            )
+            if (isDeletable) {
+              return (
+                <Chip
+                  key={data}
+                  label={labelValue}
+                  onDelete={() => this.handleSearchDelete(data)}
+                  style={divStyle}
+                  color={colour}
+                />
+              )
+            } else {
+              return (
+                <Chip
+                  key={data}
+                  label={labelValue}
+                  style={divStyle}
+                  color={colour}
+                />
+              )
+            }
           })}
         </div>
       </form>
