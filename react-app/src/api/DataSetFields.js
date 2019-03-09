@@ -1,6 +1,6 @@
 import { cachedServerHttpResource } from './resources/ServerHttpResource'
+import { getCurrentDataSetId } from './DataSet'
 import CurrentResource from './resources/CurrentResource'
-import UrlParams from '../states/UrlParams'
 
 export const getDataSetFieldsRes = (dataSetId) => {
   if (dataSetId) {
@@ -13,7 +13,8 @@ class CurrentDataSetFieldsClass extends CurrentResource {
     super([])
   }
   createCurrentResourceInstance() {
-    return getDataSetFieldsRes(UrlParams.get('dataSetId'))
+    const dataSetId = getCurrentDataSetId()
+    return getDataSetFieldsRes(dataSetId)
   }
 }
 

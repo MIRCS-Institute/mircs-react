@@ -1,8 +1,7 @@
-import { observer } from 'mobx-react'
-import { withStyles } from '@material-ui/core/styles'
-import _ from 'lodash'
 import { CurrentDataSetRecords } from '../api/DataSetRecords'
 import { CurrentRelationshipRecords } from '../api/RelationshipRecords'
+import { observer } from 'mobx-react'
+import _ from 'lodash'
 import React from 'react'
 import UiStore from '../states/UiStore'
 
@@ -32,7 +31,4 @@ const MapStatus = observer(class extends React.Component {
   }
 })
 
-const styles = {
-}
-
-export default withStyles(styles)(MapStatus)
+export default MapStatus

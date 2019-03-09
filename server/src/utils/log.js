@@ -39,10 +39,10 @@ log.level = function(level) {
 // set default level to INFO
 log.level(log.INFO)
 
-process.on('uncaughtException', function(err) {
+process.on('uncaughtException', (err) => {
   log.error('uncaughtException:', _.get(err, 'stack', err))
 })
-process.on('unhandledRejection', function(reason, p) {
+process.on('unhandledRejection', (reason, p) => {
   log.error('unhandledRejection promise:', p, '\nreason:', _.get(reason, 'stack', reason))
 })
 

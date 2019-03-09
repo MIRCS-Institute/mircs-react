@@ -56,14 +56,13 @@ Layout.align = (main, cross) => {
 }
 
 Layout.colours = [
-  'darkred',
-  'orange',
-  'yellow',
-  'chartreuse',
-  'green',
-  'deepskyblue',
-  'darkorchid',
-  'lightgrey',
+  '#885154',
+  '#EC635F',
+  '#76AAA1',
+  '#E8DDD4',
+  '#91AF94',
+  '#8C8C8C',
+  '#465955',
 ]
 
 export default Layout

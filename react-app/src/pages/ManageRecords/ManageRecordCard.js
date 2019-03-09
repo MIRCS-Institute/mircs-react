@@ -7,7 +7,7 @@ import PropTypes from 'prop-types'
 import React from 'react'
 import RecordDeleteButton from './RecordDeleteButton'
 
-const RecordCard = observer(class extends React.Component {
+const ManageRecordCard = observer(class extends React.Component {
   static propTypes = {
     record: PropTypes.object,
     dataSetId: PropTypes.string,
@@ -17,7 +17,7 @@ const RecordCard = observer(class extends React.Component {
     const { record, dataSetId } = this.props
 
     return (
-      <Card style={styles.card}>
+      <Card style={{ marginBottom: 15 }}>
         <CardContent>
           {_.map(record, (value, key) => (
             <div key={key}>
@@ -34,10 +34,4 @@ const RecordCard = observer(class extends React.Component {
   }
 })
 
-const styles = {
-  card: {
-    marginBottom: '15px',
-  },
-}
-
-export default RecordCard
+export default ManageRecordCard

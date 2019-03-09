@@ -1,4 +1,4 @@
-import { CurrentDataSet } from '../api/DataSet'
+import { CurrentDataSet, getCurrentDataSetId } from '../api/DataSet'
 import {observer} from 'mobx-react'
 import Layout from '../utils/Layout'
 import Map from '../components/Map'
@@ -7,11 +7,10 @@ import MapFilter from '../components/MapFilter'
 import MapStatus from '../components/MapStatus'
 import PageSkeleton from '../components/PageSkeleton'
 import React from 'react'
-import UrlParams from '../states/UrlParams'
 
 const DataSetMap = observer(class extends React.Component {
   render() {
-    const dataSetId = UrlParams.get('dataSetId')
+    const dataSetId = getCurrentDataSetId()
     const dataSetName = CurrentDataSet.res.get('name')
 
     return (<PageSkeleton title={dataSetName}>

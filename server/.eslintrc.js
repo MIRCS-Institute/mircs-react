@@ -20,5 +20,6 @@ module.exports = {
     'eol-last': ['error', 'always'],
     'indent': ['error', 2, { 'SwitchCase': 1 }],
     'node/exports-style': ['error', 'module.exports'],
+    'prefer-arrow-callback': [ 'warn' ],
   },
 };

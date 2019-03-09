@@ -1,5 +1,5 @@
 import { action, extendObservable } from 'mobx'
-import { CurrentDataSet } from '../../api/DataSet'
+import { CurrentDataSet, getCurrentDataSetId } from '../../api/DataSet'
 import { CurrentDataSetRecords } from '../../api/DataSetRecords'
 import { observer } from 'mobx-react'
 import { showSnackbarMessage } from '../../components/SnackbarMessages'
@@ -7,16 +7,15 @@ import Button from '@material-ui/core/Button'
 import ConfirmDeleteDialog from '../../components/ConfirmDeleteDialog'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
 import LoadingSpinner from '../../components/LoadingSpinner'
+import ManageRecordsCards from './ManageRecordsCards'
+import ManageRecordsTable from './ManageRecordsTable'
 import PageSkeleton from '../../components/PageSkeleton'
 import Radio from '@material-ui/core/Radio'
 import RadioGroup from '@material-ui/core/RadioGroup'
 import React from 'react'
-import RecordsCards from './RecordsCards'
-import RecordsTable from './RecordsTable'
 import ServerHttpApi from '../../api/net/ServerHttpApi'
-import UrlParams from '../../states/UrlParams'
 
-const Records = observer(class extends React.Component {
+const ManageRecords = observer(class extends React.Component {
   constructor() {
     super()
     extendObservable(this, {
@@ -41,7 +40,7 @@ const Records = observer(class extends React.Component {
 
   handleDeleteConfirm = action(() => {
     this.showConfirmDeleteDialog = false
-    const dataSetId = UrlParams.get('dataSetId')
+    const dataSetId = getCurrentDataSetId()
     ServerHttpApi.jsonDelete(`/api/datasets/${dataSetId}/records`)
       .then(() => {
         return CurrentDataSetRecords.res.refresh()
@@ -72,13 +71,13 @@ const Records = observer(class extends React.Component {
 
       {CurrentDataSetRecords.res.isLoading() && <LoadingSpinner title='Loading Records...' />}
 
-      {this.viewMode === 'cards' && <RecordsCards records={records}/>}
-      {this.viewMode === 'table' && <RecordsTable records={records}/>}
+      {this.viewMode === 'cards' && <ManageRecordsCards records={records}/>}
+      {this.viewMode === 'table' && <ManageRecordsTable records={records}/>}
 
-      <ConfirmDeleteDialog 
+      <ConfirmDeleteDialog
         open={this.showConfirmDeleteDialog}
-        name={`all records in ${dataSetName} data set`} 
-        onConfirm={this.handleDeleteConfirm} 
+        name={`all records in ${dataSetName} data set`}
+        onConfirm={this.handleDeleteConfirm}
         onCancel={this.handleDeleteCancel}
       />
     </PageSkeleton>)
@@ -98,4 +97,4 @@ const styles = {
   },
 }
 
-export default Records
+export default ManageRecords

@@ -3,7 +3,7 @@ const fs = require('fs')
 const path = require('path')
 
 // Scans a directory for files with a given suffix and passes each to a callback.
-function forEachFileInDir(dir, fileSuffix, callback) {
+const forEachFileInDir = (dir, fileSuffix, callback) => {
   if (!fs.existsSync(dir)) {
     return
   }
@@ -11,7 +11,7 @@ function forEachFileInDir(dir, fileSuffix, callback) {
     return
   }
 
-  fs.readdirSync(dir).forEach(function(filename) {
+  fs.readdirSync(dir).forEach((filename) => {
     if (filename.endsWith(fileSuffix)) {
       const filePath = path.join(dir, filename)
       const name = filename.slice(0, -(fileSuffix.length))
@@ -21,9 +21,9 @@ function forEachFileInDir(dir, fileSuffix, callback) {
 }
 
 // Scans a directory for subdirectories and passes each to a callback.
-function forEachSubDirectoryInDir(directory, callback) {
+const forEachSubDirectoryInDir = (directory, callback) => {
   const subDirs = []
-  fs.readdirSync(directory).forEach(function(file) {
+  fs.readdirSync(directory).forEach((file) => {
     // Check the type of each file
     const fileStat = fs.statSync(path.join(directory, file))
 

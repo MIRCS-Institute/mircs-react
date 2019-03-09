@@ -1,5 +1,6 @@
+import { NavLink } from 'react-router-dom'
 import { observer } from 'mobx-react'
-import { withStyles } from '@material-ui/core/styles'
+import { Path } from '../../app/App'
 import AccountCircle from '@material-ui/icons/AccountCircle'
 import Divider from '@material-ui/core/Divider'
 import IconButtonMenu from '../IconButtonMenu'
@@ -20,8 +21,6 @@ const AuthMenu = observer(class extends React.Component {
     SignedInUser.signOut()
   }
   render() {
-    const { classes } = this.props
-
     return (
       <IconButtonMenu
         ref={this.menuRef}
@@ -36,28 +35,19 @@ const AuthMenu = observer(class extends React.Component {
           horizontal: 'right',
         }}
       >
-        <List className={classes.list}>
-          <ListItem className={classes.listItem}>
+        <List style={{ outline: 'none' }}>
+          <ListItem style={{ paddingLeft: 16, paddingRight: 16 }}>
             <ListItemText primary={SignedInUser.get('email')}/>
           </ListItem>
         </List>
         <Divider/>
+        <NavLink to={Path.manageRoot()} style={{ textDecoration: 'none' }}>
+          <MenuItem>Manage</MenuItem>
+        </NavLink>
         <MenuItem onClick={this.handleSignOut}>Sign Out</MenuItem>
       </IconButtonMenu>
     )
   }
 })
 
-const styles = theme => {
-  return {
-    list: {
-      outline: 'none',
-    },
-    listItem: {
-      paddingLeft: theme.spacing.unit * 2,
-      paddingRight: theme.spacing.unit * 2,
-    },
-  }
-}
-
-export default withStyles(styles)(AuthMenu)
+export default AuthMenu

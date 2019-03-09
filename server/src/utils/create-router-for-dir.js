@@ -13,7 +13,7 @@ function createRouterForDir(dir) {
 
   if (log.level() <= log.TRACE) {
     // log all requests
-    router.use(function(req, res, next) {
+    router.use((req, res, next) => {
       log.trace(req.method, req.path, JSON.stringify({
         body: req.body,
         headers: req.headers,
@@ -25,7 +25,7 @@ function createRouterForDir(dir) {
   }
 
   // add middleware
-  FsUtil.forEachFileInDir(path.join(dir, 'middleware'), '.middleware.js', function(filePath) {
+  FsUtil.forEachFileInDir(path.join(dir, 'middleware'), '.middleware.js', (filePath) => {
     try {
       router.use(require(filePath))
     } catch (exception) {
@@ -35,7 +35,7 @@ function createRouterForDir(dir) {
   })
 
   // add params
-  FsUtil.forEachFileInDir(path.join(dir, 'params'), '.param.js', function(filePath) {
+  FsUtil.forEachFileInDir(path.join(dir, 'params'), '.param.js', (filePath) => {
     try {
       require(filePath)(router)
     } catch (exception) {
@@ -45,7 +45,7 @@ function createRouterForDir(dir) {
   })
 
   // add routes
-  FsUtil.forEachFileInDir(path.join(dir, 'routes'), '.route.js', function(filePath) {
+  FsUtil.forEachFileInDir(path.join(dir, 'routes'), '.route.js', (filePath) => {
     try {
       require(filePath)(router)
     } catch (exception) {
@@ -59,7 +59,7 @@ function createRouterForDir(dir) {
     (function listAllRoutes() {
       var routes = router.stack
       var routesMapping = []
-      _.each(routes, function(val) {
+      _.each(routes, (val) => {
         if (val.route) {
           val = val.route
           var method = (val.stack[0].method || 'all').toUpperCase()

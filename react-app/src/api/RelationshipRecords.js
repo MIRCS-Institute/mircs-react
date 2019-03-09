@@ -1,9 +1,9 @@
 import { CurrentDataSetRecords, getDataSetRecordsRes } from './DataSetRecords'
+import { getCurrentDataSetId } from './DataSet'
 import { getRelationshipsRes } from './Relationships'
 import _ from 'lodash'
 import CurrentResource from './resources/CurrentResource'
 import UiStore from '../states/UiStore'
-import UrlParams from '../states/UrlParams'
 
 class CurrentRelationshipRecordsClass extends CurrentResource {
 
@@ -26,9 +26,10 @@ class CurrentRelationshipRecordsClass extends CurrentResource {
 
       // Loop through the relationships and look for any that include our current dataset.
       relationships.forEach((relationship) => {
-        if (relationship.dataSets[0] === UrlParams.get('dataSetId')) {
+        const dataSetId = getCurrentDataSetId()
+        if (relationship.dataSets[0] === dataSetId) {
           relatedSets.push({'dataSetId': relationship.dataSets[1], 'joinElements': relationship.joinElements})
-        } else if (relationship.dataSets[1] === UrlParams.get('dataSetId')) {
+        } else if (relationship.dataSets[1] === dataSetId) {
           // flip the join elements because we assume that current is at index 0 later.
           relatedSets.push({
             'dataSetId': relationship.dataSets[0],

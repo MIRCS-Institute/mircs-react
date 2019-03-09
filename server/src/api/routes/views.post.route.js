@@ -3,7 +3,7 @@ const MongoUtil = require('../../utils/mongo-util.js')
 module.exports = function(router) {
   router.post('/api/views',
     require('../../middleware/require-sign-in'),
-    async function(req, res, next) {
+    async (req, res, next) => {
       const newView = req.body
       try {
         MongoUtil.validateView(newView)

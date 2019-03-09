@@ -4,18 +4,11 @@
 
 const MongoUtil = require('../../utils/mongo-util.js')
 
-module.exports = function(router) {
+module.exports = (router) => {
   router.delete('/api/datasets/:dataSetId/records',
     require('../../middleware/require-sign-in'),
-    function(req, res, next) {
-      if (!req.dataSet) {
-        return res.status(404).send({ error: 'No Data Set found with id ' + req.params.dataSetId })
-      }
-
+    (req, res, next) => {
       const collectionName = req.dataSet._collectionName
-      if (!collectionName) {
-        return res.status(500).send({ error: 'Data Set contains no _collectionName', dataSet: req.dataSet })
-      }
 
       let db
       MongoUtil.getDb()
@@ -28,7 +21,7 @@ module.exports = function(router) {
         .then(() => {
           return MongoUtil.refreshFields(db, collectionName)
         })
-        .then(function() {
+        .then(() => {
           res.status(200).send({ result: 'deleted' })
         })
         .catch(next)

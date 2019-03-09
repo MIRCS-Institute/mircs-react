@@ -3,7 +3,7 @@
 //
 // const _ = require('lodash')
 // const http = require('http')
-// _.each(http.STATUS_CODES, function(value, key) {
+// _.each(http.STATUS_CODES, (value, key) => {
 //   console.log(_.upperCase(value).replace(/ /g, '_') + '_' + key + ': ' + key + ',')
 // })
 //

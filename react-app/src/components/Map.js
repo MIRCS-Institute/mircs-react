@@ -304,7 +304,12 @@ const Map = observer(class extends React.Component {
   }
 
   getPolygonStyle = (geojson, foundPoints) => {
-    let fillColor = '#888'
+    let color = '#E6A224'
+    let fillColor = '#E8DDD4'
+    if (_.get(geojson.geometry, 'type') === 'Point') {
+      color = '#E8DDD4'
+      fillColor = '#E6A224'
+    }
     let found = false
     if (UiStore.searchStrings.length > 0) {
       const records = [ geojson.properties ]
@@ -347,10 +352,10 @@ const Map = observer(class extends React.Component {
     }
 
     return {
-      color: '#BB0707',
+      color,
+      fillColor,
       weight: 1,
       opacity: 0.25,
-      fillColor: fillColor,
       fillOpacity: 0.3,
     }
   }
