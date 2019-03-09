@@ -2,6 +2,7 @@ import { action, extendObservable } from 'mobx'
 import { CurrentDataSet, getCurrentDataSetId } from '../../api/DataSet'
 import { CurrentDataSetRecords } from '../../api/DataSetRecords'
 import { observer } from 'mobx-react'
+import { refreshDataSet } from '../../api/refreshDataSet'
 import { showSnackbarMessage } from '../../components/SnackbarMessages'
 import Button from '@material-ui/core/Button'
 import ConfirmDeleteDialog from '../../components/ConfirmDeleteDialog'
@@ -42,10 +43,10 @@ const ManageRecords = observer(class extends React.Component {
     this.showConfirmDeleteDialog = false
     const dataSetId = getCurrentDataSetId()
     ServerHttpApi.jsonDelete(`/api/datasets/${dataSetId}/records`)
-      .then(() => {
-        return CurrentDataSetRecords.res.refresh()
-      })
       .catch(showSnackbarMessage)
+      .then(() => {
+        return refreshDataSet(dataSetId)
+      })
   })
 
   handleViewModeChange = action((event) => {

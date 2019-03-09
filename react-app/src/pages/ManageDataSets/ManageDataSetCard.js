@@ -1,10 +1,8 @@
 import { action, extendObservable } from 'mobx'
-import { getDataSetFieldsRes } from '../../api/DataSetFields'
-import { getDataSetRecordsRes } from '../../api/DataSetRecords'
-import { getDataSetsRes } from '../../api/DataSets'
 import { getDataSetStatsRes } from '../../api/DataSetStats'
 import { goToPath, Path } from '../../app/App'
 import { observer } from 'mobx-react'
+import { refreshDataSet } from '../../api/refreshDataSet'
 import { showSnackbarMessage } from '../../components/SnackbarMessages'
 import _ from 'lodash'
 import Button from '@material-ui/core/Button'
@@ -35,9 +33,7 @@ const ManageDataSetCard = observer(class extends React.Component {
 
   refresh = () => {
     const dataSetId = this.props.dataSet._id
-    getDataSetRecordsRes(dataSetId).refresh()
-    getDataSetFieldsRes(dataSetId).refresh()
-    getDataSetStatsRes(dataSetId).refresh()
+    refreshDataSet(dataSetId)
   }
 
   handleDeleteClick = action(() => {
@@ -53,10 +49,10 @@ const ManageDataSetCard = observer(class extends React.Component {
     const { dataSet } = this.props
     const dataSetId = _.get(dataSet, '_id')
     ServerHttpApi.jsonDelete(`/api/datasets/${dataSetId}`)
-      .then(() => {
-        return getDataSetsRes().refresh()
-      })
       .catch(showSnackbarMessage)
+      .then(() => {
+        return refreshDataSet(dataSetId)
+      })
   })
 
   handleDeleteRecordsClick = action(() => {
@@ -72,10 +68,10 @@ const ManageDataSetCard = observer(class extends React.Component {
     const { dataSet } = this.props
     const dataSetId = _.get(dataSet, '_id')
     ServerHttpApi.jsonDelete(`/api/datasets/${dataSetId}/records`)
-      .then(action(() => {
-        this.refresh()
-      }))
       .catch(showSnackbarMessage)
+      .then(action(() => {
+        refreshDataSet(dataSetId)
+      }))
   })
 
   handleEditClick = action(() => {
@@ -89,7 +85,7 @@ const ManageDataSetCard = observer(class extends React.Component {
   handleEditAfterSave = action(() => {
     this.showEditDialog = false
     const dataSetId = this.props.dataSet._id
-    getDataSetRecordsRes(dataSetId).refresh()
+    refreshDataSet(dataSetId)
   })
 
   render() {
