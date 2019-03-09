@@ -177,9 +177,9 @@ const Map = observer(class extends React.Component {
           },
         })
           .addTo(this.markers)
-          .on('click', () => {
+          .on('click', (e) => {
             this.skipMapClick = true
-            this.updateSelected(null, record)
+            this.updateSelected(firstPoint, record, e)
           })
       } else {
         // This is not a polygon
@@ -355,11 +355,20 @@ const Map = observer(class extends React.Component {
     }
   }
 
-  updateSelected = action((point, record) => {
+  updateSelected = action((point, record, marker) => {
     const newSelected = {
       point: point,
       records: [],
+      marker: marker,
     }
+    if (UiStore.selected.marker) {
+      UiStore.selected.marker.layer._path.style.stroke = ''
+      UiStore.selected.marker.layer._path.style.strokeOpacity = ''
+      UiStore.selected.marker.layer._path.style.strokeWidth = ''
+    }
+    marker.layer._path.style.stroke = '#F00'
+    marker.layer._path.style.strokeOpacity = 1
+    marker.layer._path.style.strokeWidth = 4
     if (record.data) { // This is a server based relationship record
       record.data[0].forEach((d) => {
         newSelected.records.push(d)
