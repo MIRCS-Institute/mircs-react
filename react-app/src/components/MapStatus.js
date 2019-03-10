@@ -1,11 +1,15 @@
 import { CurrentDataSetRecords } from '../api/DataSetRecords'
-import { CurrentRelationshipRecords } from '../api/RelationshipRecords'
 import { observer } from 'mobx-react'
 import _ from 'lodash'
+import PropTypes from 'prop-types'
 import React from 'react'
-import UiStore from '../states/UiStore'
 
 const MapStatus = observer(class extends React.Component {
+
+  static propTypes = {
+    store: PropTypes.object,
+  }
+
   render() {
     let recordCount = 0
 
@@ -14,7 +18,7 @@ const MapStatus = observer(class extends React.Component {
       recordCount += dataSetRecords.length
 
     // This is the client side joined records
-    const relationshipRecords = CurrentRelationshipRecords.res.linkMap
+    const relationshipRecords = this.props.store.linkMap
     if (relationshipRecords) {
       _.each(relationshipRecords, (value) => {
         recordCount += value.length
@@ -23,7 +27,7 @@ const MapStatus = observer(class extends React.Component {
 
     return (
       <center>
-        {UiStore.points.length} properties
+        {this.props.store.points.length} properties
         -&nbsp;
         {recordCount} records
       </center>

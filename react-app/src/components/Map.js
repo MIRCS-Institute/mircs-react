@@ -1,7 +1,6 @@
 import {action, autorun, toJS} from 'mobx'
 import { CurrentDataSetRecords } from '../api/DataSetRecords'
 import { CurrentRelationshipJoin } from '../api/RelationshipJoin'
-import { CurrentRelationshipRecords } from '../api/RelationshipRecords'
 import { observer } from 'mobx-react'
 import { withStyles } from '@material-ui/core/styles'
 import _ from 'lodash'
@@ -9,7 +8,6 @@ import Layout from '../utils/Layout'
 import PropTypes from 'prop-types'
 import React from 'react'
 import turf from 'turf'
-import UiStore from '../states/UiStore'
 
 const L = window.L
 
@@ -17,6 +15,7 @@ const Map = observer(class extends React.Component {
 
   static propTypes = {
     selected: PropTypes.object.isRequired,
+    store: PropTypes.object,
   }
 
   constructor() {
@@ -27,7 +26,7 @@ const Map = observer(class extends React.Component {
   componentDidMount() {
     this.startMap()
     this.autorunDisposer = autorun(() => {
-      this.setupTileLayer(UiStore.tileLayerName)
+      this.setupTileLayer(this.props.store.tileLayerName)
     })
     this.autorunDisposer2 = autorun(() => {
       if (CurrentDataSetRecords.res.get('list', []).length + CurrentRelationshipJoin.res.get('list', []).length) {
@@ -55,14 +54,10 @@ const Map = observer(class extends React.Component {
         this.skipMapClick = false
         return
       }
-      UiStore.selected = {}
+      this.props.store.selected = {}
     }))
 
     L.control.scale({position: 'bottomleft'}).addTo(this.map)
-
-    this.setupTileLayer(UiStore.tileLayerName)
-
-    UiStore.reset()
   }
 
   stopMap = action(() => {
@@ -157,7 +152,6 @@ const Map = observer(class extends React.Component {
     // This is the deprecated list of server joined records
     const relationshipJoin = CurrentRelationshipJoin.res.get('list')
     // This is the client side joined records
-    //const relationshipRecords = CurrentRelationshipRecords.res.linkMap
     const records = dataSetRecords || relationshipJoin || []
 
     records.forEach((record) => {
@@ -192,9 +186,9 @@ const Map = observer(class extends React.Component {
 
           // Look for search terms, and use appropriate marker if term found
           // TODO: get smarter about how we search to improve performance.  Only search for latest search term, and don't reset the existing markers.  etc.
-          if (UiStore.searchStrings.length > 0) {
+          if (this.props.store.searchStrings.length > 0) {
             const recordString = JSON.stringify(record).toLowerCase()
-            UiStore.searchStrings.forEach((element, index) => {
+            this.props.store.searchStrings.forEach((element, index) => {
               if (element.includes(':')) {
                 // This is a specific field/value search such as 'Surname: Smith'
                 const separatorLocation = element.indexOf(':')
@@ -244,7 +238,7 @@ const Map = observer(class extends React.Component {
 
     this.markers.addTo(this.map)
 
-    UiStore.addFieldNames(records[0])
+    this.props.store.addFieldNames(records[0])
 
     if (foundPoints.length > 0) {
       this.centerMapOnPoints(foundPoints)
@@ -311,16 +305,15 @@ const Map = observer(class extends React.Component {
       fillColor = '#E6A224'
     }
     let found = false
-    if (UiStore.searchStrings.length > 0) {
+    if (this.props.store.searchStrings.length > 0) {
       const records = [ geojson.properties ]
       if (geojson._id) {
-        _.each(CurrentRelationshipRecords.res.linkMap[geojson._id], (linkRecord) => {
+        _.each(this.props.store.linkMap[geojson._id], (linkRecord) => {
           records.push(linkRecord)
         })
       }
 
-      UiStore.searchStrings.forEach((element, index) => {
-        //console.log('Searching for '+element)
+      this.props.store.searchStrings.forEach((element, index) => {
         if (element.includes(':')) {
           // This is a specific field/value search such as 'Surname: Smith'
           const separatorLocation = element.indexOf(':')
@@ -366,14 +359,21 @@ const Map = observer(class extends React.Component {
       records: [],
       marker: marker,
     }
-    if (UiStore.selected.marker) {
-      UiStore.selected.marker.layer._path.style.stroke = ''
-      UiStore.selected.marker.layer._path.style.strokeOpacity = ''
-      UiStore.selected.marker.layer._path.style.strokeWidth = ''
+
+    // De-emphasize previously selected marker if there was one.
+    const previousMarker = this.props.store.selected.marker
+    if (previousMarker) {
+      previousMarker.layer._path.style.stroke = ''
+      previousMarker.layer._path.style.strokeOpacity = ''
+      previousMarker.layer._path.style.strokeWidth = ''
     }
+
+    // Emphasize newly selected marker
     marker.layer._path.style.stroke = '#F00'
     marker.layer._path.style.strokeOpacity = 1
     marker.layer._path.style.strokeWidth = 4
+
+    // Gather up records related to selection
     if (record.data) { // This is a server based relationship record
       record.data[0].forEach((d) => {
         newSelected.records.push(d)
@@ -385,26 +385,26 @@ const Map = observer(class extends React.Component {
       newSelected.records.push(record)
       // Also check for local relationship records
       if (record._id) {
-        _.each(CurrentRelationshipRecords.res.linkMap[record._id], (linkRecord) => {
+        _.each(this.props.store.linkMap[record._id], (linkRecord) => {
           newSelected.records.push(linkRecord)
         })
       }
     }
-    UiStore.selected = newSelected
+    this.props.store.selected = newSelected
   })
 
   updatePoints = action((points) => {
-    UiStore.points = points
+    this.props.store.points = points
   })
 
   addFoundRecord = action( (record, index) => {
-    UiStore.foundRecords[index].push(record)
+    this.props.store.foundRecords[index].push(record)
   })
 
   resetFoundRecords = action( () => {
-    UiStore.foundRecords = []
-    UiStore.searchStrings.forEach(() => {
-      UiStore.foundRecords.push([])
+    this.props.store.foundRecords = []
+    this.props.store.searchStrings.forEach(() => {
+      this.props.store.foundRecords.push([])
     })
   })
 

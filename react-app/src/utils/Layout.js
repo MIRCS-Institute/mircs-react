@@ -63,6 +63,7 @@ Layout.colours = [
   '#91AF94',
   '#8C8C8C',
   '#465955',
+  'lightGrey',
 ]
 
 export default Layout

@@ -1,18 +1,22 @@
 import { action } from 'mobx'
 import { CurrentDataSetRecords } from '../api/DataSetRecords'
 import { CurrentRelationshipJoin } from '../api/RelationshipJoin'
-import {CurrentRelationshipRecords} from '../api/RelationshipRecords'
 import { observer } from 'mobx-react'
 import { withStyles } from '@material-ui/core/styles'
 import _ from 'lodash'
 import Chip from '@material-ui/core/Chip'
 import Layout from '../utils/Layout'
 import MenuItem from '@material-ui/core/MenuItem'
+import PropTypes from 'prop-types'
 import React from 'react'
 import TextField from '@material-ui/core/TextField'
-import UiStore from '../states/UiStore'
 
 const MapFilter = observer(class extends React.Component {
+
+  static propTypes = {
+    store: PropTypes.object,
+  }
+
   handleKeyDown = (event) => {
     if (event.key === 'Enter') {
       event.preventDefault()
@@ -22,12 +26,12 @@ const MapFilter = observer(class extends React.Component {
   };
 
   handleTileLayerNameChange = action((event) => {
-    UiStore.tileLayerName = event.target.value
+    this.props.store.tileLayerName = event.target.value
   })
 
   handleFieldNameHighlighting = action( (event) => {
     // This counts the distinct values in the selected field, then sorts by the most common values.
-    UiStore.highlightField = event.target.value
+    this.props.store.highlightField = event.target.value
     let valueCounts = [] // An array of objects used to keep a count of each of all of the values of this field, eg {value:'foo',count:7}
     let thisValue
 
@@ -43,7 +47,7 @@ const MapFilter = observer(class extends React.Component {
       })
     })
 
-    const linkMap = CurrentRelationshipRecords.res.linkMap
+    const linkMap = this.props.store.linkMap
     _.each(linkMap, (value) => {
       _.each(value, (card) => {
         thisValue = _.get(card, event.target.value) // Try to find the value of the requested field in the current card
@@ -52,10 +56,10 @@ const MapFilter = observer(class extends React.Component {
     })
 
     valueCounts = _.sortBy(valueCounts, (o) => -o.count)
-    UiStore.searchStrings = []
+    this.props.store.searchStrings = []
     for (let i=0; i<7; i++) {
       if (valueCounts[i]) {
-        UiStore.searchStrings.push(event.target.value + ': ' + valueCounts[i].value)
+        this.props.store.searchStrings.push(event.target.value + ': ' + valueCounts[i].value)
       }
     }
     if (valueCounts.length>7) {
@@ -63,7 +67,7 @@ const MapFilter = observer(class extends React.Component {
       for (let i=7; i<valueCounts.length; i++) {
         otherCount += valueCounts[i].count
       }
-      UiStore.searchStrings.push('Other ('+otherCount+')')
+      this.props.store.searchStrings.push('Other ('+otherCount+')')
     }
   })
 
@@ -82,10 +86,10 @@ const MapFilter = observer(class extends React.Component {
 
   handleSearchSubmit = action( (event) => {
     if (event.target.value) {
-      if (UiStore.searchStrings) {
-        if (!UiStore.searchStrings.includes(event.target.value)) {
-          UiStore.searchStrings.push(event.target.value)
-          UiStore.foundRecords.push([])
+      if (this.props.store.searchStrings) {
+        if (!this.props.store.searchStrings.includes(event.target.value)) {
+          this.props.store.searchStrings.push(event.target.value)
+          this.props.store.foundRecords.push([])
         }
         event.target.value = ''
       }
@@ -95,16 +99,15 @@ const MapFilter = observer(class extends React.Component {
   handleSearchDelete =
     action(
       (data) => {
-        if (UiStore.searchStrings) {
-          const deletedIndex = UiStore.searchStrings.indexOf(data)
-          UiStore.searchStrings.splice(deletedIndex, 1)
-          UiStore.foundRecords.splice(deletedIndex, 1)
+        if (this.props.store.searchStrings) {
+          const deletedIndex = this.props.store.searchStrings.indexOf(data)
+          this.props.store.searchStrings.splice(deletedIndex, 1)
+          this.props.store.foundRecords.splice(deletedIndex, 1)
         }
       });
 
   render() {
     const { classes } = this.props
-    const store = UiStore
 
     return (
       <form className={classes.container} noValidate autoComplete='off'>
@@ -114,7 +117,7 @@ const MapFilter = observer(class extends React.Component {
           select
           label='Tile Layer'
           className={classes.mapOptions}
-          value={store.tileLayerName}
+          value={this.props.store.tileLayerName}
           onChange={this.handleTileLayerNameChange}
           SelectProps={{
             MenuProps: {
@@ -145,7 +148,7 @@ const MapFilter = observer(class extends React.Component {
           select
           label='Highligh Fields'
           className={classes.mapOptions}
-          value={store.highlightField}
+          value={this.props.store.highlightField}
           onChange={this.handleFieldNameHighlighting}
           SelectProps={{
             MenuProps: {
@@ -159,7 +162,7 @@ const MapFilter = observer(class extends React.Component {
           <MenuItem key='none' value='none' name='none'>
             None
           </MenuItem>
-          {store.fieldNames.map((data, i) => {
+          {this.props.store.fieldNames.map((data, i) => {
             return (
               <MenuItem key={i} value={data} name={data}>
                 {data}
@@ -181,8 +184,8 @@ const MapFilter = observer(class extends React.Component {
         />
 
         <div className={classes.root}>
-          {store.searchStrings.map( (data, i) => {
-            let labelValue = data + ' (' + UiStore.foundRecords[i].length + ')'
+          {this.props.store.searchStrings.map( (data, i) => {
+            let labelValue = data + ' (' + this.props.store.foundRecords[i].length + ')'
             let isDeletable = true
             if (data.startsWith('Other')) {
               labelValue = data

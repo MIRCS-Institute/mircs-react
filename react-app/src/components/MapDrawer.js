@@ -11,12 +11,12 @@ import PropTypes from 'prop-types'
 import React from 'react'
 import StreetviewCard from './StreetviewCard'
 import Typography from '@material-ui/core/Typography'
-import UiStore from '../states/UiStore'
 
 const MapDrawer = observer(class extends React.Component {
 
   static propTypes = {
     theme: PropTypes.object.isRequired,
+    store: PropTypes.object.isRequired,
   }
 
   state = {
@@ -37,16 +37,16 @@ const MapDrawer = observer(class extends React.Component {
 
     let pieChart = null
 
-    if (UiStore.highlightField !== 'none') {
+    if (this.props.store.highlightField !== 'none') {
       const pieChartData = []
-      for (let i=0; i<UiStore.foundRecords.length; i++) {
-        pieChartData.push({ color: Layout.colours[i], value: UiStore.foundRecords[i].length })
+      for (let i=0; i<this.props.store.foundRecords.length; i++) {
+        pieChartData.push({ color: Layout.colours[i], value: this.props.store.foundRecords[i].length })
       }
-      if (UiStore.searchStrings.length>7) {
-        pieChartData.push({ color: Layout.colours[7], value: UiStore.getOtherCount() })
+      if (this.props.store.searchStrings.length>7) {
+        pieChartData.push({ color: Layout.colours[7], value: this.props.store.getOtherCount() })
       }
       pieChart = <div>
-        <Typography variant='h5' align='center'>{UiStore.highlightField}</Typography>
+        <Typography variant='h5' align='center'>Foo</Typography>
         <PieChart
           slices={pieChartData}
         />
@@ -54,7 +54,7 @@ const MapDrawer = observer(class extends React.Component {
     }
 
 
-    if (UiStore.selected.records && UiStore.selected.records.length > 0) {
+    if (this.props.store.selected.records && this.props.store.selected.records.length > 0) {
       return (
         <Paper
           anchor='left'
@@ -67,9 +67,9 @@ const MapDrawer = observer(class extends React.Component {
         >
           {pieChart}
 
-          <Typography variant='h6' align='center'>{UiStore.selected.records.length} records at selected location.</Typography>
+          <Typography variant='h6' align='center'>{this.props.store.selected.records.length} records at selected location.</Typography>
 
-          {UiStore.selected.records.map((record, i) => (
+          {this.props.store.selected.records.map((record, i) => (
             <Card className={classes.card} key={i}>
               <CardContent>
                 {_.map(record.properties || record, (value, field) => {
@@ -79,8 +79,8 @@ const MapDrawer = observer(class extends React.Component {
 
                   // highlight any search terms within the card
                   let __html = linkifyHtml(''+value)
-                  UiStore.searchStrings.forEach((s, i) => {
-                    let searchString = UiStore.searchStrings[i]
+                  this.props.store.searchStrings.forEach((s, i) => {
+                    let searchString = this.props.store.searchStrings[i]
                     if (searchString.includes(':')) {
                       const separatorLocation = searchString.indexOf(':')
                       const highlightField = searchString.substring(0, separatorLocation)
@@ -89,7 +89,7 @@ const MapDrawer = observer(class extends React.Component {
                         __html = '<span class="search' + i + '">' + value + '</span>'
                       }
                     } else {
-                      const regex = new RegExp(UiStore.searchStrings[i], 'giy')
+                      const regex = new RegExp(this.props.store.searchStrings[i], 'giy')
                       while (regex.test(__html)) {
                         __html = __html.substring(0, regex.lastIndex - RegExp.lastMatch.length)
                           + '<span class="search' + i + '">' + RegExp.lastMatch + '</span>'
@@ -107,7 +107,7 @@ const MapDrawer = observer(class extends React.Component {
             </Card>
           ))}
 
-          <StreetviewCard/>
+          <StreetviewCard store={this.props.store}/>
 
         </Paper>
       )
