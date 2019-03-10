@@ -1,6 +1,6 @@
 import { action, extendObservable } from 'mobx'
-import { CurrentDataSetRecords } from '../../api/DataSetRecords'
 import { observer } from 'mobx-react'
+import { refreshDataSet } from '../../api/refreshDataSet'
 import { showSnackbarMessage } from '../../components/SnackbarMessages'
 import Button from '@material-ui/core/Button'
 import ConfirmDeleteDialog from '../../components/ConfirmDeleteDialog'
@@ -30,10 +30,11 @@ const RecordDeleteButton = observer(class extends React.Component {
   })
 
   handleDeleteConfirm = action(() => {
+    const { dataSetId, recordId } = this.props
     this.showConfirmDeleteDialog = false
-    ServerHttpApi.jsonDelete(`/api/datasets/${this.props.dataSetId}/records/${this.props.recordId}`)
+    ServerHttpApi.jsonDelete(`/api/datasets/${dataSetId}/records/${recordId}`)
       .then(() => {
-        return CurrentDataSetRecords.res.refresh()
+        return refreshDataSet(dataSetId)
       })
       .catch(showSnackbarMessage)
   })
@@ -44,10 +45,10 @@ const RecordDeleteButton = observer(class extends React.Component {
         Delete Record
       </Button>
 
-      <ConfirmDeleteDialog 
+      <ConfirmDeleteDialog
         open={this.showConfirmDeleteDialog}
-        name={this.props.recordId} 
-        onConfirm={this.handleDeleteConfirm} 
+        name={this.props.recordId}
+        onConfirm={this.handleDeleteConfirm}
         onCancel={this.handleDeleteCancel}
       />
     </div>

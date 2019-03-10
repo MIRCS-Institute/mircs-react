@@ -1,8 +1,10 @@
 const _ = require('lodash')
 const Environment = require('../utils/environment.js')
 const HttpErrors = require('./http-errors')
-const MongoClient = require('mongodb').MongoClient
-const ObjectID = require('mongodb').ObjectID
+const MongoDB = require('mongodb')
+
+const MongoClient = MongoDB.MongoClient
+const ObjectID = MongoDB.ObjectID
 
 const MONGO_SERVER_URL = Environment.getRequired('MONGO_SERVER_URL')
 
@@ -23,7 +25,7 @@ our database.
 @see https://mongodb.github.io/node-mongodb-native/2.2/api/Db.html
 
 @see https://mongodb.github.io/node-mongodb-native/driver-articles/mongoclient.html#mongoclient-connection-pooling
-  "To reduce the number of connection pools created by your application, we recommend calling 
+  "To reduce the number of connection pools created by your application, we recommend calling
   MongoClient.connect once and reusing the database variable returned by the callback"
 */
 const getDb = async () => {
@@ -118,8 +120,8 @@ const deleteById = async (collectionName, id) => {
 /*
 update the fields collection associated with a collection
 */
-const refreshFields = (db, collectionName) => {
-  return new Promise((resolve, reject) => {
+const refreshFields = async (db, collectionName) => {
+  const fields = await new Promise((resolve, reject) => {
     const cursor = db.collection(collectionName).find()
     const fields = {}
     cursor.each((err, item) => {
@@ -138,23 +140,22 @@ const refreshFields = (db, collectionName) => {
       }
 
       _.each(item, (value, key) => {
-        fields[key] = typeof this[key]
+        if (value) {
+          fields[key] = typeof value
+        }
       })
     })
   })
-    .then((fields) => {
-      const fieldsCollection = db.collection(collectionName + DATA_SETS_FIELDS_COLLECTION_SUFFIX)
-      return fieldsCollection.remove({})
-        .then(() => {
-          const fieldDocs = []
-          _.each(fields, (value, key) => {
-            fieldDocs.push({ _id: key, value: value })
-          })
-          if (fieldDocs.length > 0) {
-            return fieldsCollection.insertMany(fieldDocs)
-          }
-        })
-    })
+
+  const fieldsCollection = db.collection(collectionName + DATA_SETS_FIELDS_COLLECTION_SUFFIX)
+  await fieldsCollection.remove({})
+  const fieldDocs = []
+  _.each(fields, (type, _id) => {
+    fieldDocs.push({ _id, type })
+  })
+  if (fieldDocs.length > 0) {
+    return await fieldsCollection.insertMany(fieldDocs)
+  }
 }
 
 /*
@@ -258,7 +259,7 @@ module.exports = {
   toObjectID,
   findById,
   deleteById,
-  
+
   initialize,
   validateRelationship,
   validateView,

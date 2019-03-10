@@ -1,4 +1,5 @@
 import { action, extendObservable, toJS } from 'mobx'
+import { getDataSetFieldsRes } from '../../api/DataSetFields'
 import { observer } from 'mobx-react'
 import { showSnackbarMessage } from '../../components/SnackbarMessages'
 import _ from 'lodash'
@@ -8,6 +9,7 @@ import Dialog from '@material-ui/core/Dialog'
 import DialogActions from '@material-ui/core/DialogActions'
 import DialogContent from '@material-ui/core/DialogContent'
 import DialogTitle from '@material-ui/core/DialogTitle'
+import ensureString from '../../utils/ensureString'
 import PropTypes from 'prop-types'
 import React from 'react'
 import ServerHttpApi from '../../api/net/ServerHttpApi'
@@ -34,8 +36,9 @@ const EditDataSetDialog = observer(class extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (this.props.open && !prevProps.open) {
-      const dataSetCopy = _.clone(this.props.dataSet) || {}
+    const { open, dataSet } = this.props
+    if (open && !prevProps.open) {
+      const dataSetCopy = _.clone(dataSet) || {}
       ensureString(dataSetCopy, 'name')
       ensureString(dataSetCopy, 'description')
 
@@ -45,12 +48,6 @@ const EditDataSetDialog = observer(class extends React.Component {
 
         this.isSaving = false
       })()
-    }
-
-    function ensureString(object, field) {
-      if (!_.isString(object[field])) {
-        object[field] = ''
-      }
     }
   }
 
@@ -91,8 +88,17 @@ const EditDataSetDialog = observer(class extends React.Component {
   }
 
   render() {
+    const { open, onCancel, dataSet } = this.props
+    if (!open) {
+      return null
+    }
+
+    const dataSetId = dataSet._id
+    const dataSetFields = getDataSetFieldsRes(dataSetId).get('list', [])
+    console.log('dataSetFields', toJS(dataSetFields))
+
     return (
-      <Dialog open={this.props.open} fullWidth={true}>
+      <Dialog open={open} fullWidth={true}>
         <DialogTitle>{this.isCreate ? 'Create Data Set' : 'Edit Data Set'}</DialogTitle>
         <DialogContent>
           <TextField autoFocus margin='dense' label='name' type='text' fullWidth
@@ -101,7 +107,7 @@ const EditDataSetDialog = observer(class extends React.Component {
             value={this.dataSet.description} onChange={this.handleFieldChange('description')}/>
         </DialogContent>
         <DialogActions>
-          <Button onClick={this.props.onCancel} color='primary' disabled={this.isSaving}>
+          <Button onClick={onCancel} color='primary' disabled={this.isSaving}>
             Cancel
           </Button>
           <Button onClick={this.handleSave} color='secondary' disabled={!this.canSave()}>

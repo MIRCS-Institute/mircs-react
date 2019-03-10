@@ -41,32 +41,42 @@ const ConfirmDeleteDialog = observer(class extends React.Component {
 
   isDeleteDisabled = () => (this.confirmFieldValue !== 'delete')
 
+  handleCancel = action(() => {
+    this.confirmFieldValue = ''
+    this.props.onCancel()
+  })
+
+  handleConfirm = action(() => {
+    this.confirmFieldValue = ''
+    this.props.onConfirm()
+  })
+
   render() {
-    const { name, onCancel, onConfirm, open } = this.props
+    const { name, open } = this.props
 
     return (
-      <Dialog open={open} onClose={onCancel} disableBackdropClick>
+      <Dialog open={open} onClose={this.handleCancel} disableBackdropClick>
         <DialogTitle>Delete {name}</DialogTitle>
         <DialogContent>
           <DialogContentText>
             To delete {name} enter 'delete' below:
           </DialogContentText>
-          <TextField 
-            id='delete' 
-            type='text' 
-            autoFocus 
-            margin='dense' 
+          <TextField
+            id='delete'
+            type='text'
+            autoFocus
+            margin='dense'
             fullWidth
-            label='enter "delete"' 
-            value={this.confirmFieldValue} 
+            label='enter "delete"'
+            value={this.confirmFieldValue}
             onChange={this.handleTextChange}
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={onCancel} color='primary'>
+          <Button onClick={this.handleCancel} color='primary'>
             Cancel
           </Button>
-          <Button onClick={onConfirm} color='secondary' disabled={this.isDeleteDisabled()}>
+          <Button onClick={this.handleConfirm} color='secondary' disabled={this.isDeleteDisabled()}>
             Delete
           </Button>
         </DialogActions>

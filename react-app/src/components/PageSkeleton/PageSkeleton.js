@@ -4,7 +4,7 @@ import { Path } from '../../app/App'
 import AppBar from '@material-ui/core/AppBar'
 import AuthMenu from './AuthMenu'
 import Layout from '../../utils/Layout'
-import MircsLogo from '../../resources/mircs-logo.png'
+import MircsLogo from '../../resources/mircs-logo-white.svg'
 import PropTypes from 'prop-types'
 import React from 'react'
 import SignedInUser from '../../states/SignedInUser'
@@ -23,7 +23,7 @@ const PageSkeleton = observer(class extends React.Component {
       <AppBar>
         <Toolbar disableGutters={true} style={{ paddingRight: 8 }}>
           <NavLink to={Path.home()} style={{ textDecoration: 'none' }}>
-            <img src={MircsLogo} alt='MIRCS Logo' style={{ height: 32, paddingRight: 8 }}/>
+            <img src={MircsLogo} alt='MIRCS Logo' style={{ height: 36, paddingLeft: 8, paddingRight: 12 }}/>
           </NavLink>
 
           <Typography variant='title' color='inherit' noWrap>
