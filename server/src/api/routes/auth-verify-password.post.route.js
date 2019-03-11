@@ -8,7 +8,7 @@ const bcrypt = require('bcrypt')
 const Environment = require('../../utils/environment.js')
 const HttpErrors = require('../../utils/http-errors.js')
 const jwt = require('jsonwebtoken')
-const MongoUtil = require('../../utils/mongo-util.js')
+const DataUtil = require('../../utils/data-util.js')
 
 const JWT_SECRET_KEY = Environment.getRequired('JWT_SECRET_KEY')
 
@@ -27,7 +27,7 @@ module.exports = (router) => {
       }
 
       try {
-        const authDoc = (await MongoUtil.find(MongoUtil.AUTHENTICATION_COLLECTION, { email }))[0]
+        const authDoc = (await DataUtil.find(DataUtil.AUTHENTICATION_COLLECTION, { email }))[0]
         if (!authDoc) {
           return next(HttpErrors.unauthorized401(`no user exists with email '${email}'`))
         }

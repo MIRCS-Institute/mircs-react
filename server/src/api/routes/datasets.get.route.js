@@ -8,14 +8,17 @@
   - later we'll add filter parameters, for example search by DataSet name/description for type-ahead results
 */
 
-const MongoUtil = require('../../utils/mongo-util.js')
+const DataUtil = require('../../utils/data-util.js')
 
 module.exports = function(router) {
-  router.get('/api/datasets',
-    (req, res, next) => {
-      MongoUtil.find(MongoUtil.DATA_SETS_COLLECTION, {})
-        .then((dataSets) => {
-          res.status(200).send({ list: dataSets })
-        }, next)
-    })
+  router.get('/api/datasets', getDataSets)
+}
+
+const getDataSets = async (req, res, next) => {
+  try {
+    const dataSets = await DataUtil.find(DataUtil.DATA_SETS_COLLECTION, {})
+    res.status(200).send({ list: dataSets })
+  } catch (exception) {
+    next(exception)
+  }
 }

@@ -2,7 +2,7 @@
   - delete single record from a DataSet
 */
 
-const MongoUtil = require('../../utils/mongo-util.js')
+const DataUtil = require('../../utils/data-util.js')
 
 module.exports = function(router) {
   router.delete('/api/datasets/:dataSetId/records/:recordId',
@@ -11,16 +11,16 @@ module.exports = function(router) {
       const collectionName = req.dataSet._collectionName
 
       let db
-      MongoUtil.getDb()
+      DataUtil.getDb()
         .then((theDb) => {
           db = theDb
 
           const dataSetCollection = db.collection(collectionName)
-          const _id = MongoUtil.toObjectID(req.params.recordId)
+          const _id = DataUtil.toObjectID(req.params.recordId)
           return dataSetCollection.deleteOne({ _id })
         })
         .then(() => {
-          return MongoUtil.refreshFields(db, collectionName)
+          return DataUtil.refreshFields(db, collectionName)
         })
         .then(() => {
           res.status(200).send({ result: 'deleted' })

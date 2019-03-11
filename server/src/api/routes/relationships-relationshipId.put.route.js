@@ -3,7 +3,7 @@
 */
 
 const _ = require('lodash')
-const MongoUtil = require('../../utils/mongo-util.js')
+const DataUtil = require('../../utils/data-util.js')
 
 module.exports = function(router) {
   router.put('/api/relationships/:relationshipId',
@@ -11,7 +11,7 @@ module.exports = function(router) {
     (req, res, next) => {
       const updatedRelationship = _.clone(req.body)
       try {
-        MongoUtil.validateRelationship(updatedRelationship)
+        DataUtil.validateRelationship(updatedRelationship)
       } catch (exception) {
         return res.status(400).send(exception.message)
       }
@@ -23,10 +23,10 @@ module.exports = function(router) {
 
       let db
       let relationshipCollection
-      MongoUtil.getDb()
+      DataUtil.getDb()
         .then((theDb) => {
           db = theDb
-          relationshipCollection = db.collection(MongoUtil.RELATIONSHIPS_COLLECTION)
+          relationshipCollection = db.collection(DataUtil.RELATIONSHIPS_COLLECTION)
 
           return relationshipCollection.updateOne({ _id: updatedRelationship._id }, updatedRelationship)
         })

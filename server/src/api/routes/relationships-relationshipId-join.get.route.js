@@ -2,12 +2,12 @@
   - fetch the joined data for a Relationship
 */
 
-const MongoUtil = require('../../utils/mongo-util.js')
+const DataUtil = require('../../utils/data-util.js')
 
 module.exports = function (router) {
   router.get('/api/relationships/:relationshipId/join',
     (req, res) => {
-      MongoUtil.joinRecords(req.relationship).then((joinedRecords) => {
+      DataUtil.joinRecords(req.relationship).then((joinedRecords) => {
         res.status(200).send(joinedRecords)
       })
     })

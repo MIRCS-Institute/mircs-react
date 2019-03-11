@@ -2,19 +2,19 @@
   - delete a Relationship
 */
 
-const MongoUtil = require('../../utils/mongo-util.js')
+const DataUtil = require('../../utils/data-util.js')
 
 module.exports = function(router) {
   router.delete('/api/relationships/:relationshipId',
     require('../../middleware/require-sign-in'),
     (req, res, next) => {
       let db
-      MongoUtil.getDb()
+      DataUtil.getDb()
         .then((theDb) => {
           db = theDb
 
-          const relationshipsCollection = db.collection(MongoUtil.RELATIONSHIPS_COLLECTION)
-          const _id = MongoUtil.toObjectID(req.params.relationshipId)
+          const relationshipsCollection = db.collection(DataUtil.RELATIONSHIPS_COLLECTION)
+          const _id = DataUtil.toObjectID(req.params.relationshipId)
           return relationshipsCollection.deleteOne({ _id })
         })
         .then(() => {

@@ -1,5 +1,5 @@
 const _ = require('lodash')
-const MongoUtil = require('../../utils/mongo-util.js')
+const DataUtil = require('../../utils/data-util.js')
 
 module.exports = (router) => {
   router.put('/api/views/:viewId',
@@ -7,7 +7,7 @@ module.exports = (router) => {
     async (req, res, next) => {
       const updatedView = _.clone(req.body)
       try {
-        MongoUtil.validateView(updatedView)
+        DataUtil.validateView(updatedView)
       } catch (exception) {
         return res.status(400).send(exception.message)
       }
@@ -18,8 +18,8 @@ module.exports = (router) => {
         updatedView.createdAt = req.view.createdAt
         updatedView.updatedAt = new Date()
 
-        const db = await MongoUtil.getDb()
-        const viewCollection = db.collection(MongoUtil.VIEWS_COLLECTION)
+        const db = await DataUtil.getDb()
+        const viewCollection = db.collection(DataUtil.VIEWS_COLLECTION)
         await viewCollection.updateOne({ _id: updatedView._id }, updatedView)
         res.status(200).send(updatedView)
       } catch (exception) {

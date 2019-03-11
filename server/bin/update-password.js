@@ -1,5 +1,5 @@
 const bcrypt = require('bcrypt')
-const MongoUtil = require('../src/utils/mongo-util.js')
+const DataUtil = require('../src/utils/data-util.js')
 const validator = require('validator')
 
 if (process.argv.length !== 4) {
@@ -27,11 +27,11 @@ const createUser = async () => {
     printUsage()
   }
 
-  await MongoUtil.initialize()
+  await DataUtil.initialize()
 
-  const db = await MongoUtil.getDb()
+  const db = await DataUtil.getDb()
   try {
-    const authCollection = db.collection(MongoUtil.AUTHENTICATION_COLLECTION)
+    const authCollection = db.collection(DataUtil.AUTHENTICATION_COLLECTION)
 
     const authDoc = await authCollection.findOne({ email })
     if (!authDoc) {

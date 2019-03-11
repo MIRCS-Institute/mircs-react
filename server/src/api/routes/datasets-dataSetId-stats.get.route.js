@@ -1,29 +1,28 @@
-/*
-  - retrieves statistics about Data Set records
-*/
-
 const _ = require('lodash')
-const MongoUtil = require('../../utils/mongo-util.js')
+const DataUtil = require('../../utils/data-util.js')
 
-module.exports = (router) => {
-  router.get('/api/datasets/:dataSetId/stats',
-    (req, res, next) => {
-      const collectionName = req.dataSet._collectionName
+module.exports = (router) => router.get('/api/datasets/:dataSetId/stats',
+  getDataSetStats)
 
-      let db
-      MongoUtil.getDb()
-        .then((theDb) => {
-          db = theDb
-          return db.collection(collectionName).stats()
-        })
-        .then((collectionStats) => {
-          // return the subset of the fields returned by MongoDB stats that are of interest to clients
-          const result = _.pick(collectionStats, [
-            'size', 'count', 'storageSize',
-          ])
+async function getDataSetStats(req, res, next) {
+  try {
+    const collectionName = req.dataSet._collectionName
 
-          res.status(200).send(result)
-        })
-        .catch(next)
-    })
+    const db = await DataUtil.getDb()
+    const collectionStats = await db.collection(collectionName).stats()
+    // return the subset of the fields returned by MongoDB stats that are of interest to clients
+    const result = _.pick(collectionStats, [
+      'size',
+      'count',
+      'avgObjSize',
+      'storageSize',
+      'nindexes',
+      'totalIndexSize',
+      'capped',
+    ])
+
+    res.status(200).send(result)
+  } catch (exception) {
+    next(exception)
+  }
 }

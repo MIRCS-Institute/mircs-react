@@ -5,7 +5,7 @@
 */
 
 const _ = require('lodash')
-const MongoUtil = require('../../utils/mongo-util.js')
+const DataUtil = require('../../utils/data-util.js')
 
 module.exports = function(router) {
   router.post('/api/datasets',
@@ -20,16 +20,16 @@ module.exports = function(router) {
       let db
       let dataSetCollection
       let dataSet
-      MongoUtil.getDb()
+      DataUtil.getDb()
         .then((theDb) => {
           db = theDb
-          dataSetCollection = db.collection(MongoUtil.DATA_SETS_COLLECTION)
+          dataSetCollection = db.collection(DataUtil.DATA_SETS_COLLECTION)
           return dataSetCollection.insertOne(newDataSet)
         })
         .then((result) => {
           dataSet = result.ops[0]
 
-          dataSet._collectionName = MongoUtil.DATA_SETS_COLLECTION_PREFIX + dataSet._id
+          dataSet._collectionName = DataUtil.DATA_SETS_COLLECTION_PREFIX + dataSet._id
 
           return dataSetCollection.updateOne({ _id: dataSet._id }, dataSet)
         })

@@ -1,6 +1,6 @@
 const bcrypt = require('bcrypt')
 const validator = require('validator')
-const MongoUtil = require('../src/utils/mongo-util.js')
+const DataUtil = require('../src/utils/data-util.js')
 
 if (process.argv.length !== 4) {
   printUsage()
@@ -27,12 +27,12 @@ const createUser = async () => {
     printUsage()
   }
 
-  await MongoUtil.initialize()
+  await DataUtil.initialize()
 
-  const db = await MongoUtil.getDb()
+  const db = await DataUtil.getDb()
   try {
     const hash = await bcrypt.hash(password, SALT_ROUNDS)
-    await db.collection(MongoUtil.AUTHENTICATION_COLLECTION).insertOne({
+    await db.collection(DataUtil.AUTHENTICATION_COLLECTION).insertOne({
       createdAt: new Date(),
       updatedAt: new Date(),
       email,
