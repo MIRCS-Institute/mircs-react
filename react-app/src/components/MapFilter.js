@@ -57,17 +57,10 @@ const MapFilter = observer(class extends React.Component {
 
     valueCounts = _.sortBy(valueCounts, (o) => -o.count)
     this.props.store.searchStrings = []
-    for (let i=0; i<7; i++) {
+    for (let i=0; i<valueCounts.length; i++) {
       if (valueCounts[i]) {
         this.props.store.searchStrings.push(event.target.value + ': ' + valueCounts[i].value)
       }
-    }
-    if (valueCounts.length>7) {
-      let otherCount = 0
-      for (let i=7; i<valueCounts.length; i++) {
-        otherCount += valueCounts[i].count
-      }
-      this.props.store.searchStrings.push('Other ('+otherCount+')')
     }
   })
 
@@ -96,18 +89,30 @@ const MapFilter = observer(class extends React.Component {
     }
   })
 
-  handleSearchDelete =
-    action(
-      (data) => {
-        if (this.props.store.searchStrings) {
-          const deletedIndex = this.props.store.searchStrings.indexOf(data)
-          this.props.store.searchStrings.splice(deletedIndex, 1)
-          this.props.store.foundRecords.splice(deletedIndex, 1)
-        }
-      });
+  handleSearchDelete = action( (data) => {
+    if (this.props.store.searchStrings) {
+      const deletedIndex = this.props.store.searchStrings.indexOf(data)
+      this.props.store.searchStrings.splice(deletedIndex, 1)
+    }
+  });
 
   render() {
     const { classes } = this.props
+
+    let otherChip = ''
+    if (this.props.store.searchStrings.length>0) {
+      const otherChipStyle = {
+        margin: 5,
+        backgroundColor: Layout.colours[7],
+      }
+      const otherLabel = 'Other: ' + this.props.store.getOtherCount
+      otherChip = <Chip
+        key='Other'
+        label={otherLabel}
+        style={otherChipStyle}
+        color='default'
+      />
+    }
 
     return (
       <form className={classes.container} noValidate autoComplete='off'>
@@ -186,10 +191,8 @@ const MapFilter = observer(class extends React.Component {
         <div className={classes.root}>
           {this.props.store.searchStrings.map( (data, i) => {
             let labelValue = data + ' (' + this.props.store.foundRecords[i].length + ')'
-            let isDeletable = true
             if (data.startsWith('Other')) {
               labelValue = data
-              isDeletable = false
             }
             const divStyle = {
               margin: 5,
@@ -198,7 +201,7 @@ const MapFilter = observer(class extends React.Component {
             let colour = 'primary'
             if ([1,2,5].indexOf(i) > -1)
               colour = 'default'
-            if (isDeletable) {
+            if (i<7) {
               return (
                 <Chip
                   key={data}
@@ -209,16 +212,10 @@ const MapFilter = observer(class extends React.Component {
                 />
               )
             } else {
-              return (
-                <Chip
-                  key={data}
-                  label={labelValue}
-                  style={divStyle}
-                  color={colour}
-                />
-              )
+              return ''
             }
           })}
+          {otherChip}
         </div>
       </form>
     )
