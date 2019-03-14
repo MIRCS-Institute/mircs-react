@@ -1,4 +1,4 @@
-import { action, autorun, extendObservable } from 'mobx'
+import { action, autorun, computed, extendObservable } from 'mobx'
 import { CurrentDataSetRecords, getDataSetRecordsRes } from '../api/DataSetRecords'
 import { getCurrentDataSetId } from '../api/DataSet'
 import { getRelationshipsRes } from '../api/Relationships'
@@ -26,6 +26,9 @@ const BaseMap = observer(class extends React.Component {
       // An array of arrays of records, each corresponding to the searchString at the same index
       foundRecords: [],
 
+      // An array of all of the other records that are not found.
+      otherRecords: [],
+
       // An array of points, each of which is a two value array of lat/long coordinates. ie [ [45, 126], [47, 123] ]
       points: [],
 
@@ -42,14 +45,25 @@ const BaseMap = observer(class extends React.Component {
     })
   }
 
+  // This is a full map reset.
   reset = action( () => {
     this.tileLayerName = 'Mapbox Light'
     this.searchStrings = []
     this.fieldNames = []
     this.highlightField = 'none'
     this.foundRecords = []
+    this.otherRecords = []
     this.points = []
     this.selected = {}
+  })
+
+  // This is called when the highlight field is set to none.  As in, not a full map reset, but just the search terms.
+  resetFoundRecords = action( () => {
+    this.foundRecords = []
+    this.otherRecords = []
+    this.searchStrings.forEach(() => {
+      this.foundRecords.push([])
+    })
   })
 
   addFieldNames = action((record) => {
@@ -70,14 +84,13 @@ const BaseMap = observer(class extends React.Component {
     }
   })
 
-  getOtherCount = () => {
-    if (this.searchStrings.length<7) {
-      return 0
-    } else {
-      const otherString = this.searchStrings[7]
-      return parseInt(otherString.substring(otherString.lastIndexOf('(') + 1, otherString.lastIndexOf(')')))
+  getOtherCount = computed(() => {
+    let otherCount = this.otherRecords.length
+    for (let i=7; i<this.searchStrings.length; i++) {
+      otherCount += this.foundRecords[i].length
     }
-  }
+    return otherCount
+  })
 
   linkMap = {}
 

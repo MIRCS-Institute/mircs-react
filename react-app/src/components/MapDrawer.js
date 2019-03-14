@@ -39,12 +39,13 @@ const MapDrawer = observer(class extends React.Component {
 
     if (this.props.store.highlightField !== 'none') {
       const pieChartData = []
-      for (let i=0; i<this.props.store.foundRecords.length; i++) {
+      let shownSliceCount = this.props.store.foundRecords.length
+      if (shownSliceCount>7)
+        shownSliceCount = 7
+      for (let i=0; i<shownSliceCount; i++) {
         pieChartData.push({ color: Layout.colours[i], value: this.props.store.foundRecords[i].length })
       }
-      if (this.props.store.searchStrings.length>7) {
-        pieChartData.push({ color: Layout.colours[7], value: this.props.store.getOtherCount() })
-      }
+      pieChartData.push({ color: Layout.colours[7], value: this.props.store.getOtherCount })
       pieChart = <div>
         <Typography variant='h5' align='center'>{this.props.store.highlightField}</Typography>
         <PieChart

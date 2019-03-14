@@ -13,6 +13,9 @@ const L = window.L
 
 const Map = observer(class extends React.Component {
 
+  _foundRecords = []
+  _otherRecords = []
+
   static propTypes = {
     selected: PropTypes.object.isRequired,
     store: PropTypes.object,
@@ -226,10 +229,11 @@ const Map = observer(class extends React.Component {
           if (found) {
             foundPoints.push(point)
           } else {
+            this._otherRecords.push(record)
             L.marker(point, {icon: this.iconX})
               .addTo(this.markers)
-              .on('click', () => {
-                this.updateSelected(point, record)
+              .on('click', (e) => {
+                this.updateSelected(point, record, e)
               })
           }
         }
@@ -238,7 +242,8 @@ const Map = observer(class extends React.Component {
 
     this.markers.addTo(this.map)
 
-    this.props.store.addFieldNames(records[0])
+    if (records[0] && this.props.store.fieldNames.length === 0)
+      this.props.store.addFieldNames(records[0])
 
     if (foundPoints.length > 0) {
       this.centerMapOnPoints(foundPoints)
@@ -246,6 +251,8 @@ const Map = observer(class extends React.Component {
       this.centerMapOnPoints(points)
     }
     this.updatePoints(points)
+
+    this.updateStoreRecords(this._foundRecords, this._otherRecords)
 
     function getGeoJson(record) {
       let result
@@ -268,13 +275,14 @@ const Map = observer(class extends React.Component {
 
   }
 
+  // This is used for non-geojson sourced markers, and uses the little house icon.
   makeFoundMarker = (point, record, index) => {
     L.marker(point, {icon: this.icons[index < 7 ? index : 7], zIndexOffset: (index * 100) + 500})
       .addTo(this.markers)
-      .on('click', () => {
-        this.updateSelected(point, record)
+      .on('click', (e) => {
+        this.updateSelected(point, record, e)
       })
-    this.addFoundRecord(record, index < 7 ? index : 7)
+    this.addFoundRecord(record, index)
   }
 
   getFirstPoint = (geoJson) => {
@@ -297,59 +305,81 @@ const Map = observer(class extends React.Component {
     return null
   }
 
+  // This is used for geojson sourced markers or polygons.
   getPolygonStyle = (geojson, foundPoints) => {
+    // Default colours
     let color = '#E6A224'
-    let fillColor = '#E8DDD4'
+    let fillColor = Layout.colours[7]
+    let fillOpacity = 0.7
     if (_.get(geojson.geometry, 'type') === 'Point') {
-      color = '#E8DDD4'
+      color = Layout.colours[7]
       fillColor = '#E6A224'
     }
-    let found = false
-    if (this.props.store.searchStrings.length > 0) {
-      const records = [ geojson.properties ]
-      if (geojson._id) {
-        _.each(this.props.store.linkMap[geojson._id], (linkRecord) => {
-          records.push(linkRecord)
-        })
-      }
 
-      this.props.store.searchStrings.forEach((element, index) => {
-        if (element.includes(':')) {
-          // This is a specific field/value search such as 'Surname: Smith'
-          const separatorLocation = element.indexOf(':')
-          const highlightField = element.substring(0, separatorLocation)
-          const highlightValue = element.substring(separatorLocation + 2)
-          _.each(records, (record) => {
-            // eslint-disable-next-line
-            if (_.get(record, highlightField) == highlightValue) {
-              found = true
-              fillColor = Layout.colours[index]
-              this.addFoundRecord(record, index)
-            }
-          })
-        } else {
-          if (records.length > 1)
-            _.each(records, (record) => {
+    // Basic properties of geojson
+    let found = false
+    const records = [ geojson.properties ]
+    if (geojson._id) {
+      // Grab the records related to this geojson object.
+      _.each(this.props.store.linkMap[geojson._id], (linkRecord) => {
+        records.push(linkRecord)
+      })
+    }
+
+    // When there is no related data, go with transparent fill.
+    if (records.length < 2) {
+      fillOpacity = 0
+    }
+
+    // Search for any search terms to apply special highlighting
+    if (this.props.store.searchStrings.length > 0) {
+      // Look in each record related to this geojson
+      _.each(records, (record) => {
+        found = false
+        // Check for every search term in this record
+        this.props.store.searchStrings.forEach((element, index) => {
+          // Only search for up to the first seven search terms.  The rest get tossed into 'Other'.
+          if (index < 7) {
+            if (element.includes(':')) {
+              // This is a specific field/value search such as 'Surname: Smith'
+              const separatorLocation = element.indexOf(':')
+              const highlightField = element.substring(0, separatorLocation)
+              const highlightValue = element.substring(separatorLocation + 2)
+              // eslint-disable-next-line
+              if (_.get(record, highlightField) == highlightValue) {
+                found = true
+                fillColor = Layout.colours[index]
+                this.addFoundRecord(record, index)
+              }
+            } else {
+              // This is a regular search.
               if (JSON.stringify(record).toLowerCase().includes(element.toLowerCase())) {
                 found = true
                 fillColor = Layout.colours[index]
                 this.addFoundRecord(record, index)
               }
-            })
+            }
+          }
+        })
+        // If nothing was found, add to otherRecords
+        if (!found) {
+          this._otherRecords.push(record)
         }
       })
     }
 
+    // Grab any point off the geojson to use for the map centering.
     if (found) {
       foundPoints.push(this.getFirstPoint(geojson))
     }
 
+    // Return our styling
     return {
       color,
       fillColor,
       weight: 1,
       opacity: 0.25,
-      fillOpacity: 0.3,
+      fillOpacity,
     }
   }
 
@@ -369,9 +399,14 @@ const Map = observer(class extends React.Component {
     }
 
     // Emphasize newly selected marker
-    marker.layer._path.style.stroke = '#F00'
-    marker.layer._path.style.strokeOpacity = 1
-    marker.layer._path.style.strokeWidth = 4
+    if (marker.layer) {
+      // This is a geojson marker
+      marker.layer._path.style.stroke = '#F00'
+      marker.layer._path.style.strokeOpacity = 1
+      marker.layer._path.style.strokeWidth = 4
+    } else {
+      // TODO: Highlight old house style markers.
+    }
 
     // Gather up records related to selection
     if (record.data) { // This is a server based relationship record
@@ -397,16 +432,22 @@ const Map = observer(class extends React.Component {
     this.props.store.points = points
   })
 
-  addFoundRecord = action( (record, index) => {
-    this.props.store.foundRecords[index].push(record)
+  updateStoreRecords = action( (newFoundRecords, newOtherRecords) => {
+    this.props.store.foundRecords = newFoundRecords
+    this.props.store.otherRecords = newOtherRecords
   })
 
-  resetFoundRecords = action( () => {
-    this.props.store.foundRecords = []
+  addFoundRecord = (record, index) => {
+    this._foundRecords[index].push(record)
+  }
+
+  resetFoundRecords = () => {
+    this._foundRecords = []
+    this._otherRecords = []
     this.props.store.searchStrings.forEach(() => {
-      this.props.store.foundRecords.push([])
+      this._foundRecords.push([])
     })
-  })
+  }
 
   makePoint = (record) => {
     // first try to make a point through the relationships

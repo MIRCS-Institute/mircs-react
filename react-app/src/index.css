@@ -3,63 +3,64 @@ body {
 }
 
 .search0 {
-  color: darkred;
+  color: #885154;
   background-color: lightgoldenrodyellow;
   font-weight: bold;
 }
 .searchIcon0 {
-  fill: darkred;
+  fill: #885154;
 }
 .search1 {
-  color: orange;
+  color: #EC635F;
   background-color: lightgoldenrodyellow;
   font-weight: bold;
 }
 .searchIcon1 {
-  fill: orange;
+  fill: #EC635F;
 }
 .search2 {
-  color: yellow;
+  color: #76AAA1;
   background-color: slategray;
   font-weight: bold;
 }
 .searchIcon2 {
-  fill: yellow;
+  fill: #76AAA1;
 }
 .search3 {
-  color: chartreuse;
+  color: #e88735;
   background-color: lightgoldenrodyellow;
   font-weight: bold;
 }
 .searchIcon3 {
-  fill: chartreuse;
+  fill: #e88735;
 }
 .search4 {
-  color: green;
+  color: #91AF94;
   background-color: lightgoldenrodyellow;
   font-weight: bold;
 }
 .searchIcon4 {
-  fill: green;
+  fill: #91AF94;
 }
 .search5 {
-  color: deepskyblue;
+  color: #8C8C8C;
   background-color: lightgoldenrodyellow;
   font-weight: bold;
 }
 .searchIcon5 {
-  fill: deepskyblue;
+  fill: #8C8C8C;
 }
 .search6 {
-  color: darkorchid;
+  color: #465955;
   background-color: lightgoldenrodyellow;
   font-weight: bold;
 }
 .searchIcon6 {
-  fill: darkorchid;
+  fill: #465955;
 }
 .searchN {
-  fill: #3f51b5; /* Material UI Primary */
+  fill: #E8DDD4; /* Material UI Primary */
 }
-.searchX {
+.searchIconSelected {
+  outline: red solid thin;
 }
