@@ -81,7 +81,7 @@ const linkStyle = {
 const anchorProps = {
   target: '_blank',
   rel: 'noopener noreferrer',
-  style: {linkStyle},
+  style: linkStyle,
 }
 
 const AllDataSets = observer(() => {
