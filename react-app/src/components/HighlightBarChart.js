@@ -1,7 +1,7 @@
-import {action, autorun, extendObservable} from 'mobx'
+import { action, extendObservable } from 'mobx'
+import { HorizontalBar } from 'react-chartjs-2'
 import { observer } from 'mobx-react'
 import { withStyles } from '@material-ui/core'
-import { HorizontalBar } from 'react-chartjs-2'
 import _ from 'lodash'
 import Layout from '../utils/Layout'
 import MenuItem from '@material-ui/core/MenuItem'
@@ -24,24 +24,6 @@ const HighlightBarChart = observer(class extends React.Component {
       highlightSecondaryField: 'none',
     })
   }
-
-  /*
-  componentDidMount() {
-    this.autorunDisposer = autorun(() => {
-      if (this.props.store.highlightField === 'none') {
-        action( () => {
-          this.highlightSecondaryText = 'none'
-          this.highlightSecondaryIndex = 0
-          this.highlightSecondaryField = 'none'
-        })
-      }
-    })
-  }
-
-  componentWillUnmount() {
-    this.autorunDisposer()
-  }
-  */
 
   countFieldValue = (valueCounts, thisValue) => {
     // Used for incrementing our count of a given value.
@@ -91,7 +73,7 @@ const HighlightBarChart = observer(class extends React.Component {
           backgroundColor: Layout.colours,
           borderColor: 'rgb(255, 99, 132)',
           data: barChartData,
-        }]
+        }],
       }
 
       const options = {
@@ -108,8 +90,8 @@ const HighlightBarChart = observer(class extends React.Component {
           xAxes: [{
             ticks: {
               beginAtZero: true,
-            }
-          }]
+            },
+          }],
         },
         title: {
           display: true,
@@ -222,7 +204,7 @@ const HighlightBarChart = observer(class extends React.Component {
           backgroundColor: Layout.colours[this.highlightSecondaryIndex],
           borderColor: 'rgb(255, 99, 132)',
           data: barChartData,
-        }]
+        }],
       }
 
       const options = {
@@ -233,8 +215,8 @@ const HighlightBarChart = observer(class extends React.Component {
           xAxes: [{
             ticks: {
               beginAtZero: true,
-            }
-          }]
+            },
+          }],
         },
         title: {
           display: true,
