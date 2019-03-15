@@ -3,10 +3,9 @@ import { withStyles } from '@material-ui/core'
 import _ from 'lodash'
 import Card from '@material-ui/core/Card'
 import CardContent from '@material-ui/core/CardContent'
-import Layout from '../utils/Layout'
+import HighlightBarChart from './HighlightBarChart'
 import linkifyHtml from 'linkifyjs/html'
 import Paper from '@material-ui/core/Paper'
-import PieChart from 'react-simple-pie-chart'
 import PropTypes from 'prop-types'
 import React from 'react'
 import StreetviewCard from './StreetviewCard'
@@ -35,26 +34,6 @@ const MapDrawer = observer(class extends React.Component {
     const { classes } = this.props
     const { open } = this.state
 
-    let pieChart = null
-
-    if (this.props.store.highlightField !== 'none') {
-      const pieChartData = []
-      let shownSliceCount = this.props.store.foundRecords.length
-      if (shownSliceCount>7)
-        shownSliceCount = 7
-      for (let i=0; i<shownSliceCount; i++) {
-        pieChartData.push({ color: Layout.colours[i], value: this.props.store.foundRecords[i].length })
-      }
-      pieChartData.push({ color: Layout.colours[7], value: this.props.store.getOtherCount })
-      pieChart = <div>
-        <Typography variant='h5' align='center'>{this.props.store.highlightField}</Typography>
-        <PieChart
-          slices={pieChartData}
-        />
-      </div>
-    }
-
-
     if (this.props.store.selected.records && this.props.store.selected.records.length > 0) {
       return (
         <Paper
@@ -66,8 +45,7 @@ const MapDrawer = observer(class extends React.Component {
           }}
           square={true}
         >
-          {pieChart}
-
+          <HighlightBarChart store={this.props.store} />
           <Typography variant='h6' align='center'>{this.props.store.selected.records.length} records at selected location.</Typography>
 
           {this.props.store.selected.records.map((record, i) => (
@@ -123,7 +101,7 @@ const MapDrawer = observer(class extends React.Component {
           }}
           square={true}
         >
-          {pieChart}
+          <HighlightBarChart store={this.props.store} />
           <Typography component='i' variant='h6' align='center'>
             Select a location for more detail.
           </Typography>

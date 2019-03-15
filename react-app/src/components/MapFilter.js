@@ -151,7 +151,7 @@ const MapFilter = observer(class extends React.Component {
         <TextField
           id='standard-select-field'
           select
-          label='Highligh Fields'
+          label='Highlight Fields'
           className={classes.mapOptions}
           value={this.props.store.highlightField}
           onChange={this.handleFieldNameHighlighting}
@@ -199,7 +199,7 @@ const MapFilter = observer(class extends React.Component {
               backgroundColor: Layout.colours[i],
             }
             let colour = 'primary'
-            if ([1,2,5].indexOf(i) > -1)
+            if ([1,3,4].indexOf(i) > -1)
               colour = 'default'
             if (i<7) {
               return (
