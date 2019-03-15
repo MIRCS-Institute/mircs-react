@@ -4,14 +4,12 @@ to the Request object as `req.dataSet`.
 */
 
 const HttpErrors = require('../../utils/http-errors.js')
-const MongoUtil = require('../../utils/mongo-util.js')
+const DataUtil = require('../../utils/data-util.js')
 
 module.exports = (router) => {
   router.param('dataSetId', async (req, res, next, dataSetId) => {
     try {
-      const _id = MongoUtil.toObjectID(dataSetId)
-      const dataSets = await MongoUtil.find(MongoUtil.DATA_SETS_COLLECTION, { _id })
-      req.dataSet = dataSets[0]
+      req.dataSet = await DataUtil.findById(DataUtil.DATA_SETS_COLLECTION, dataSetId)
       if (!req.dataSet) {
         return next(HttpErrors.notFound404(`No Data Set found with id '${dataSetId}'`))
       }

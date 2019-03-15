@@ -2,7 +2,7 @@
   - delete the entire collection of records
 */
 
-const MongoUtil = require('../../utils/mongo-util.js')
+const DataUtil = require('../../utils/data-util.js')
 
 module.exports = (router) => {
   router.delete('/api/datasets/:dataSetId/records',
@@ -11,7 +11,7 @@ module.exports = (router) => {
       const collectionName = req.dataSet._collectionName
 
       let db
-      MongoUtil.getDb()
+      DataUtil.getDb()
         .then((theDb) => {
           db = theDb
 
@@ -19,7 +19,7 @@ module.exports = (router) => {
           return dataSetCollection.deleteMany({})
         })
         .then(() => {
-          return MongoUtil.refreshFields(db, collectionName)
+          return DataUtil.refreshFields(db, collectionName)
         })
         .then(() => {
           res.status(200).send({ result: 'deleted' })

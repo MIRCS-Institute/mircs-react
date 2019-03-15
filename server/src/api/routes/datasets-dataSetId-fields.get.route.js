@@ -2,15 +2,19 @@
   - retrieves fields of a Data Set
 */
 
-const MongoUtil = require('../../utils/mongo-util.js')
+const DataUtil = require('../../utils/data-util.js')
 
 module.exports = (router) => {
   router.get('/api/datasets/:dataSetId/fields',
-    (req, res, next) => {
-      const collectionName = req.dataSet._collectionName
-      MongoUtil.find(collectionName + MongoUtil.DATA_SETS_FIELDS_COLLECTION_SUFFIX, {})
-        .then((fields) => {
-          res.status(200).send({ list: fields })
-        }, next)
-    })
+    getFields)
+}
+
+const getFields = async (req, res, next) => {
+  try {
+    const collectionName = req.dataSet._collectionName
+    const fields = await DataUtil.find(collectionName + DataUtil.DATA_SETS_FIELDS_COLLECTION_SUFFIX, {})
+    res.status(200).send({ list: fields })
+  } catch(exception) {
+    next(exception)
+  }
 }

@@ -4,18 +4,18 @@ to the Request object as `req.record`.
 */
 
 const HttpErrors = require('../../utils/http-errors.js')
-const MongoUtil = require('../../utils/mongo-util.js')
+const DataUtil = require('../../utils/data-util.js')
 
 module.exports = (router) => {
   router.param('recordId', async (req, res, next, recordId) => {
     try {
-      const _id = MongoUtil.toObjectID(recordId)
+      const _id = DataUtil.toObjectID(recordId)
       const collectionName = req.dataSet && req.dataSet._collectionName
       if (!collectionName) {
         return next(HttpErrors.internalServerError500(`Data Set contains no _collectionName. dataSet: ${JSON.stringify(req.dataSet)}`))
       }
 
-      const records = await MongoUtil.find(req.dataSet._collectionName, { _id })
+      const records = await DataUtil.find(req.dataSet._collectionName, { _id })
       req.record = records[0]
       if (!req.record) {
         return next(HttpErrors.notFound404(`No Record found with id '${recordId}'`))

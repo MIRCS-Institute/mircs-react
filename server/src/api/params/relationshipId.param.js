@@ -4,13 +4,13 @@ to the Request object as `req.dataSet`.
 */
 
 const HttpErrors = require('../../utils/http-errors')
-const MongoUtil = require('../../utils/mongo-util.js')
+const DataUtil = require('../../utils/data-util.js')
 
 module.exports = (router) => {
   router.param('relationshipId', async (req, res, next, relationshipId) => {
     try {
-      const _id = MongoUtil.toObjectID(relationshipId)
-      const dataSets = await MongoUtil.find(MongoUtil.RELATIONSHIPS_COLLECTION, { _id })
+      const _id = DataUtil.toObjectID(relationshipId)
+      const dataSets = await DataUtil.find(DataUtil.RELATIONSHIPS_COLLECTION, { _id })
       req.relationship = dataSets[0]
       if (!req.relationship) {
         return next(HttpErrors.notFound404(`No Relationship found with id '${relationshipId}'`))

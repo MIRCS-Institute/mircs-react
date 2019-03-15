@@ -5,7 +5,7 @@
 */
 
 const _ = require('lodash')
-const MongoUtil = require('../../utils/mongo-util.js')
+const DataUtil = require('../../utils/data-util.js')
 
 module.exports = (router) => {
   router.post('/api/datasets/:dataSetId/records',
@@ -36,7 +36,7 @@ module.exports = (router) => {
 
       let db
       let responseJson
-      MongoUtil.getDb()
+      DataUtil.getDb()
         .then((theDb) => {
           db = theDb
 
@@ -46,7 +46,7 @@ module.exports = (router) => {
             })
         })
         .then(() => {
-          return MongoUtil.refreshFields(db, collectionName)
+          return DataUtil.refreshFields(db, collectionName)
         })
         .then(() => {
           res.status(201).send(responseJson)

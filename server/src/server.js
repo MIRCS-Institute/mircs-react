@@ -9,7 +9,7 @@ const express = require('express')
 const helmet = require('helmet')
 const log = require('./utils/log.js')
 const morgan = require('morgan')
-const MongoUtil = require('./utils/mongo-util.js')
+const DataUtil = require('./utils/data-util.js')
 const path = require('path')
 
 const PORT = Environment.getRequired('PORT')
@@ -49,7 +49,7 @@ app.all('*', (req, res) => {
   res.status(404).send({ error: `Cannot ${req.method} ${req.path}` })
 })
 
-MongoUtil.initialize()
+DataUtil.initialize()
   .then(() => {
     app.listen(PORT, () => {
       log.info(`expressjs server is listening on port ${PORT}...`)

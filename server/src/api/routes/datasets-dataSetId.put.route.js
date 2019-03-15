@@ -6,32 +6,29 @@
 */
 
 const _ = require('lodash')
-const MongoUtil = require('../../utils/mongo-util.js')
+const DataUtil = require('../../utils/data-util.js')
 
 module.exports = function(router) {
   router.put('/api/datasets/:dataSetId',
     require('../../middleware/require-sign-in'),
-    (req, res, next) => {
-      const updatedDataSet = _.clone(req.body)
+    updateDataSet)
+}
 
+const updateDataSet = async (req, res, next) => {
+  try {
+    const dataSetId = req.params.dataSetId
+    const updatedDataSet = _.extend({}, req.body, {
       // overwrite system fields from existing record
-      updatedDataSet._id = req.dataSet._id
-      updatedDataSet.createdAt = req.dataSet.createdAt
-      updatedDataSet.updatedAt = new Date()
-      updatedDataSet._collectionName = req.dataSet._collectionName
-
-      let db
-      let dataSetCollection
-      MongoUtil.getDb()
-        .then((theDb) => {
-          db = theDb
-          dataSetCollection = db.collection(MongoUtil.DATA_SETS_COLLECTION)
-
-          return dataSetCollection.updateOne({ _id: updatedDataSet._id }, updatedDataSet)
-        })
-        .then(() => {
-          res.status(200).send(updatedDataSet)
-        })
-        .catch(next)
+      _id: req.dataSet._id,
+      _collectionName: req.dataSet._collectionName,
+      createdAt: req.dataSet.createdAt,
+      updatedAt: new Date(),
     })
+
+
+    await DataUtil.updateById(DataUtil.DATA_SETS_COLLECTION, dataSetId, updatedDataSet)
+    res.status(200).send(updatedDataSet)
+  } catch(exception) {
+    next(exception)
+  }
 }
