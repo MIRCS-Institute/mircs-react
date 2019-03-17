@@ -7,6 +7,7 @@ import AddCircleIcon from '@material-ui/icons/AddCircle'
 import Button from '@material-ui/core/Button'
 import ButtonProgress from '../../components/ButtonProgress'
 import CancelIcon from '@material-ui/icons/Cancel'
+import copyDataPropHOC from '../../components/copyDataPropHOC'
 import DataSetChooser from '../../components/DataSetChooser'
 import Dialog from '@material-ui/core/Dialog'
 import DialogActions from '@material-ui/core/DialogActions'
@@ -27,7 +28,7 @@ import TextField from '@material-ui/core/TextField'
 const EditRelationshipDialog = observer(class extends React.Component {
   static propTypes = {
     // optional - specify the relationship object to modify in the case of edit, can be undefined for relationship creation
-    relationship: PropTypes.object,
+    data: PropTypes.object,
     // called when the edit dialog is dismissed
     onCancel: PropTypes.func.isRequired,
     // called after the save completes
@@ -38,46 +39,21 @@ const EditRelationshipDialog = observer(class extends React.Component {
   constructor() {
     super()
     extendObservable(this, {
-      relationship: {},
-      isCreate: true,
       isSaving: false,
       showNewJoinElements: false,
       newJoinElements: [undefined, undefined],
     })
   }
 
-  componentDidUpdate(prevProps) {
-    if (this.props.open && !prevProps.open) {
-      action(() => {
-        let relationshipCopy = {}
-        if (this.props.relationship) {
-          relationshipCopy = JSON.parse(JSON.stringify(this.props.relationship))
-        }
-
-        ensureString(relationshipCopy, 'name')
-        ensureString(relationshipCopy, 'description')
-        if (!relationshipCopy.dataSets) {
-          relationshipCopy.dataSets = []
-        }
-        while (relationshipCopy.dataSets.length < 2) {
-          relationshipCopy.dataSets.push(null)
-        }
-        if (!relationshipCopy.joinElements) {
-          relationshipCopy.joinElements = []
-        }
-
-        this.relationship = relationshipCopy
-        this.isCreate = !this.relationship._id
-
-        this.isSaving = false
-      })()
-    }
+  get isCreate() {
+    console.log('isCreate', this.props.data._id)
+    return !this.props.data._id
   }
 
   // creates a change handler function for the field with passed @key
   handleFieldChange = (key) => {
     return action((event) => {
-      this.relationship[key] = event.target.value
+      this.props.data[key] = event.target.value
     })
   }
 
@@ -96,16 +72,16 @@ const EditRelationshipDialog = observer(class extends React.Component {
   })
 
   doSave() {
-    const bodyJson = toJS(this.relationship)
+    const bodyJson = toJS(this.props.data)
     if (this.isCreate) {
       return ServerHttpApi.jsonPost('/api/relationships', bodyJson)
     } else {
-      return ServerHttpApi.jsonPut(`/api/relationships/${this.relationship._id}`, bodyJson)
+      return ServerHttpApi.jsonPut(`/api/relationships/${this.props.data._id}`, bodyJson)
     }
   }
 
   canSave = () => {
-    if (!this.relationship.name) {
+    if (!this.props.data.name) {
       return false
     }
     if (this.newJoinElements[0] || this.newJoinElements[1]) {
@@ -116,13 +92,13 @@ const EditRelationshipDialog = observer(class extends React.Component {
 
   handleDataSetChanged = (index) => {
     return action((dataSet) => {
-      this.relationship.dataSets[index] = dataSet
+      this.props.data.dataSets[index] = dataSet
     })
   }
 
   haveDataSetsBeenSelected = () => {
     // relationship.dataSets must exist and contain two non-null elements
-    return !!(this.relationship.dataSets && this.relationship.dataSets[0] && this.relationship.dataSets[1])
+    return !!(this.props.data.dataSets && this.props.data.dataSets[0] && this.props.data.dataSets[1])
   }
 
   onAddNewJoinElementClick = action(() => {
@@ -136,13 +112,13 @@ const EditRelationshipDialog = observer(class extends React.Component {
   })
 
   onAddJoinElementClick = action(() => {
-    this.relationship.joinElements.push([this.newJoinElements[0], this.newJoinElements[1]])
+    this.props.data.joinElements.push([this.newJoinElements[0], this.newJoinElements[1]])
     this.onCancelJoinElementClick()
   })
 
   onRemoveJoinElementClick = (index) => {
     return action(() => {
-      this.relationship.joinElements.remove(this.relationship.joinElements[index])
+      this.props.data.joinElements.remove(this.props.data.joinElements[index])
     })
   }
 
@@ -152,15 +128,15 @@ const EditRelationshipDialog = observer(class extends React.Component {
         <DialogTitle>{this.isCreate ? 'Create Relationship' : 'Edit Relationship'}</DialogTitle>
         <DialogContent>
           <TextField autoFocus margin='dense' label='name' type='text' fullWidth
-            value={this.relationship.name} onChange={this.handleFieldChange('name')}/>
+            value={this.props.data.name} onChange={this.handleFieldChange('name')}/>
           <TextField margin='dense' label='description' type='text' fullWidth
-            value={this.relationship.description} onChange={this.handleFieldChange('description')}/>
+            value={this.props.data.description} onChange={this.handleFieldChange('description')}/>
 
           <Grid container spacing={24}>
             <Grid item xs={5}>
               <DataSetChooser
                 label='Data Set 1'
-                dataSetId={_.get(this.relationship, 'dataSets[0]')}
+                dataSetId={_.get(this.props.data, 'dataSets[0]')}
                 onDataSetChanged={this.handleDataSetChanged(0)}
               />
             </Grid>
@@ -168,12 +144,12 @@ const EditRelationshipDialog = observer(class extends React.Component {
             <Grid item xs={5}>
               <DataSetChooser
                 label='Data Set 2'
-                dataSetId={_.get(this.relationship, 'dataSets[1]')}
+                dataSetId={_.get(this.props.data, 'dataSets[1]')}
                 onDataSetChanged={this.handleDataSetChanged(1)}
               />
             </Grid>
 
-            {this.relationship.joinElements && this.relationship.joinElements.map((joinElement, index) => (
+            {this.props.data.joinElements && this.props.data.joinElements.map((joinElement, index) => (
               <Grid container spacing={24} key={index}>
                 <Grid item xs={5}>
                   {joinElement[0]}
@@ -197,7 +173,7 @@ const EditRelationshipDialog = observer(class extends React.Component {
               <Grid container spacing={24}>
                 <Grid item xs={4}>
                   <FieldChooser
-                    dataSetId={_.get(this.relationship, 'dataSets[0]')}
+                    dataSetId={_.get(this.props.data, 'dataSets[0]')}
                     field={this.newJoinElements[0]}
                     onChange={action((value) => { this.newJoinElements[0] = value })}
                   />
@@ -207,7 +183,7 @@ const EditRelationshipDialog = observer(class extends React.Component {
                 </Grid>
                 <Grid item xs={4}>
                   <FieldChooser
-                    dataSetId={_.get(this.relationship, 'dataSets[1]')}
+                    dataSetId={_.get(this.props.data, 'dataSets[1]')}
                     field={this.newJoinElements[1]}
                     onChange={action((value) => { this.newJoinElements[1] = value })}
                   />
@@ -289,4 +265,18 @@ const FieldChooser = observer(class extends React.Component {
   }
 })
 
-export default EditRelationshipDialog
+export default copyDataPropHOC(EditRelationshipDialog, {
+  processCopy: (relationshipCopy) => {
+    ensureString(relationshipCopy, 'name')
+    ensureString(relationshipCopy, 'description')
+    if (!relationshipCopy.dataSets) {
+      relationshipCopy.dataSets = []
+    }
+    while (relationshipCopy.dataSets.length < 2) {
+      relationshipCopy.dataSets.push(null)
+    }
+    if (!relationshipCopy.joinElements) {
+      relationshipCopy.joinElements = []
+    }
+  },
+})

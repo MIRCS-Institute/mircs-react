@@ -42,9 +42,9 @@ const ManageViews = observer(class extends React.Component {
 
         {isLoading && <LoadingSpinner title='Loading Views...' />}
 
-        <EditViewDialog 
-          open={this.showCreateDialog} 
-          onCancel={this.handleCreateCancel} 
+        <EditViewDialog
+          open={this.showCreateDialog}
+          onCancel={this.handleCreateCancel}
           afterSave={this.handleCreateAfterSave}
         />
 

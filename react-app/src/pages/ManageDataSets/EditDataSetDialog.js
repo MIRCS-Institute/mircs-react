@@ -1,10 +1,9 @@
 import { action, extendObservable, toJS } from 'mobx'
-import { getDataSetFieldsRes } from '../../api/DataSetFields'
 import { observer } from 'mobx-react'
 import { showSnackbarMessage } from '../../components/SnackbarMessages'
-import _ from 'lodash'
 import Button from '@material-ui/core/Button'
 import ButtonProgress from '../../components/ButtonProgress'
+import copyDataPropHOC from '../../components/copyDataPropHOC'
 import Dialog from '@material-ui/core/Dialog'
 import DialogActions from '@material-ui/core/DialogActions'
 import DialogContent from '@material-ui/core/DialogContent'
@@ -18,7 +17,7 @@ import TextField from '@material-ui/core/TextField'
 const EditDataSetDialog = observer(class extends React.Component {
   static propTypes = {
     // optional - specify the dataSet object to modify in the case of edit, can be undefined for dataSet creation
-    dataSet: PropTypes.object,
+    data: PropTypes.object,
     // called when the edit dialog is dismissed
     onCancel: PropTypes.func.isRequired,
     // called after the save completes
@@ -29,32 +28,18 @@ const EditDataSetDialog = observer(class extends React.Component {
   constructor() {
     super()
     extendObservable(this, {
-      dataSet: {},
-      isCreate: true,
       isSaving: false,
     })
   }
 
-  componentDidUpdate(prevProps) {
-    const { open, dataSet } = this.props
-    if (open && !prevProps.open) {
-      const dataSetCopy = _.clone(dataSet) || {}
-      ensureString(dataSetCopy, 'name')
-      ensureString(dataSetCopy, 'description')
-
-      action(() => {
-        this.dataSet = dataSetCopy
-        this.isCreate = !this.dataSet._id
-
-        this.isSaving = false
-      })()
-    }
+  get isCreate() {
+    return !this.props.data._id
   }
 
   // creates a change handler function for the field with passed @key
   handleFieldChange = (key) => {
     return action((event) => {
-      this.dataSet[key] = event.target.value
+      this.props.data[key] = event.target.value
     })
   }
 
@@ -72,39 +57,37 @@ const EditDataSetDialog = observer(class extends React.Component {
   })
 
   doSave() {
-    const bodyJson = toJS(this.dataSet)
+    const { data } = this.props
+    const dataSetId = data._id
+    const bodyJson = toJS(data)
     if (this.isCreate) {
       return ServerHttpApi.jsonPost('/api/datasets', bodyJson)
     } else {
-      return ServerHttpApi.jsonPut(`/api/datasets/${this.dataSet._id}`, bodyJson)
+      return ServerHttpApi.jsonPut(`/api/datasets/${dataSetId}`, bodyJson)
     }
   }
 
   canSave = () => {
-    if (!this.dataSet.name) {
+    if (!this.props.data.name) {
       return false
     }
     return true
   }
 
   render() {
-    const { open, onCancel, dataSet } = this.props
+    const { open, onCancel, data } = this.props
     if (!open) {
       return null
     }
-
-    const dataSetId = dataSet._id
-    const dataSetFields = getDataSetFieldsRes(dataSetId).get('list', [])
-    console.log('dataSetFields', toJS(dataSetFields))
 
     return (
       <Dialog open={open} fullWidth={true}>
         <DialogTitle>{this.isCreate ? 'Create Data Set' : 'Edit Data Set'}</DialogTitle>
         <DialogContent>
           <TextField autoFocus margin='dense' label='name' type='text' fullWidth
-            value={this.dataSet.name} onChange={this.handleFieldChange('name')}/>
+            value={data.name} onChange={this.handleFieldChange('name')}/>
           <TextField margin='dense' label='description' type='text' fullWidth
-            value={this.dataSet.description} onChange={this.handleFieldChange('description')}/>
+            value={data.description} onChange={this.handleFieldChange('description')}/>
         </DialogContent>
         <DialogActions>
           <Button onClick={onCancel} color='primary' disabled={this.isSaving}>
@@ -120,4 +103,9 @@ const EditDataSetDialog = observer(class extends React.Component {
   }
 })
 
-export default EditDataSetDialog
+export default copyDataPropHOC(EditDataSetDialog, {
+  processCopy: (dataSetCopy) => {
+    ensureString(dataSetCopy, 'name')
+    ensureString(dataSetCopy, 'description')
+  },
+})

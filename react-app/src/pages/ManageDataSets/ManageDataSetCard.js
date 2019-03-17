@@ -114,7 +114,7 @@ const ManageDataSetCard = observer(class extends React.Component {
                 }}>{key}: {value}</div>
               ))}
             </div>}
-            {fields && <div>
+            {fields.length > 0 && <div>
               <strong>Fields:</strong>
               {_.map(fields, (field) => (
                 <div
@@ -128,7 +128,7 @@ const ManageDataSetCard = observer(class extends React.Component {
 
           <EditDataSetDialog
             open={this.showEditDialog}
-            dataSet={dataSet}
+            data={dataSet}
             onCancel={this.handleEditCancel}
             afterSave={this.handleEditAfterSave}
           />

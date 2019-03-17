@@ -3,6 +3,7 @@ import { observer } from 'mobx-react'
 import { showSnackbarMessage } from '../../components/SnackbarMessages'
 import Button from '@material-ui/core/Button'
 import ButtonProgress from '../../components/ButtonProgress'
+import copyDataPropHOC from '../../components/copyDataPropHOC'
 import DataSetChooser from '../../components/DataSetChooser'
 import Dialog from '@material-ui/core/Dialog'
 import DialogActions from '@material-ui/core/DialogActions'
@@ -17,7 +18,7 @@ import TextField from '@material-ui/core/TextField'
 const EditViewDialog = observer(class extends React.Component {
   static propTypes = {
     // optional - specify the view object to modify in the case of edit, can be undefined for view creation
-    view: PropTypes.object,
+    data: PropTypes.object,
     // called when the edit dialog is dismissed
     onCancel: PropTypes.func.isRequired,
     // called after the save completes
@@ -28,36 +29,19 @@ const EditViewDialog = observer(class extends React.Component {
   constructor() {
     super()
     extendObservable(this, {
-      view: {},
-      isCreate: true,
       isSaving: false,
     })
   }
 
-  componentDidUpdate(prevProps) {
-    if (this.props.open && !prevProps.open) {
-      action(() => {
-        let viewCopy = {}
-        if (this.props.view) {
-          viewCopy = JSON.parse(JSON.stringify(this.props.view))
-        }
-
-        ensureString(viewCopy, 'name')
-        ensureString(viewCopy, 'description')
-        ensureString(viewCopy, 'dataSetId')
-
-        this.view = viewCopy
-        this.isCreate = !this.view._id
-
-        this.isSaving = false
-      })()
-    }
+  get isCreate() {
+    console.log('isCreate', this.props.data._id)
+    return !this.props.data._id
   }
 
   // creates a change handler function for the field with passed @key
   handleFieldChange = (key) => {
     return action((event) => {
-      this.view[key] = event.target.value
+      this.props.data[key] = event.target.value
     })
   }
 
@@ -76,23 +60,23 @@ const EditViewDialog = observer(class extends React.Component {
   })
 
   doSave() {
-    const bodyJson = toJS(this.view)
+    const bodyJson = toJS(this.props.data)
     if (this.isCreate) {
       return ServerHttpApi.jsonPost('/api/views', bodyJson)
     } else {
-      return ServerHttpApi.jsonPut(`/api/views/${this.view._id}`, bodyJson)
+      return ServerHttpApi.jsonPut(`/api/views/${this.props.data._id}`, bodyJson)
     }
   }
 
   canSave = () => {
-    if (!this.view.name) {
+    if (!this.props.data.name) {
       return false
     }
     return true
   }
 
   handleDataSetChanged = action((dataSetId) => {
-    this.view.dataSetId = dataSetId
+    this.props.data.dataSetId = dataSetId
   })
 
   render() {
@@ -105,19 +89,19 @@ const EditViewDialog = observer(class extends React.Component {
           <TextField
             autoFocus
             label='name'
-            value={this.view.name}
+            value={this.props.data.name}
             onChange={this.handleFieldChange('name')}
             margin='dense' type='text' fullWidth
           />
           <TextField
             label='description'
-            value={this.view.description}
+            value={this.props.data.description}
             onChange={this.handleFieldChange('description')}
             margin='dense' type='text' fullWidth
           />
           <DataSetChooser
             label='Data Set'
-            dataSetId={this.view.dataSetId}
+            dataSetId={this.props.data.dataSetId}
             onDataSetChanged={this.handleDataSetChanged}
           />
 
@@ -137,4 +121,10 @@ const EditViewDialog = observer(class extends React.Component {
   }
 })
 
-export default EditViewDialog
+export default copyDataPropHOC(EditViewDialog, {
+  processCopy: (viewCopy) => {
+    ensureString(viewCopy, 'name')
+    ensureString(viewCopy, 'description')
+    ensureString(viewCopy, 'dataSetId')
+  },
+})

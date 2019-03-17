@@ -76,7 +76,7 @@ const ManageViewCard = observer(class extends React.Component {
 
           <EditViewDialog
             open={this.showEditDialog}
-            view={view}
+            data={view}
             onCancel={this.handleEditCancel}
             afterSave={this.handleEditAfterSave}
           />

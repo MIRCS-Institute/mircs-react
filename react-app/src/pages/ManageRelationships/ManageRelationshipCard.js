@@ -98,10 +98,10 @@ const ManageRelationshipCard = observer(class extends React.Component {
 
           <EditRelationshipDialog
             open={this.showEditDialog}
-            relationship={relationship}
+            data={relationship}
             onCancel={this.handleEditCancel}
             afterSave={this.handleEditAfterSave}/>
-          
+
           <ConfirmDeleteDialog
             open={this.showConfirmDeleteDialog}
             name={relationship.name}
