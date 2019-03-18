@@ -1,5 +1,6 @@
 import { action, extendObservable, toJS } from 'mobx'
 import { observer } from 'mobx-react'
+import { refreshView } from '../../api/refreshView'
 import { showSnackbarMessage } from '../../components/SnackbarMessages'
 import Button from '@material-ui/core/Button'
 import ButtonProgress from '../../components/ButtonProgress'
@@ -34,7 +35,6 @@ const EditViewDialog = observer(class extends React.Component {
   }
 
   get isCreate() {
-    console.log('isCreate', this.props.data._id)
     return !this.props.data._id
   }
 
@@ -48,9 +48,12 @@ const EditViewDialog = observer(class extends React.Component {
   handleSave = action(() => {
     this.isSaving = true
     this.doSave()
-      .then(action((response) => {
+      .then(() => {
+        return refreshView(this.props.data._id)
+      })
+      .then(action(() => {
         this.isSaving = false
-        this.props.afterSave(response.bodyJson)
+        this.props.afterSave()
       }))
       .catch(showSnackbarMessage)
       .then(action(() => {

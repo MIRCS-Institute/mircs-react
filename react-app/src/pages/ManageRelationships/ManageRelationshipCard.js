@@ -2,6 +2,7 @@ import {action, extendObservable} from 'mobx'
 import { getRelationshipsRes } from '../../api/Relationships'
 import { goToPath, Path } from '../../app/App'
 import {observer} from 'mobx-react'
+import { refreshDataSet } from '../../api/refreshDataSet'
 import { showSnackbarMessage } from '../../components/SnackbarMessages'
 import _ from 'lodash'
 import Button from '@material-ui/core/Button'
@@ -42,7 +43,7 @@ const ManageRelationshipCard = observer(class extends React.Component {
     const relationshipId = this.props.relationship._id
     ServerHttpApi.jsonDelete(`/api/relationships/${relationshipId}`)
       .then(() => {
-        return getRelationshipsRes().refresh()
+        return refreshDataSet()
       })
       .catch(showSnackbarMessage)
   })
@@ -57,7 +58,6 @@ const ManageRelationshipCard = observer(class extends React.Component {
 
   handleEditAfterSave = action(() => {
     this.showEditDialog = false
-    getRelationshipsRes().refresh()
   })
 
   render() {
@@ -100,7 +100,8 @@ const ManageRelationshipCard = observer(class extends React.Component {
             open={this.showEditDialog}
             data={relationship}
             onCancel={this.handleEditCancel}
-            afterSave={this.handleEditAfterSave}/>
+            afterSave={this.handleEditAfterSave}
+          />
 
           <ConfirmDeleteDialog
             open={this.showConfirmDeleteDialog}

@@ -33,11 +33,6 @@ const ManageDataSetCard = observer(class extends React.Component {
     })
   }
 
-  refresh = () => {
-    const dataSetId = this.props.dataSet._id
-    refreshDataSet(dataSetId)
-  }
-
   handleDeleteClick = action(() => {
     this.showConfirmDeleteDialog = true
   })
@@ -86,8 +81,6 @@ const ManageDataSetCard = observer(class extends React.Component {
 
   handleEditAfterSave = action(() => {
     this.showEditDialog = false
-    const dataSetId = this.props.dataSet._id
-    refreshDataSet(dataSetId)
   })
 
   render() {
@@ -166,7 +159,7 @@ const ManageDataSetCard = observer(class extends React.Component {
           </Button>
           <UploadDataSetFileButton
             dataSetId={dataSetId}
-            onDataSetUpdated={this.refresh}
+            onDataSetUpdated={refreshDataSet}
           />
         </CardActions>
       </Card>

@@ -13,12 +13,14 @@ const copyDataPropHOC = (
     processCopy = (copy) => copy,
     // if data is not specified this will be used to construct the data passed to the wrapped component
     defaultValue = {},
-  }
+  } = {}
 ) => {
   const getDataCopy = (props) => {
     const data = toJS(props.data || defaultValue)
     const dataCopy = _.cloneDeep(data)
-    processCopy(dataCopy)
+    if (processCopy) {
+      processCopy(dataCopy)
+    }
     return dataCopy
   }
 

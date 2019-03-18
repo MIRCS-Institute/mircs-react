@@ -6,12 +6,21 @@ import { getDataSetStatsRes } from './DataSetStats'
 import { showSnackbarMessage } from '../components/SnackbarMessages'
 
 export const refreshDataSet = (dataSetId) => {
-  return Promise.all([
-    getDataSetsRes(dataSetId).refresh(),
-    getDataSetRes(dataSetId).refresh(),
-    getDataSetFieldsRes(dataSetId).refresh(),
-    getDataSetRecordsRes(dataSetId).refresh(),
-    getDataSetStatsRes(dataSetId).refresh(),
-  ])
+  let promises
+  if (dataSetId) {
+    promises = [
+      getDataSetsRes().refresh(),
+      getDataSetRes(dataSetId).refresh(),
+      getDataSetFieldsRes(dataSetId).refresh(),
+      getDataSetRecordsRes(dataSetId).refresh(),
+      getDataSetStatsRes(dataSetId).refresh(),
+    ]
+  } else {
+    promises = [
+      getDataSetsRes().refresh(),
+    ]
+  }
+
+  return Promise.all(promises)
     .catch(showSnackbarMessage)
 }

@@ -1,5 +1,6 @@
 import { action, extendObservable, toJS } from 'mobx'
 import { observer } from 'mobx-react'
+import { refreshDataSet } from '../../api/refreshDataSet'
 import { showSnackbarMessage } from '../../components/SnackbarMessages'
 import Button from '@material-ui/core/Button'
 import ButtonProgress from '../../components/ButtonProgress'
@@ -46,6 +47,9 @@ const EditDataSetDialog = observer(class extends React.Component {
   handleSave = action(() => {
     this.isSaving = true
     this.doSave()
+      .then(() => {
+        return refreshDataSet(this.props.data._id)
+      })
       .then(action((response) => {
         this.isSaving = false
         this.props.afterSave(response.bodyJson)

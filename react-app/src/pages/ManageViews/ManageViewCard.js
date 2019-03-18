@@ -1,7 +1,7 @@
 import {action, extendObservable} from 'mobx'
-import { getViewsRes } from '../../api/Views'
 import { goToPath, Path } from '../../app/App'
 import {observer} from 'mobx-react'
+import { refreshView } from '../../api/refreshView'
 import { showSnackbarMessage } from '../../components/SnackbarMessages'
 import Button from '@material-ui/core/Button'
 import Card from '@material-ui/core/Card'
@@ -41,7 +41,7 @@ const ManageViewCard = observer(class extends React.Component {
     const viewId = this.props.view._id
     ServerHttpApi.jsonDelete(`/api/views/${viewId}`)
       .then(() => {
-        return getViewsRes().refresh()
+        return refreshView(viewId)
       })
       .catch(showSnackbarMessage)
   })
@@ -56,7 +56,6 @@ const ManageViewCard = observer(class extends React.Component {
 
   handleEditAfterSave = action(() => {
     this.showEditDialog = false
-    getViewsRes().refresh()
   })
 
   render() {

@@ -26,7 +26,6 @@ const ManageRelationships = observer(class extends React.Component {
 
   handleCreateAfterSave = action(() => {
     this.showCreateDialog = false
-    getRelationshipsRes().refresh()
   })
 
   render() {
@@ -45,7 +44,11 @@ const ManageRelationships = observer(class extends React.Component {
 
         {isLoading && <LoadingSpinner title='Loading Relationships...' />}
 
-        <EditRelationshipDialog open={this.showCreateDialog} onCancel={this.handleCreateCancel} afterSave={this.handleCreateAfterSave}/>
+        <EditRelationshipDialog
+          open={this.showCreateDialog}
+          onCancel={this.handleCreateCancel}
+          afterSave={this.handleCreateAfterSave}
+        />
 
         {relationships.map((relationship) => (
           <ManageRelationshipCard

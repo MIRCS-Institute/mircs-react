@@ -26,7 +26,6 @@ const ManageDataSets = observer(class extends React.Component {
 
   handleCreateAfterSave = action(() => {
     this.showCreateDialog = false
-    getDataSetsRes().refresh()
   })
 
   render() {

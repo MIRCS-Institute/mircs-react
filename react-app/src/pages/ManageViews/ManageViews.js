@@ -26,7 +26,6 @@ const ManageViews = observer(class extends React.Component {
 
   handleCreateAfterSave = action(() => {
     this.showCreateDialog = false
-    getViewsRes().refresh()
   })
 
   render() {

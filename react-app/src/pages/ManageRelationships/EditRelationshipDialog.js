@@ -1,6 +1,7 @@
 import { action, extendObservable, toJS } from 'mobx'
 import { getDataSetFieldsRes } from '../../api/DataSetFields'
 import { observer } from 'mobx-react'
+import { refreshDataSet } from '../../api/refreshDataSet'
 import { showSnackbarMessage } from '../../components/SnackbarMessages'
 import _ from 'lodash'
 import AddCircleIcon from '@material-ui/icons/AddCircle'
@@ -46,7 +47,6 @@ const EditRelationshipDialog = observer(class extends React.Component {
   }
 
   get isCreate() {
-    console.log('isCreate', this.props.data._id)
     return !this.props.data._id
   }
 
@@ -60,6 +60,9 @@ const EditRelationshipDialog = observer(class extends React.Component {
   handleSave = action(() => {
     this.isSaving = true
     this.doSave()
+      .then(() => {
+        return refreshDataSet(this.props.data._id)
+      })
       .then(action((response) => {
         this.isSaving = false
         this.props.afterSave(response.bodyJson)
