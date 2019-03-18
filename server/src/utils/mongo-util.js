@@ -37,6 +37,9 @@ const createCollection = async (collectionName, options) => {
 }
 
 const insertIntoCollection = async (collectionName, record) => {
+  if (record._id) {
+    throw HttpErrors.badRequest400(`New record specifies _id: '${record._id}'`)
+  }
   const db = await getDb()
   const viewsCollection = db.collection(collectionName)
   const result = await viewsCollection.insertOne(record)
