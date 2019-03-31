@@ -14,7 +14,6 @@ import Typography from '@material-ui/core/Typography'
 const MapDrawer = observer(class extends React.Component {
 
   static propTypes = {
-    theme: PropTypes.object.isRequired,
     store: PropTypes.object.isRequired,
   }
 
@@ -112,7 +111,7 @@ const MapDrawer = observer(class extends React.Component {
   }
 })
 
-const styles = () => ({
+const styles = {
   root: {
     display: 'flex',
   },
@@ -124,6 +123,6 @@ const styles = () => ({
     width: 350,
     overflowY: 'auto',
   },
-})
+}
 
-export default withStyles(styles, { withTheme: true })(MapDrawer)
+export default withStyles(styles)(MapDrawer)

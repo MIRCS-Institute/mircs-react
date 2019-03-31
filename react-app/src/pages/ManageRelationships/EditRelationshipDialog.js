@@ -268,7 +268,7 @@ const FieldChooser = observer(class extends React.Component {
 
   render() {
     const { dataSetId, disabled } = this.props
-    const fields = getDataSetFieldsRes(dataSetId)
+    const fields = getDataSetFieldsRes(dataSetId).get('list', [])
 
     return (
       <FormControl disabled={disabled}>

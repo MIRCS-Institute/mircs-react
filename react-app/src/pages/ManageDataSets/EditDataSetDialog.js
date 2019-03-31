@@ -93,8 +93,8 @@ const EditDataSetDialog = observer(class extends React.Component {
       return null
     }
 
-    const dataSetId = dataSet._id
-    const dataSetFields = getDataSetFieldsRes(dataSetId).get('list', [])
+    const dataSetId = dataSet ? dataSet._id : 0
+    const dataSetFields = dataSetId!==0 ? getDataSetFieldsRes(dataSetId).get('list', []) : []
     console.log('dataSetFields', toJS(dataSetFields))
 
     return (
