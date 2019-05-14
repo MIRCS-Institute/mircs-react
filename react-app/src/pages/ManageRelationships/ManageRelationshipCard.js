@@ -1,5 +1,4 @@
 import {action, extendObservable} from 'mobx'
-import { getRelationshipsRes } from '../../api/Relationships'
 import { goToPath, Path } from '../../app/App'
 import {observer} from 'mobx-react'
 import { refreshDataSet } from '../../api/refreshDataSet'
