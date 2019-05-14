@@ -152,12 +152,7 @@ const HighlightBarChart = observer(class extends React.Component {
    */
   getSecondBarChart = () => {
 
-    console.log(this.props.store.highlightField)
-    console.log(this.highlightSecondaryText)
-    console.log(this.highlightSecondaryIndex)
-    console.log(this.highlightSecondaryField)
-
-    if (this.props.store.highlightField !== 'none' && this.highlightSecondaryField !== 'none' && this.highlightSecondaryIndex>0) {
+    if (this.props.store.highlightField !== 'none' && this.highlightSecondaryField !== 'none' && this.highlightSecondaryIndex>=0) {
 
       const barChartLabels = []
       const barChartData = []

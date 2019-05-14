@@ -317,7 +317,7 @@ const Map = observer(class extends React.Component {
     }
 
     // Basic properties of geojson
-    let found = false
+    let geojsonFound = false
     const records = [ geojson.properties ]
     if (geojson._id) {
       // Grab the records related to this geojson object.
@@ -326,8 +326,8 @@ const Map = observer(class extends React.Component {
       })
     }
 
-    // When there is no related data, go with transparent fill.
-    if (records.length < 2) {
+    // When there is no related data and we're searching for something, go with transparent fill.
+    if (records.length < 2 && this.props.store.searchStrings.length > 0) {
       fillOpacity = 0
     }
 
@@ -335,7 +335,7 @@ const Map = observer(class extends React.Component {
     if (this.props.store.searchStrings.length > 0) {
       // Look in each record related to this geojson
       _.each(records, (record) => {
-        found = false
+        let recordFound = false
         // Check for every search term in this record
         this.props.store.searchStrings.forEach((element, index) => {
           // Only search for up to the first seven search terms.  The rest get tossed into 'Other'.
@@ -347,30 +347,36 @@ const Map = observer(class extends React.Component {
               const highlightValue = element.substring(separatorLocation + 2)
               // eslint-disable-next-line
               if (_.get(record, highlightField) == highlightValue) {
-                found = true
+                recordFound = true
+                geojsonFound = true
                 fillColor = Layout.colours[index]
                 this.addFoundRecord(record, index)
               }
             } else {
               // This is a regular search.
               if (JSON.stringify(record).toLowerCase().includes(element.toLowerCase())) {
-                found = true
+                recordFound = true
+                geojsonFound = true
                 fillColor = Layout.colours[index]
                 this.addFoundRecord(record, index)
               }
             }
           }
         })
-        // If nothing was found, add to otherRecords
-        if (!found) {
+        // If none of the search terms were found, add this record to otherRecords
+        if (!recordFound) {
           this._otherRecords.push(record)
         }
       })
     }
 
     // Grab any point off the geojson to use for the map centering.
-    if (found) {
+    if (geojsonFound) {
       foundPoints.push(this.getFirstPoint(geojson))
+    } else if (this.props.store.searchStrings.length !== 0) {
+      // If none of the records in this geojson match none of the search string and we are searching, then hide.
+      fillOpacity = 0
+      color = '#E6A224'
     }
 
     // Return our styling
@@ -378,7 +384,7 @@ const Map = observer(class extends React.Component {
       color,
       fillColor,
       weight: 1,
-      opacity: 0.25,
+      opacity: 0.7,
       fillOpacity,
     }
   }
