@@ -1,3 +1,4 @@
+import CardMedia from '@material-ui/core/CardMedia'
 import {action, extendObservable} from 'mobx'
 import { goToPath, Path } from '../../app/App'
 import {observer} from 'mobx-react'
@@ -66,6 +67,14 @@ const ManageViewCard = observer(class extends React.Component {
       <Card style={{ marginBottom: 15 }}>
         <CardHeader title={view.name}/>
         <CardContent>
+          {view.image &&
+            <CardMedia
+              image={view.image.url}
+              title={view.image.name}
+              style={{ height: 140 }}
+            />
+          }
+
           {view.description && <div>
             <strong>Description:</strong> {view.description}
           </div>}

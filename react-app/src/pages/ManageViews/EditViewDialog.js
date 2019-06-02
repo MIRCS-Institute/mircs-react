@@ -1,3 +1,4 @@
+import CardMedia from '@material-ui/core/CardMedia'
 import { action, extendObservable, toJS } from 'mobx'
 import { observer } from 'mobx-react'
 import { refreshView } from '../../api/refreshView'
@@ -5,6 +6,7 @@ import { showSnackbarMessage } from '../../components/SnackbarMessages'
 import Button from '@material-ui/core/Button'
 import ButtonProgress from '../../components/ButtonProgress'
 import copyDataPropHOC from '../../components/copyDataPropHOC'
+import ChooseImageDialog from './ChooseImageDialog'
 import DataSetChooser from '../../components/DataSetChooser'
 import Dialog from '@material-ui/core/Dialog'
 import DialogActions from '@material-ui/core/DialogActions'
@@ -31,6 +33,7 @@ const EditViewDialog = observer(class extends React.Component {
     super()
     extendObservable(this, {
       isSaving: false,
+      showChooseImageDialog: false,
     })
   }
 
@@ -78,10 +81,6 @@ const EditViewDialog = observer(class extends React.Component {
     return true
   }
 
-  handleDataSetChanged = action((dataSetId) => {
-    this.props.data.dataSetId = dataSetId
-  })
-
   render() {
     const { open, onCancel } = this.props
 
@@ -105,7 +104,23 @@ const EditViewDialog = observer(class extends React.Component {
           <DataSetChooser
             label='Data Set'
             dataSetId={this.props.data.dataSetId}
-            onDataSetChanged={this.handleDataSetChanged}
+            onDataSetChanged={action((dataSetId) => this.props.data.dataSetId = dataSetId)}
+          />
+          {this.props.data.image &&
+            <CardMedia
+              image={this.props.data.image.url}
+              title={this.props.data.image.name}
+              style={{ height: 140 }}
+            />
+          }
+          <Button onClick={action(() => this.showChooseImageDialog = true)}>
+            Choose Image
+          </Button>
+          <ChooseImageDialog
+            open={this.showChooseImageDialog}
+            value={this.props.data.image}
+            onChange={action((image) => this.props.data.image = image)}
+            onDismiss={action(() => this.showChooseImageDialog = false)}
           />
 
         </DialogContent>
