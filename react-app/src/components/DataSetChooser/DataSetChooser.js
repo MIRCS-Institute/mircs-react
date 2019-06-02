@@ -2,11 +2,11 @@ import { action, extendObservable } from 'mobx'
 import { observer } from 'mobx-react'
 import ChooseDataSetDialog from './ChooseDataSetDialog'
 import DataSetName from '../DataSetName'
-import ForwardIcon from '@material-ui/icons/Forward'
-import IconButton from '@material-ui/core/IconButton'
 import Layout from '../../utils/Layout'
 import PropTypes from 'prop-types'
 import React from 'react'
+import Button from '@material-ui/core/Button'
+import Typography from '@material-ui/core/Typography'
 
 const DataSetChooser = observer(class extends React.Component {
   static propTypes = {
@@ -42,13 +42,16 @@ const DataSetChooser = observer(class extends React.Component {
 
   render() {
     return (
-      <div style={{ ...Layout.row, ...Layout.align('start', 'center') }}>
-        <IconButton onClick={this.onAddClick}><ForwardIcon/></IconButton>
+      <div style={{ ...Layout.align('start', 'center'), marginTop: 6 }}>
+        <Typography variant='caption'>Data Set:</Typography>
         <DataSetName label={this.props.label} dataSetId={this.props.dataSetId}/>
+        <div>
+          <Button onClick={this.onAddClick}>Choose Data Set</Button>
+        </div>
 
-        <ChooseDataSetDialog 
-          open={this.isChooseDataSetDialogOpen} 
-          onCancel={this.handleCancel} 
+        <ChooseDataSetDialog
+          open={this.isChooseDataSetDialogOpen}
+          onCancel={this.handleCancel}
           onChoose={this.handleChoose}
         />
       </div>
