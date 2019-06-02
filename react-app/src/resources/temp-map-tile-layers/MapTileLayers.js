@@ -9,8 +9,7 @@ const layers = {
         attribution:
           'Map data &copy; <a href="https://openstreetmap.org">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://mapbox.com">Mapbox</a>',
         id: 'mapbox.streets',
-        accessToken:
-          'pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw',
+        accessToken: 'pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw',
         maxZoom: 22,
       },
     ),
@@ -23,8 +22,7 @@ const layers = {
         attribution:
           'Map data &copy; <a href="https://openstreetmap.org">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://mapbox.com">Mapbox</a>',
         id: 'mapbox.light',
-        accessToken:
-          'pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw',
+        accessToken: 'pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw',
         maxZoom: 22,
       },
     ),
@@ -32,49 +30,81 @@ const layers = {
   CamsMap: {
     name: 'Cam\'s Map',
     makeTileLayer: () => L.tileLayer(
-      'https://api.mapbox.com/styles/v1/shaunjohansen/cjhichsvu67fe2rnt7z72id2e/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1Ijoic2hhdW5qb2hhbnNlbiIsImEiOiJjamg1OWRmZXIxMmp1MzFtampiZjJoNDV4In0.PgQiDqLUli_GaxB1jmrI2A'
+      'https://api.mapbox.com/styles/v1/shaunjohansen/cjhichsvu67fe2rnt7z72id2e/tiles/256/{z}/{x}/{y}',
+      {
+        accessToken: 'pk.eyJ1Ijoic2hhdW5qb2hhbnNlbiIsImEiOiJjamg1OWRmZXIxMmp1MzFtampiZjJoNDV4In0.PgQiDqLUli_GaxB1jmrI2A',
+        maxZoom: 22,
+      },
     ),
   },
   Heatherton: {
     name: 'Heatherton',
     makeTileLayer: () => L.tileLayer(
-      'https://api.mapbox.com/styles/v1/mr-mircs/cjs68f2j02ag81fl3i6ag5c4q/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1Ijoic2hhdW5qb2hhbnNlbiIsImEiOiJjamg1OWRmZXIxMmp1MzFtampiZjJoNDV4In0.PgQiDqLUli_GaxB1jmrI2A'
+      'https://api.mapbox.com/styles/v1/mr-mircs/cjs68f2j02ag81fl3i6ag5c4q/tiles/256/{z}/{x}/{y}?access_token={accessToken}',
+      {
+        accessToken: 'pk.eyJ1Ijoic2hhdW5qb2hhbnNlbiIsImEiOiJjamg1OWRmZXIxMmp1MzFtampiZjJoNDV4In0.PgQiDqLUli_GaxB1jmrI2A',
+        maxZoom: 22,
+      },
     ),
   },
   HeathertonSatellite: {
     name: 'Heatherton Satellite',
     makeTileLayer: () => L.tileLayer(
-      'https://api.mapbox.com/styles/v1/mr-mircs/cjt80vl9o1qg11flhmy9dqtz0/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1Ijoic2hhdW5qb2hhbnNlbiIsImEiOiJjamg1OWRmZXIxMmp1MzFtampiZjJoNDV4In0.PgQiDqLUli_GaxB1jmrI2A'
+      'https://api.mapbox.com/styles/v1/mr-mircs/cjt80vl9o1qg11flhmy9dqtz0/tiles/256/{z}/{x}/{y}?access_token={accessToken}',
+      {
+        accessToken: 'pk.eyJ1Ijoic2hhdW5qb2hhbnNlbiIsImEiOiJjamg1OWRmZXIxMmp1MzFtampiZjJoNDV4In0.PgQiDqLUli_GaxB1jmrI2A',
+        maxZoom: 22,
+      },
     ),
   },
   StyleizedMap: {
     name: 'Styleized Map',
     makeTileLayer: () => L.tileLayer(
-      'https://api.mapbox.com/styles/v1/mr-mircs/cjt813r2c03qb1fldgqggk3dw/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1Ijoic2hhdW5qb2hhbnNlbiIsImEiOiJjamg1OWRmZXIxMmp1MzFtampiZjJoNDV4In0.PgQiDqLUli_GaxB1jmrI2A'
+      'https://api.mapbox.com/styles/v1/mr-mircs/cjt813r2c03qb1fldgqggk3dw/tiles/256/{z}/{x}/{y}?access_token={accessToken}',
+      {
+        accessToken: 'pk.eyJ1Ijoic2hhdW5qb2hhbnNlbiIsImEiOiJjamg1OWRmZXIxMmp1MzFtampiZjJoNDV4In0.PgQiDqLUli_GaxB1jmrI2A',
+        maxZoom: 22,
+      },
     ),
   },
   DurhamWestRiverSatellite: {
     name: 'Durham/West River Satellite',
     makeTileLayer: () => L.tileLayer(
-      'https://api.mapbox.com/styles/v1/mr-mircs/cjt80yuzk1vn61fqmm5xiqvdw/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1Ijoic2hhdW5qb2hhbnNlbiIsImEiOiJjamg1OWRmZXIxMmp1MzFtampiZjJoNDV4In0.PgQiDqLUli_GaxB1jmrI2A'
+      'https://api.mapbox.com/styles/v1/mr-mircs/cjt80yuzk1vn61fqmm5xiqvdw/tiles/256/{z}/{x}/{y}?access_token={accessToken}',
+      {
+        accessToken: 'pk.eyJ1Ijoic2hhdW5qb2hhbnNlbiIsImEiOiJjamg1OWRmZXIxMmp1MzFtampiZjJoNDV4In0.PgQiDqLUli_GaxB1jmrI2A',
+        maxZoom: 22,
+      },
     ),
   },
   HalifaxSatellite: {
     name: 'Halifax Satellite',
     makeTileLayer: () => L.tileLayer(
-      'https://api.mapbox.com/styles/v1/mr-mircs/cjt80zw556zux1gqi5tbeg0ey/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1Ijoic2hhdW5qb2hhbnNlbiIsImEiOiJjamg1OWRmZXIxMmp1MzFtampiZjJoNDV4In0.PgQiDqLUli_GaxB1jmrI2A'
+      'https://api.mapbox.com/styles/v1/mr-mircs/cjt80zw556zux1gqi5tbeg0ey/tiles/256/{z}/{x}/{y}?access_token={accessToken}',
+      {
+        accessToken: 'pk.eyJ1Ijoic2hhdW5qb2hhbnNlbiIsImEiOiJjamg1OWRmZXIxMmp1MzFtampiZjJoNDV4In0.PgQiDqLUli_GaxB1jmrI2A',
+        maxZoom: 22,
+      },
     ),
   },
   NewRossSatellite: {
     name: 'New Ross Satellite',
     makeTileLayer: () => L.tileLayer(
-      'https://api.mapbox.com/styles/v1/mr-mircs/cjt8110fw12sl1fqu25gutz5x/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1Ijoic2hhdW5qb2hhbnNlbiIsImEiOiJjamg1OWRmZXIxMmp1MzFtampiZjJoNDV4In0.PgQiDqLUli_GaxB1jmrI2A'
+      'https://api.mapbox.com/styles/v1/mr-mircs/cjt8110fw12sl1fqu25gutz5x/tiles/256/{z}/{x}/{y}?access_token={accessToken}',
+      {
+        accessToken: 'pk.eyJ1Ijoic2hhdW5qb2hhbnNlbiIsImEiOiJjamg1OWRmZXIxMmp1MzFtampiZjJoNDV4In0.PgQiDqLUli_GaxB1jmrI2A',
+        maxZoom: 22,
+      },
     ),
   },
   LightMap: {
     name: 'Light Map',
     makeTileLayer: () => L.tileLayer(
-      'https://api.mapbox.com/styles/v1/mr-mircs/cjt812k9z34ib1fo0yamtm33h/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1Ijoic2hhdW5qb2hhbnNlbiIsImEiOiJjamg1OWRmZXIxMmp1MzFtampiZjJoNDV4In0.PgQiDqLUli_GaxB1jmrI2A'
+      'https://api.mapbox.com/styles/v1/mr-mircs/cjt812k9z34ib1fo0yamtm33h/tiles/256/{z}/{x}/{y}?access_token={accessToken}',
+      {
+        accessToken: 'pk.eyJ1Ijoic2hhdW5qb2hhbnNlbiIsImEiOiJjamg1OWRmZXIxMmp1MzFtampiZjJoNDV4In0.PgQiDqLUli_GaxB1jmrI2A',
+        maxZoom: 22,
+      },
     ),
   },
   OpenStreetMap: {
