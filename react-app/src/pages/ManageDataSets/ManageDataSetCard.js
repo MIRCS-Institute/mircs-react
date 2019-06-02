@@ -104,7 +104,7 @@ const ManageDataSetCard = observer(class extends React.Component {
               {_.map(stats, (value, key) => (
                 <div key={key} style={{
                   marginLeft: 10,
-                }}>{key}: {value}</div>
+                }}>{key}: {JSON.stringify(value)}</div>
               ))}
             </div>}
             {fields.length > 0 && <div>

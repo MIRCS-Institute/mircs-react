@@ -16,10 +16,12 @@ const ManageRecordCard = observer(class extends React.Component {
   render() {
     const { record, dataSetId } = this.props
 
+    const values = record.properties || record
+
     return (
       <Card style={{ marginBottom: 15 }}>
         <CardContent>
-          {_.map(record, (value, key) => (
+          {_.map(values, (value, key) => (
             <div key={key}>
               <strong>{key}:</strong> {'' + value}
             </div>
