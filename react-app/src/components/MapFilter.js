@@ -6,6 +6,7 @@ import { withStyles } from '@material-ui/core/styles'
 import _ from 'lodash'
 import Chip from '@material-ui/core/Chip'
 import Layout from '../utils/Layout'
+import MapTileLayers from '../resources/temp-map-tile-layers/MapTileLayers'
 import MenuItem from '@material-ui/core/MenuItem'
 import PropTypes from 'prop-types'
 import React from 'react'
@@ -134,18 +135,11 @@ const MapFilter = observer(class extends React.Component {
           variant='outlined'
           style={{ marginLeft: 10 }}
         >
-          <MenuItem value='CamsMap'>
-            Cam's Map
-          </MenuItem>
-          <MenuItem value='OpenStreetMap'>
-            OpenStreetMap
-          </MenuItem>
-          <MenuItem value='Mapbox'>
-            Mapbox
-          </MenuItem>
-          <MenuItem value='Mapbox Light'>
-            Mapbox Light
-          </MenuItem>
+          {Object.keys(MapTileLayers.layers).map((key) =>
+            <MenuItem key={key} value={key}>
+              {MapTileLayers.layers[key].name}
+            </MenuItem>
+          )}
         </TextField>
 
         <TextField

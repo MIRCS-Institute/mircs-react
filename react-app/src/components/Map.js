@@ -4,6 +4,7 @@ import { CurrentRelationshipJoin } from '../api/RelationshipJoin'
 import { observer } from 'mobx-react'
 import { withStyles } from '@material-ui/core/styles'
 import _ from 'lodash'
+import MapTileLayers from '../resources/temp-map-tile-layers/MapTileLayers'
 import Layout from '../utils/Layout'
 import PropTypes from 'prop-types'
 import React from 'react'
@@ -487,42 +488,7 @@ const Map = observer(class extends React.Component {
       this.tileLayer = null
     }
 
-    switch (newLayerName) {
-      case 'Mapbox':
-        this.tileLayer = L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
-          // minZoom: 8,
-          attribution: 'Map data &copy; <a href="https://openstreetmap.org">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://mapbox.com">Mapbox</a>',
-          id: 'mapbox.streets',
-          accessToken: 'pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw',
-          maxZoom: 22,
-        })
-        break
-
-      case 'Mapbox Light':
-        this.tileLayer = L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
-          // minZoom: 8,
-          attribution: 'Map data &copy; <a href="https://openstreetmap.org">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://mapbox.com">Mapbox</a>',
-          id: 'mapbox.light',
-          accessToken: 'pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw',
-          maxZoom: 22,
-        })
-        break
-
-      case 'OpenStreetMap':
-      default:
-        this.tileLayer = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
-          attribution: '&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> contributors',
-          maxZoom: 21,
-        })
-        break
-
-      case 'CamsMap':
-        this.tileLayer = L.tileLayer('https://api.mapbox.com/styles/v1/shaunjohansen/cjhichsvu67fe2rnt7z72id2e/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1Ijoic2hhdW5qb2hhbnNlbiIsImEiOiJjamg1OWRmZXIxMmp1MzFtampiZjJoNDV4In0.PgQiDqLUli_GaxB1jmrI2A', {
-          maxZoom: 20,
-        })
-        break
-    }
-
+    this.tileLayer = (MapTileLayers.layers[newLayerName] || MapTileLayers.defaultLayer).makeTileLayer()
     this.tileLayer.addTo(this.map)
   }
 
