@@ -35,7 +35,7 @@ const ChooseImageDialog = observer(class extends React.Component {
         <DialogTitle>Choose Image</DialogTitle>
         <DialogContent>
           {ViewPictures.getPicturesList().map((picture, index) =>
-            <div key={index} onClick={() => onChange(picture)}>
+            <div key={index} onClick={() => { onChange(picture); onDismiss() }}>
               <CardMedia
                 image={picture.url}
                 title={picture.name}
@@ -49,7 +49,7 @@ const ChooseImageDialog = observer(class extends React.Component {
         </DialogContent>
         <DialogActions>
           <Button onClick={onDismiss}>
-            OK
+            Cancel
           </Button>
         </DialogActions>
 
