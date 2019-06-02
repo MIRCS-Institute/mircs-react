@@ -81,6 +81,9 @@ const ManageViewCard = observer(class extends React.Component {
           {view.dataSetId && <div>
             <strong>Data Set:</strong> <DataSetName dataSetId={view.dataSetId}/>
           </div>}
+          {view.tileLayerName && <div>
+            <strong>Tile Layer:</strong> {view.tileLayerName}
+          </div>}
 
           <EditViewDialog
             open={this.showEditDialog}

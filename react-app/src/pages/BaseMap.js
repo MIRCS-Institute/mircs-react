@@ -1,5 +1,6 @@
 import { action, autorun, computed, extendObservable } from 'mobx'
 import { CurrentDataSetRecords, getDataSetRecordsRes } from '../api/DataSetRecords'
+import { CurrentView } from '../api/View'
 import { getCurrentDataSetId } from '../api/DataSet'
 import { getRelationshipsRes } from '../api/Relationships'
 import { observer } from 'mobx-react'
@@ -12,7 +13,7 @@ const BaseMap = observer(class extends React.Component {
     super()
     extendObservable(this, {
       // The name of the tile layer to use.
-      tileLayerName: 'Mapbox Light',
+      tileLayerName: CurrentView.res.get('tileLayerName', 'Mapbox Light'),
 
       // An array of strings that are being searched for
       searchStrings: [],
@@ -47,7 +48,7 @@ const BaseMap = observer(class extends React.Component {
 
   // This is a full map reset.
   reset = action( () => {
-    this.tileLayerName = 'Mapbox Light'
+    this.tileLayerName = CurrentView.res.get('tileLayerName', 'Mapbox Light')
     this.searchStrings = []
     this.fieldNames = []
     this.highlightField = 'none'

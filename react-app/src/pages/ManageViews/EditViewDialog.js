@@ -13,6 +13,8 @@ import DialogActions from '@material-ui/core/DialogActions'
 import DialogContent from '@material-ui/core/DialogContent'
 import DialogTitle from '@material-ui/core/DialogTitle'
 import ensureString from '../../utils/ensureString'
+import MapTileLayers from '../../resources/temp-map-tile-layers/MapTileLayers'
+import MenuItem from '@material-ui/core/MenuItem'
 import PropTypes from 'prop-types'
 import React from 'react'
 import ServerHttpApi from '../../api/net/ServerHttpApi'
@@ -95,17 +97,37 @@ const EditViewDialog = observer(class extends React.Component {
             onChange={this.handleFieldChange('name')}
             margin='dense' type='text' fullWidth
           />
+
           <TextField
             label='description'
             value={this.props.data.description}
             onChange={this.handleFieldChange('description')}
             margin='dense' type='text' fullWidth
           />
+
           <DataSetChooser
             label='Data Set'
             dataSetId={this.props.data.dataSetId}
             onDataSetChanged={action((dataSetId) => this.props.data.dataSetId = dataSetId)}
           />
+
+          <TextField
+            select
+            label='Tile Layer'
+            value={this.props.data.tileLayerName}
+            onChange={action((event) => {
+              this.props.data.tileLayerName = event.target.value
+            })}
+            margin='normal'
+            variant='outlined'
+          >
+            {Object.keys(MapTileLayers.layers).map((key) =>
+              <MenuItem key={key} value={key}>
+                {MapTileLayers.layers[key].name}
+              </MenuItem>
+            )}
+          </TextField>
+
           {this.props.data.image &&
             <CardMedia
               image={this.props.data.image.url}
