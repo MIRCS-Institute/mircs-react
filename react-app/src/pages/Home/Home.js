@@ -43,7 +43,7 @@ const Home = observer(class extends React.Component {
           {(!isLoading) && views.length === 0 && <AllDataSets/>}
         </div>
 
-        <Typography variant='headline' style={{ marginTop: 48, marginBottom: 6 }}>
+        <Typography variant='h6' style={{ marginTop: 48, marginBottom: 6 }}>
           Links
         </Typography>
         <div style={{
