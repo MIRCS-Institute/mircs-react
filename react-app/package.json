@@ -17,8 +17,8 @@
     "not op_mini all"
   ],
   "dependencies": {
-    "@material-ui/core": "^3.6.2",
-    "@material-ui/icons": "^3.0.1",
+    "@material-ui/core": "^4.0.1",
+    "@material-ui/icons": "^4.0.1",
     "FileReader": "^0.10.2",
     "axios": "^0.17.1",
     "chai": "^4.2.0",
