@@ -1,12 +1,8 @@
 import CardMedia from '@material-ui/core/CardMedia'
-import { action, extendObservable, toJS } from 'mobx'
+import { extendObservable } from 'mobx'
 import { observer } from 'mobx-react'
-import { refreshView } from '../../api/refreshView'
-import { showSnackbarMessage } from '../../components/SnackbarMessages'
 import Button from '@material-ui/core/Button'
-import ButtonProgress from '../../components/ButtonProgress'
 import copyDataPropHOC from '../../components/copyDataPropHOC'
-import DataSetChooser from '../../components/DataSetChooser'
 import Dialog from '@material-ui/core/Dialog'
 import DialogActions from '@material-ui/core/DialogActions'
 import DialogContent from '@material-ui/core/DialogContent'
@@ -14,8 +10,6 @@ import DialogTitle from '@material-ui/core/DialogTitle'
 import ensureString from '../../utils/ensureString'
 import PropTypes from 'prop-types'
 import React from 'react'
-import ServerHttpApi from '../../api/net/ServerHttpApi'
-import TextField from '@material-ui/core/TextField'
 import Typography from '@material-ui/core/Typography'
 import ViewPictures from '../../resources/temp-view-pictures/ViewPictures'
 
@@ -34,11 +28,7 @@ const ChooseImageDialog = observer(class extends React.Component {
   }
 
   render() {
-    const { open, value, onChange, onDismiss } = this.props
-
-    const valueUrl = value && value.url
-
-    console.log(ViewPictures.getPicturesList())
+    const { open, onChange, onDismiss } = this.props
 
     return (
       <Dialog open={open} disableEnforceFocus>
