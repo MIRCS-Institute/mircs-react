@@ -1,11 +1,11 @@
 import { action, extendObservable } from 'mobx'
 import { observer } from 'mobx-react'
+import Button from '@material-ui/core/Button'
 import ChooseDataSetDialog from './ChooseDataSetDialog'
 import DataSetName from '../DataSetName'
 import Layout from '../../utils/Layout'
 import PropTypes from 'prop-types'
 import React from 'react'
-import Button from '@material-ui/core/Button'
 import Typography from '@material-ui/core/Typography'
 
 const DataSetChooser = observer(class extends React.Component {
