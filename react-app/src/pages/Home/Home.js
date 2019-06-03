@@ -31,7 +31,7 @@ const Home = observer(class extends React.Component {
           MIRCS Geo-Genealogy Prototype
         </Typography>
         <Typography variant='h6' style={{ ...titleStyle, marginBottom: 36 }}>
-          Modernizing History
+          History. Now.
         </Typography>
 
         {isLoading && <LoadingSpinner title='Loading...' />}
