@@ -310,11 +310,11 @@ const Map = observer(class extends React.Component {
   getPolygonStyle = (geojson, foundPoints) => {
     // Default colours
     let color = '#E6A224'
-    let fillColor = Layout.colours[7]
+    let fillColor = Layout.colours[7] + '1A'
     let fillOpacity = 0.7
     if (_.get(geojson.geometry, 'type') === 'Point') {
       color = Layout.colours[7]
-      fillColor = '#E6A224'
+      fillColor = '#E6A2241A'
     }
 
     // Basic properties of geojson
