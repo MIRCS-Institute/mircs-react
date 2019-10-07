@@ -311,7 +311,7 @@ const Map = observer(class extends React.Component {
     // Default colours
     let color = '#E6A224'
     let fillColor = Layout.colours[7]
-    let fillOpacity = 0.5
+    let fillOpacity = 0.7
     if (_.get(geojson.geometry, 'type') === 'Point') {
       color = Layout.colours[7]
       fillColor = '#E6A224'

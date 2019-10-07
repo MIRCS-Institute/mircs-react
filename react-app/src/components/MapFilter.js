@@ -121,7 +121,7 @@ const MapFilter = observer(class extends React.Component {
         <TextField
           id='standard-select-currency'
           select
-          label='Tile Layer'
+          label='Map Background'
           className={classes.mapOptions}
           value={this.props.store.tileLayerName}
           onChange={this.handleTileLayerNameChange}
@@ -130,7 +130,7 @@ const MapFilter = observer(class extends React.Component {
               className: classes.menu,
             },
           }}
-          /* helperText="Please choose the mapping base layer..." */
+          helperText='Select a map background to display with this data...'
           margin='normal'
           variant='outlined'
           style={{ marginLeft: 10 }}
