@@ -6,7 +6,7 @@ To set up a development environment, in this directory run:
 
 ```sh
 npm install
-npm start
+npm run watch
 ```
 
 To run the test watcher in an interactive mode (by default, runs tests related to files changed since the last commit):

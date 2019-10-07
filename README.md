@@ -36,7 +36,7 @@ For more information, see the [Server readme](./server/README.md).
 ```sh
 cd react-app
 npm install
-npm start
+npm run watch
 ```
 
 For more information, see the [React App readme](./react-app/README.md).
