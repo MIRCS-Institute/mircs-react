@@ -6,6 +6,11 @@ node_modules
 # misc
 .DS_Store
 npm-debug.log*
+/data
 
 # build output
 /build
+
+# IDE folders
+/.idea
+/*.iml
