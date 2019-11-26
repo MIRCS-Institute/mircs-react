@@ -22,7 +22,7 @@ const PageSkeleton = observer(class extends React.Component {
         <Toolbar disableGutters={true} style={{ paddingRight: 8 }}>
           <img src={MircsLogo} alt='MIRCS Logo' style={{ height: 36, paddingLeft: 8, paddingRight: 12 }}/>
 
-          <Typography variant='title' color='inherit' noWrap>
+          <Typography variant='h4' color='inherit' noWrap>
             {title || 'MIRCS Geo-Genealogy'}
           </Typography>
           <div style={{ flex: 1 }}/>
