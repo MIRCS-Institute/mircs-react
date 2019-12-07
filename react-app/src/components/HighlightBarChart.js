@@ -12,7 +12,6 @@ import TextField from '@material-ui/core/TextField'
 const HighlightBarChart = observer(class extends React.Component {
 
   static propTypes = {
-    theme: PropTypes.object.isRequired,
     store: PropTypes.object.isRequired,
   }
 

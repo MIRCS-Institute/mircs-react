@@ -1,6 +1,7 @@
 import { action } from 'mobx'
 import { CurrentDataSetRecords } from '../api/DataSetRecords'
 import { CurrentRelationshipJoin } from '../api/RelationshipJoin'
+import { CurrentView } from '../api/View'
 import { observer } from 'mobx-react'
 import { withStyles } from '@material-ui/core/styles'
 import _ from 'lodash'
@@ -115,6 +116,18 @@ const MapFilter = observer(class extends React.Component {
       />
     }
 
+    // Set up the list of layers that will be displayed.  We want to only show the layer that this view is configured
+    // to use as well as the global layers.
+    let layers = {}
+    let viewLayer = CurrentView.res.get('tileLayerName')
+    if (viewLayer && viewLayer.length > 0)
+      layers[viewLayer] = viewLayer
+    for (let [key, value] of Object.entries(MapTileLayers.layers)) {
+      if (value.global) {
+        layers[key] = key
+      }
+    }
+
     return (
       <form className={classes.container} noValidate autoComplete='off'>
 
@@ -135,7 +148,7 @@ const MapFilter = observer(class extends React.Component {
           variant='outlined'
           style={{ marginLeft: 10 }}
         >
-          {Object.keys(MapTileLayers.layers).map((key) =>
+          {Object.keys(layers).map((key) =>
             <MenuItem key={key} value={key}>
               {MapTileLayers.layers[key].name}
             </MenuItem>

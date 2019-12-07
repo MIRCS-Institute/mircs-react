@@ -13,7 +13,7 @@ const BaseMap = observer(class extends React.Component {
     super()
     extendObservable(this, {
       // The name of the tile layer to use.
-      tileLayerName: CurrentView.res.get('tileLayerName', 'Mapbox Light'),
+      tileLayerName: CurrentView.res.get('tileLayerName', 'MapboxLight'),
 
       // An array of strings that are being searched for
       searchStrings: [],
@@ -48,7 +48,7 @@ const BaseMap = observer(class extends React.Component {
 
   // This is a full map reset.
   reset = action( () => {
-    this.tileLayerName = CurrentView.res.get('tileLayerName', 'Mapbox Light')
+    this.tileLayerName = CurrentView.res.get('tileLayerName', 'MapboxLight')
     this.searchStrings = []
     this.fieldNames = []
     this.highlightField = 'none'
