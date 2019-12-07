@@ -19,10 +19,23 @@ brew install mongodb
 brew services start mongodb
 ```
 
+or on Linux:
+
+```sh
+sudo apt-get install -y mongodb-org
+sudo service mongod start
+```
+
 Note that the service will restart when you log in. To quit the service:
 
 ```sh
 brew services stop mongodb
+```
+
+or on Linux:
+
+```sh
+sudo service mongod stop
 ```
 
 ## User management
