@@ -37,7 +37,7 @@ const Home = observer(class extends React.Component {
         {isLoading && <LoadingSpinner title='Loading...' />}
 
         <div style={{ ...Layout.row, ...Layout.align('center'), flexWrap: 'wrap' }}>
-          {views.map((view) => (
+          {views.filter(view => view.showOnHome).map((view) => (
             <ViewCard key={view._id} view={view}/>
           ))}
           {(!isLoading) && views.length === 0 && <AllDataSets/>}

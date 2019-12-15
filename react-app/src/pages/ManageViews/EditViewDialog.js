@@ -5,6 +5,7 @@ import { showSnackbarMessage } from '../../components/SnackbarMessages'
 import Button from '@material-ui/core/Button'
 import ButtonProgress from '../../components/ButtonProgress'
 import CardMedia from '@material-ui/core/CardMedia'
+import Checkbox from '@material-ui/core/Checkbox'
 import ChooseImageDialog from './ChooseImageDialog'
 import copyDataPropHOC from '../../components/copyDataPropHOC'
 import DataSetChooser from '../../components/DataSetChooser'
@@ -13,6 +14,7 @@ import DialogActions from '@material-ui/core/DialogActions'
 import DialogContent from '@material-ui/core/DialogContent'
 import DialogTitle from '@material-ui/core/DialogTitle'
 import ensureString from '../../utils/ensureString'
+import FormControlLabel from '@material-ui/core/FormControlLabel'
 import MapTileLayers from '../../resources/temp-map-tile-layers/MapTileLayers'
 import MenuItem from '@material-ui/core/MenuItem'
 import PropTypes from 'prop-types'
@@ -46,7 +48,11 @@ const EditViewDialog = observer(class extends React.Component {
   // creates a change handler function for the field with passed @key
   handleFieldChange = (key) => {
     return action((event) => {
-      this.props.data[key] = event.target.value
+      if (event.target.type === 'checkbox') {
+        this.props.data[key] = !this.props.data[key]
+      } else {
+        this.props.data[key] = event.target.value
+      }
     })
   }
 
@@ -96,6 +102,13 @@ const EditViewDialog = observer(class extends React.Component {
             value={this.props.data.name}
             onChange={this.handleFieldChange('name')}
             margin='dense' type='text' fullWidth
+          />
+
+          <FormControlLabel
+            control={
+              <Checkbox checked={this.props.data.showOnHome} onChange={this.handleFieldChange('showOnHome')} />
+            }
+            label="Show on Home Page"
           />
 
           <TextField
