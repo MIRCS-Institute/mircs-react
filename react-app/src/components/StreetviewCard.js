@@ -24,7 +24,7 @@ const StreetviewCard = observer(class extends React.Component {
     loading: false,
   }
 
-  url = undefined
+  url = 'https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=' + this.props.store.selected.point[0] + ',' + this.props.store.selected.point[1] // undefined
 
   componentDidMount() {
     this.autorunDisposer = autorun(() => {
@@ -38,6 +38,7 @@ const StreetviewCard = observer(class extends React.Component {
 
   getCard = () => {
 
+    /* This no longer works without Billing enabled for the api.  Maybe we can bring it back later.
     this.setState({ loading: true })
 
     if (this.props.store.selected.point) {
@@ -63,6 +64,7 @@ const StreetviewCard = observer(class extends React.Component {
           this.setState({ loading: false })
         })
     }
+    */
   }
 
   render() {
@@ -73,7 +75,7 @@ const StreetviewCard = observer(class extends React.Component {
         <Card className={classes.card} key='s'>
           <CardContent>
             <Typography component='p'>
-              <a href={this.url} target='_blank' rel='noopener noreferrer'>Street view is available <OpenInNew className={classes.icon} /></a>
+              <a href={this.url} target='_blank' rel='noopener noreferrer'>Street view <OpenInNew className={classes.icon} /></a>
             </Typography>
           </CardContent>
         </Card>
