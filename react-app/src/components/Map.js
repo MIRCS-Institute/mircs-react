@@ -310,6 +310,7 @@ const Map = observer(class extends React.Component {
   getPolygonStyle = (geojson, foundPoints) => {
     // Default colours
     let color = Layout.colourDefault
+    let opacity = 1
     let fillColor = Layout.colours[7]
     let fillOpacity = 0.5
     if (_.get(geojson.geometry, 'type') === 'Point') {
@@ -327,10 +328,8 @@ const Map = observer(class extends React.Component {
       })
     }
 
-    let opacity = 1
-
     // When there is no related data go with transparent fill.
-    if (records.length < 2) {
+    if (records.length < 2 && records[0] && Object.keys(records[0]).length < 5) {
       color = Layout.colourNoData
       opacity = 0.1
       fillOpacity = 0
