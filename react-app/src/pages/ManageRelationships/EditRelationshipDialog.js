@@ -87,7 +87,7 @@ const EditRelationshipDialog = observer(class extends React.Component {
     if (!this.props.data.name) {
       return false
     }
-    if (this.newJoinElements[0] || this.newJoinElements[1]) {
+    if (!this.props.data.joinElements[0]) {
       return false
     }
     return true
@@ -135,7 +135,7 @@ const EditRelationshipDialog = observer(class extends React.Component {
           <TextField margin='dense' label='description' type='text' fullWidth
             value={this.props.data.description} onChange={this.handleFieldChange('description')}/>
 
-          <Grid container spacing={24}>
+          <Grid container spacing={0}>
             <Grid item xs={5}>
               <DataSetChooser
                 label='Data Set 1'
@@ -153,7 +153,7 @@ const EditRelationshipDialog = observer(class extends React.Component {
             </Grid>
 
             {this.props.data.joinElements && this.props.data.joinElements.map((joinElement, index) => (
-              <Grid container spacing={24} key={index}>
+              <Grid container spacing={0} key={index}>
                 <Grid item xs={5}>
                   {joinElement[0]}
                 </Grid>
@@ -173,7 +173,7 @@ const EditRelationshipDialog = observer(class extends React.Component {
             ))}
 
             {this.showNewJoinElements &&
-              <Grid container spacing={24}>
+              <Grid container spacing={0}>
                 <Grid item xs={4}>
                   <FieldChooser
                     dataSetId={_.get(this.props.data, 'dataSets[0]')}
