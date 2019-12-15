@@ -309,12 +309,12 @@ const Map = observer(class extends React.Component {
   // This is used for geojson sourced markers or polygons.
   getPolygonStyle = (geojson, foundPoints) => {
     // Default colours
-    let color = '#E6A224'
+    let color = Layout.colourDefault
     let fillColor = Layout.colours[7]
-    let fillOpacity = 0.7
+    let fillOpacity = 0.5
     if (_.get(geojson.geometry, 'type') === 'Point') {
       color = Layout.colours[7]
-      fillColor = '#E6A224'
+      fillColor = Layout.colourDefault
     }
 
     // Basic properties of geojson
@@ -327,8 +327,12 @@ const Map = observer(class extends React.Component {
       })
     }
 
-    // When there is no related data and we're searching for something, go with transparent fill.
-    if (records.length < 2 && this.props.store.searchStrings.length > 0) {
+    let opacity = 1
+
+    // When there is no related data go with transparent fill.
+    if (records.length < 2) {
+      color = Layout.colourNoData
+      opacity = 0.1
       fillOpacity = 0
     }
 
@@ -377,7 +381,7 @@ const Map = observer(class extends React.Component {
     } else if (this.props.store.searchStrings.length !== 0) {
       // If none of the records in this geojson match none of the search string and we are searching, then hide.
       fillOpacity = 0
-      color = '#E6A224'
+      color = Layout.colourDefault
     }
 
     // Return our styling
@@ -385,7 +389,7 @@ const Map = observer(class extends React.Component {
       color,
       fillColor,
       weight: 1,
-      opacity: 0.7,
+      opacity,
       fillOpacity,
     }
   }
@@ -408,7 +412,7 @@ const Map = observer(class extends React.Component {
     // Emphasize newly selected marker
     if (marker.layer) {
       // This is a geojson marker
-      marker.layer._path.style.stroke = '#F00'
+      marker.layer._path.style.stroke = Layout.colourSelected
       marker.layer._path.style.strokeOpacity = 1
       marker.layer._path.style.strokeWidth = 4
     } else {

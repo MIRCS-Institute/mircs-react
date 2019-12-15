@@ -55,6 +55,16 @@ Layout.align = (main, cross) => {
   }
 }
 
+// Default colour used for showing points or shapes when not searching or filtered.
+Layout.colourDefault = '#E6A224'
+
+// Colour used for shapes or points that have no associate data
+Layout.colourNoData = '#888'
+
+// Colour used for a shape or point selected by the user.
+Layout.colourSelected = '#F00'
+
+// Colours used for found shapes or points when searching or filtering.
 Layout.colours = [
   '#885154',
   '#EC635F',
