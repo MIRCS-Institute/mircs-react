@@ -108,7 +108,7 @@ const EditViewDialog = observer(class extends React.Component {
             control={
               <Checkbox checked={this.props.data.showOnHome} onChange={this.handleFieldChange('showOnHome')} />
             }
-            label="Show on Home Page"
+            label='Show on Home Page'
           />
 
           <TextField

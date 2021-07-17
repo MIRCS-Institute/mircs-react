@@ -1,18 +1,12 @@
 import { autorun } from 'mobx'
 import { observer } from 'mobx-react'
-import { showSnackbarMessage } from './SnackbarMessages'
 import { withStyles } from '@material-ui/core'
-import _ from 'lodash'
 import Card from '@material-ui/core/Card'
 import CardContent from '@material-ui/core/CardContent'
-import Environment from '../utils/Environment'
-import http from '../utils/http'
 import OpenInNew from '@material-ui/icons/OpenInNew'
 import PropTypes from 'prop-types'
 import React from 'react'
 import Typography from '@material-ui/core/Typography'
-
-const GOOGLE_API_KEY = Environment.getRequired('GOOGLE_API_KEY')
 
 const StreetviewCard = observer(class extends React.Component {
 
