@@ -1,4 +1,4 @@
-#!/bin/bash -ev
+#!/bin/bash -ex
 
 #
 # Prepares and deploys contents of build dir to Heroku.
