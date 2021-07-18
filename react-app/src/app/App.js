@@ -116,7 +116,9 @@ const AppRoute = ({ path, component, exact }) => (
 const setUrlParams = (Component) => {
   // eslint-disable-next-line react/prop-types
   return ({ match }) => {
-    UrlParams.set(_.clone(match.params))
+    // on next tick to avoid warning - this does come with the problem that the params will not
+    // be set on first render within a component
+    setTimeout(() => UrlParams.set(_.clone(match.params)))
     return (<Component/>)
   }
 }
