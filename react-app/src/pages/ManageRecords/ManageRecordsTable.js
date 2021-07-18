@@ -26,7 +26,9 @@ const ManageRecordsTable = observer(class extends React.Component {
           <TableRow>
             {fields.map((field) => (
               <TableCell key={field._id}>
-                {field._id}
+                <strong>
+                  {field._id}
+                </strong>
               </TableCell>
             ))}
           </TableRow>
@@ -36,7 +38,7 @@ const ManageRecordsTable = observer(class extends React.Component {
             <TableRow key={record._id}>
               {fields.map((field, i) => (
                 <TableCell>
-                  {field} : {i}
+                  {'' + ((record.properties || record)[field._id])}
                 </TableCell>
               ))}
               <TableCell style={{ ...Layout.row }}>
