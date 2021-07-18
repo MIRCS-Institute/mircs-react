@@ -132,4 +132,5 @@ const layers = {
 export default {
   layers,
   defaultLayer: layers.OpenStreetMap,
+  defaultLayerId: 'OpenStreetMap',
 }

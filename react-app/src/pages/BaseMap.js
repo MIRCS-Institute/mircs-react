@@ -6,6 +6,7 @@ import { getRelationshipsRes } from '../api/Relationships'
 import { observer } from 'mobx-react'
 import _ from 'lodash'
 import React from 'react'
+import MapTileLayers from '../resources/temp-map-tile-layers/MapTileLayers'
 
 const BaseMap = observer(class extends React.Component {
 
@@ -13,7 +14,7 @@ const BaseMap = observer(class extends React.Component {
     super()
     extendObservable(this, {
       // The name of the tile layer to use.
-      tileLayerName: CurrentView.res.get('tileLayerName', 'MapboxLight'),
+      tileLayerName: CurrentView.res.get('tileLayerName', MapTileLayers.defaultLayerId),
 
       // An array of strings that are being searched for
       searchStrings: [],
@@ -48,7 +49,7 @@ const BaseMap = observer(class extends React.Component {
 
   // This is a full map reset.
   reset = action( () => {
-    this.tileLayerName = CurrentView.res.get('tileLayerName', 'MapboxLight')
+    this.tileLayerName = CurrentView.res.get('tileLayerName', MapTileLayers.defaultLayerId)
     this.searchStrings = []
     this.fieldNames = []
     this.highlightField = 'none'
