@@ -200,7 +200,7 @@ const EditRelationshipDialog = observer(class extends React.Component {
               </Grid>}
 
             {!this.showNewJoinElements &&
-              <Grid container alignItems='center' justify='center'>
+              <Grid container alignItems='center' justifyContent='center'>
                 <IconButton onClick={this.onAddNewJoinElementClick} color='primary' disabled={!this.haveDataSetsBeenSelected()}>
                   <AddCircleIcon/>
                 </IconButton>

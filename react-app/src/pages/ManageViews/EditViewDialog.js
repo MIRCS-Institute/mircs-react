@@ -100,7 +100,7 @@ const EditViewDialog = observer(class extends React.Component {
           <TextField
             autoFocus
             label='name'
-            value={this.props.data.name}
+            value={this.props.data.name || ''}
             onChange={this.handleFieldChange('name')}
             margin='dense' type='text' fullWidth
           />
@@ -114,7 +114,7 @@ const EditViewDialog = observer(class extends React.Component {
 
           <TextField
             label='description'
-            value={this.props.data.description}
+            value={this.props.data.description || ''}
             onChange={this.handleFieldChange('description')}
             margin='dense' type='text' fullWidth
           />
@@ -128,7 +128,7 @@ const EditViewDialog = observer(class extends React.Component {
           <TextField
             select
             label='Tile Layer'
-            value={this.props.data.tileLayerName}
+            value={this.props.data.tileLayerName || ''}
             onChange={action((event) => {
               this.props.data.tileLayerName = event.target.value
             })}

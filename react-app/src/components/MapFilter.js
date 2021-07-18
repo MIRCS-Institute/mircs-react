@@ -211,7 +211,7 @@ const MapFilter = observer(class extends React.Component {
             if (i<7) {
               return (
                 <Chip
-                  key={data}
+                  key={i}
                   label={labelValue}
                   onDelete={() => this.handleSearchDelete(data)}
                   style={divStyle}
