@@ -58,6 +58,7 @@ const Map = observer(class extends React.Component {
         this.skipMapClick = false
         return
       }
+      this.clearSelectedMarker()
       this.props.store.selected = {}
     }))
 
@@ -393,13 +394,7 @@ const Map = observer(class extends React.Component {
     }
   }
 
-  updateSelected = action((point, record, marker) => {
-    const newSelected = {
-      point: point,
-      records: [],
-      marker: marker,
-    }
-
+  clearSelectedMarker = () => {
     // De-emphasize previously selected marker if there was one.
     const previousMarker = this.props.store.selected.marker
     if (previousMarker) {
@@ -407,6 +402,16 @@ const Map = observer(class extends React.Component {
       previousMarker.layer._path.style.strokeOpacity = ''
       previousMarker.layer._path.style.strokeWidth = ''
     }
+  }
+
+  updateSelected = action((point, record, marker) => {
+    const newSelected = {
+      point: point,
+      records: [],
+      marker: marker,
+    }
+
+    this.clearSelectedMarker()
 
     // Emphasize newly selected marker
     if (marker.layer) {
