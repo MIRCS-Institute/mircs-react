@@ -9,7 +9,7 @@ const DataUtil = require('../../utils/data-util.js')
 module.exports = (router) => {
   router.param('recordId', async (req, res, next, recordId) => {
     try {
-      const _id = DataUtil.toObjectID(recordId)
+      const _id = DataUtil.toObjectId(recordId)
       const collectionName = req.dataSet && req.dataSet._collectionName
       if (!collectionName) {
         return next(HttpErrors.internalServerError500(`Data Set contains no _collectionName. dataSet: ${JSON.stringify(req.dataSet)}`))

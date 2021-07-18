@@ -12,12 +12,12 @@ const DATA_SETS_FIELDS_COLLECTION_SUFFIX = '_fields'
 const initialize = async () => {
   const db = await MongoUtil.getDb()
 
-  const auth = await db.createCollection(AUTHENTICATION_COLLECTION)
+  const auth = await db.collection(AUTHENTICATION_COLLECTION)
   await auth.createIndex({ email: 1 }, { unique: true })
 
-  await MongoUtil.createCollection(DATA_SETS_COLLECTION)
+  await db.collection(DATA_SETS_COLLECTION)
 
-  await MongoUtil.createCollection(RELATIONSHIPS_COLLECTION)
+  await db.collection(RELATIONSHIPS_COLLECTION)
 }
 
 const validateRelationship = (relationship) => {

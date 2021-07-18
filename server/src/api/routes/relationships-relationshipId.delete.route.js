@@ -14,7 +14,7 @@ module.exports = function(router) {
           db = theDb
 
           const relationshipsCollection = db.collection(DataUtil.RELATIONSHIPS_COLLECTION)
-          const _id = DataUtil.toObjectID(req.params.relationshipId)
+          const _id = DataUtil.toObjectId(req.params.relationshipId)
           return relationshipsCollection.deleteOne({ _id })
         })
         .then(() => {

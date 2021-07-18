@@ -16,7 +16,7 @@ module.exports = function(router) {
           db = theDb
 
           const dataSetCollection = db.collection(collectionName)
-          const _id = DataUtil.toObjectID(req.params.recordId)
+          const _id = DataUtil.toObjectId(req.params.recordId)
           return dataSetCollection.deleteOne({ _id })
         })
         .then(() => {

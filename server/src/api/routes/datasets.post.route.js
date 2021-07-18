@@ -31,7 +31,7 @@ module.exports = function(router) {
 
           dataSet._collectionName = DataUtil.DATA_SETS_COLLECTION_PREFIX + dataSet._id
 
-          return dataSetCollection.updateOne({ _id: dataSet._id }, dataSet)
+          return DataUtil.updateById(DataUtil.DATA_SETS_COLLECTION, dataSet._id, dataSet)
         })
         .then(() => {
           return db.createCollection(dataSet._collectionName)

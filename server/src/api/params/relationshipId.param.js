@@ -9,7 +9,7 @@ const DataUtil = require('../../utils/data-util.js')
 module.exports = (router) => {
   router.param('relationshipId', async (req, res, next, relationshipId) => {
     try {
-      const _id = DataUtil.toObjectID(relationshipId)
+      const _id = DataUtil.toObjectId(relationshipId)
       const dataSets = await DataUtil.find(DataUtil.RELATIONSHIPS_COLLECTION, { _id })
       req.relationship = dataSets[0]
       if (!req.relationship) {

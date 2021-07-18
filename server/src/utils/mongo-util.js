@@ -1,9 +1,6 @@
 const Environment = require('../utils/environment.js')
 const HttpErrors = require('./http-errors')
-const MongoDB = require('mongodb')
-
-const MongoClient = MongoDB.MongoClient
-const ObjectID = MongoDB.ObjectID
+const { MongoClient, ObjectId } = require('mongodb')
 
 const MONGO_SERVER_URL = Environment.getRequired('MONGO_SERVER_URL')
 
@@ -22,18 +19,10 @@ our database.
 */
 const getDb = async () => {
   if (!db) {
-    db = await MongoClient.connect(MONGO_SERVER_URL)
+    const client = await MongoClient.connect(MONGO_SERVER_URL)
+    db = client.db()
   }
   return db
-}
-
-/*
-creates a new collection in the database
-@see http://mongodb.github.io/node-mongodb-native/2.2/api/Db.html#createCollection
- */
-const createCollection = async (collectionName, options) => {
-  const db = await getDb()
-  await db.createCollection(collectionName, options)
 }
 
 const insertIntoCollection = async (collectionName, record) => {
@@ -56,9 +45,9 @@ const find = async (collectionName, query) => {
   return result
 }
 
-const toObjectID = (id) => {
+const toObjectId = (id) => {
   try {
-    return ObjectID(id)
+    return ObjectId(id)
   } catch(exception) {
     console.error(exception)
     throw HttpErrors.badRequest400(`Invalid ObjectID: '${id}' ${exception.message}`)
@@ -66,31 +55,30 @@ const toObjectID = (id) => {
 }
 
 const findById = async (collectionName, id) => {
-  const _id = toObjectID(id)
+  const _id = toObjectId(id)
   const list = await find(collectionName, { _id })
   return list[0]
 }
 
 const deleteById = async (collectionName, id) => {
-  const _id = toObjectID(id)
+  const _id = toObjectId(id)
   const db = await getDb()
   const collection = db.collection(collectionName)
   await collection.deleteOne({ _id })
 }
 
 const updateById = async (collectionName, id, update) => {
-  const _id = toObjectID(id)
+  const _id = toObjectId(id)
   const db = await getDb()
   const dataSetCollection = db.collection(collectionName)
-  return await dataSetCollection.updateOne({ _id }, update)
+  return await dataSetCollection.updateOne({ _id }, { $set: update })
 }
 
 module.exports = {
   getDb,
-  createCollection,
   insertIntoCollection,
   find,
-  toObjectID,
+  toObjectId,
   findById,
   deleteById,
   updateById,

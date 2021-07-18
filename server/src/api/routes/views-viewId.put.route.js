@@ -18,9 +18,7 @@ module.exports = (router) => {
         updatedView.createdAt = req.view.createdAt
         updatedView.updatedAt = new Date()
 
-        const db = await DataUtil.getDb()
-        const viewCollection = db.collection(DataUtil.VIEWS_COLLECTION)
-        await viewCollection.updateOne({ _id: updatedView._id }, updatedView)
+        await DataUtil.updateById(DataUtil.VIEWS_COLLECTION, updatedView._id, updatedView)
         res.status(200).send(updatedView)
       } catch (exception) {
         return next(exception)

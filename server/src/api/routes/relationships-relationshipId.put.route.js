@@ -21,15 +21,7 @@ module.exports = function(router) {
       updatedRelationship.createdAt = req.relationship.createdAt
       updatedRelationship.updatedAt = new Date()
 
-      let db
-      let relationshipCollection
-      DataUtil.getDb()
-        .then((theDb) => {
-          db = theDb
-          relationshipCollection = db.collection(DataUtil.RELATIONSHIPS_COLLECTION)
-
-          return relationshipCollection.updateOne({ _id: updatedRelationship._id }, updatedRelationship)
-        })
+      DataUtil.updateById(DataUtil.RELATIONSHIPS_COLLECTION, updatedRelationship._id, updatedRelationship)
         .then(() => {
           res.status(200).send(updatedRelationship)
         })

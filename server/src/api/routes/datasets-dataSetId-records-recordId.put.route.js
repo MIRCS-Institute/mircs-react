@@ -19,13 +19,11 @@ module.exports = function(router) {
       updatedRecord.updatedAt = new Date()
 
       let db
-      let dataSetCollection
       DataUtil.getDb()
         .then((theDb) => {
           db = theDb
-          dataSetCollection = db.collection(collectionName)
 
-          return dataSetCollection.updateOne({ _id: updatedRecord._id }, updatedRecord)
+          return DataUtil.updateById(collectionName, updatedRecord._id, updatedRecord)
         })
         .then(() => {
           return DataUtil.refreshFields(db, collectionName)
