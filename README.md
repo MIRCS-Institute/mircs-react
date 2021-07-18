@@ -25,7 +25,7 @@ You'll need to run two shells, one for the client UI and one for the server.
 ```sh
 cd server
 npm install
-npm start
+npm run watch
 ```
 
 For more information, see the [Server readme](./server/README.md).

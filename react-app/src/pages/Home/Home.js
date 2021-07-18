@@ -6,7 +6,7 @@ import { Path } from '../../app/App'
 import DataSetCard from './DataSetCard'
 import Layout from '../../utils/Layout'
 import LoadingSpinner from '../../components/LoadingSpinner'
-import MircsLogo from '../../resources/mircs-logo-color.svg'
+import MircsLogoColor from '../../resources/MircsLogoColor'
 import React from 'react'
 import Typography from '@material-ui/core/Typography'
 import ViewCard from './ViewCard'
@@ -24,7 +24,7 @@ const Home = observer(class extends React.Component {
         maxWidth: 1000,
       }}>
         <div style={{ marginTop: 24, marginBottom: 36 }}>
-          <img alt='MIRCS Logo' src={MircsLogo} style={{ width: 200 }}/>
+          <MircsLogoColor alt='MIRCS Logo' style={{ width: 200 }}/>
         </div>
 
         <Typography variant='h3' style={{ ...titleStyle, marginBottom: 12 }}>
