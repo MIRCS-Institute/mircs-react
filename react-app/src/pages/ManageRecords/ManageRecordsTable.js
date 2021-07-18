@@ -2,6 +2,7 @@ import { CurrentDataSetFields } from '../../api/DataSetFields'
 import { getCurrentDataSetId } from '../../api/DataSet'
 import { observer } from 'mobx-react'
 import Layout from '../../utils/Layout'
+import PageControl from '../../components/PageControl'
 import PropTypes from 'prop-types'
 import React from 'react'
 import RecordDeleteButton from './RecordDeleteButton'
@@ -34,18 +35,22 @@ const ManageRecordsTable = observer(class extends React.Component {
           </TableRow>
         </TableHead>
         <TableBody>
-          {this.props.records.map((record) => (
-            <TableRow key={record._id}>
-              {fields.map((field, i) => (
-                <TableCell>
-                  {'' + ((record.properties || record)[field._id])}
+          <PageControl
+            items={this.props.records}
+            pageSize={100}
+            renderItem={(record) => (
+              <TableRow key={record._id}>
+                {fields.map((field) => (
+                  <TableCell key={field._id}>
+                    {'' + ((record.properties || record)[field._id])}
+                  </TableCell>
+                ))}
+                <TableCell style={{ ...Layout.row }}>
+                  <RecordDeleteButton dataSetId={dataSetId} recordId={record._id}/>
                 </TableCell>
-              ))}
-              <TableCell style={{ ...Layout.row }}>
-                <RecordDeleteButton dataSetId={dataSetId} recordId={record._id}/>
-              </TableCell>
-            </TableRow>
-          ))}
+              </TableRow>
+            )}
+          />
         </TableBody>
       </Table>
     )
