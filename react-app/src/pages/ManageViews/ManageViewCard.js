@@ -15,6 +15,7 @@ import EditViewDialog from './EditViewDialog'
 import PropTypes from 'prop-types'
 import React from 'react'
 import ServerHttpApi from '../../api/net/ServerHttpApi'
+import ViewPictures from '../../resources/temp-view-pictures/ViewPictures'
 
 const ManageViewCard = observer(class extends React.Component {
   static propTypes = {
@@ -69,7 +70,7 @@ const ManageViewCard = observer(class extends React.Component {
         <CardContent>
           {view.image &&
             <CardMedia
-              image={view.image.url}
+              image={ViewPictures.getPictureUrl(view.image)}
               title={view.image.name}
               style={{ height: 140 }}
             />

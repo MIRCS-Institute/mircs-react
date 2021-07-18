@@ -37,7 +37,7 @@ const ChooseImageDialog = observer(class extends React.Component {
           {ViewPictures.getPicturesList().map((picture, index) =>
             <div key={index} onClick={() => { onChange(picture); onDismiss() }}>
               <CardMedia
-                image={picture.url}
+                image={ViewPictures.getPictureUrl(picture)}
                 title={picture.name}
                 style={{ height: 140 }}
               />

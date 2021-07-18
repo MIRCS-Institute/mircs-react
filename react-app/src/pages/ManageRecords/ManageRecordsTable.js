@@ -35,7 +35,7 @@ const ManageRecordsTable = observer(class extends React.Component {
           {this.props.records.map((record) => (
             <TableRow key={record._id}>
               {fields.map((field, i) => (
-                <TableCell key={field}>
+                <TableCell>
                   {field} : {i}
                 </TableCell>
               ))}
