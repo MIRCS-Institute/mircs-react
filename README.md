@@ -4,10 +4,9 @@ This repository contains the mircs-geogenealogy service prototype, built as a Re
 
 ## Build Status
 
-|Branch|Travis CI|
-|:-:|:-:|
-|develop|[![Build Status](https://travis-ci.org/MIRCS-Institute/mircs-react.svg?branch=develop)](https://travis-ci.org/MIRCS-Institute/mircs-react/branches)|
-|release|[![Build Status](https://travis-ci.org/MIRCS-Institute/mircs-react.svg?branch=release)](https://travis-ci.org/MIRCS-Institute/mircs-react/branches)|
+[![deploy mircs-develop](https://github.com/MIRCS-Institute/mircs-react/actions/workflows/develop.yml/badge.svg?branch=develop)](https://github.com/MIRCS-Institute/mircs-react/actions/workflows/develop.yml)
+
+Develop branch deploys to: https://mircs-develop.herokuapp.com/
 
 ## Development Environment
 
