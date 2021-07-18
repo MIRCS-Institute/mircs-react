@@ -21,6 +21,7 @@ import PropTypes from 'prop-types'
 import React from 'react'
 import ServerHttpApi from '../../api/net/ServerHttpApi'
 import TextField from '@material-ui/core/TextField'
+import ViewPictures from '../../resources/temp-view-pictures/ViewPictures'
 
 const EditViewDialog = observer(class extends React.Component {
   static propTypes = {
@@ -143,7 +144,7 @@ const EditViewDialog = observer(class extends React.Component {
 
           {this.props.data.image &&
             <CardMedia
-              image={this.props.data.image.url}
+              image={ViewPictures.getPictureUrl(this.props.data.image)}
               title={this.props.data.image.name}
               style={{ height: 140 }}
             />

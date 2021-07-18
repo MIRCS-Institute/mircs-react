@@ -7,6 +7,7 @@ import CardMedia from '@material-ui/core/CardMedia'
 import PropTypes from 'prop-types'
 import React from 'react'
 import Typography from '@material-ui/core/Typography'
+import ViewPictures from '../../resources/temp-view-pictures/ViewPictures'
 
 const ViewCard = observer(class extends React.Component {
   static propTypes = {
@@ -22,7 +23,7 @@ const ViewCard = observer(class extends React.Component {
         <CardActionArea>
           {view.image &&
             <CardMedia
-              image={view.image.url}
+              image={ViewPictures.getPictureUrl(view.image)}
               title={view.image.name}
               style={{ height: 140 }}
             />
