@@ -54,7 +54,7 @@ const Home = observer(class extends React.Component {
         }}>
           <div style={linkColumnStyle}>
             <a {...anchorProps} href='https://www.mircs.ca'>MIRCS Home</a>
-            <a {...anchorProps} href='https://www.mircs.ca/geo-genealogy/'>Geo-Genealogy</a>
+            <a {...anchorProps} href='https://www.mircs.ca/geogen/'>Geo-Genealogy</a>
           </div>
           <div style={linkColumnStyle}>
             <NavLink to={Path.acknowledgements()} style={linkStyle}>Acknowledgements</NavLink>

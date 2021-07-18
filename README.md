@@ -1,6 +1,6 @@
 # MIRCS Geogenealogy
 
-This repository contains the mircs-geogenealogy service prototype, built as a React web app connected to an ExpressJS server backed by MongoDB. For more information on the project see the [MIRCS website](https://www.mircs.ca/geo-genealogy/).
+This repository contains the mircs-geogenealogy service prototype, built as a React web app connected to an ExpressJS server backed by MongoDB. For more information on the project see the [MIRCS website](https://www.mircs.ca/geogen/).
 
 ## Build Status
 
