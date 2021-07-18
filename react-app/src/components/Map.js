@@ -8,7 +8,7 @@ import Layout from '../utils/Layout'
 import MapTileLayers from '../resources/temp-map-tile-layers/MapTileLayers'
 import PropTypes from 'prop-types'
 import React from 'react'
-import turf from 'turf'
+import * as turf from '@turf/turf'
 
 const L = window.L
 

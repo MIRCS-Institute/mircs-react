@@ -5,9 +5,3 @@
 
 # production
 /build
-
-# developer local environment files (unused by our project)
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local

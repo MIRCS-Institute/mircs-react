@@ -55,7 +55,7 @@ const ConfirmDeleteDialog = observer(class extends React.Component {
     const { name, open } = this.props
 
     return (
-      <Dialog open={open} onClose={this.handleCancel} disableBackdropClick>
+      <Dialog open={open} onClose={this.handleCancel}>
         <DialogTitle>Delete {name}</DialogTitle>
         <DialogContent>
           <DialogContentText>

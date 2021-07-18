@@ -34,6 +34,7 @@ describe('Environment', function() {
 
     expect(function() {
       Environment.initializeConfigurationVariables(configuration)
+      // eslint-disable-next-line jest/valid-expect
     }).to.throw('Extra values')
   })
 

@@ -4,7 +4,7 @@ services:
     # restart: always
     environment:
       - PORT=80
-      - MONGO_SERVER_URL=mongodb://mongoadmin:secret@mongo
+      - MONGO_SERVER_URL=mongodb://mongoadmin:secret@mongo/mircsdb
     ports:
       - 8080:80
 

@@ -10,36 +10,50 @@
     "test": "react-scripts test --env=jsdom"
   },
   "proxy": "http://localhost:8001/",
-  "browserslist": [
-    ">0.2%",
-    "not dead",
-    "not ie <= 11",
-    "not op_mini all"
-  ],
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
   "dependencies": {
-    "@material-ui/core": "^4.0.1",
-    "@material-ui/icons": "^4.0.1",
+    "@material-ui/core": "^4.12.1",
+    "@material-ui/icons": "^4.11.2",
+    "@testing-library/jest-dom": "^5.14.1",
+    "@testing-library/react": "^11.2.7",
+    "@testing-library/user-event": "^12.8.3",
+    "@turf/turf": "^6.5.0",
+    "chai": "^4.3.4",
+    "chart.js": "^2.9.4",
+    "classnames": "^2.3.1",
     "FileReader": "^0.10.2",
-    "chai": "^4.2.0",
-    "chart.js": "^2.7.3",
-    "classnames": "^2.2.6",
-    "eslint": "5.12.0",
-    "eslint-plugin-sort-imports-es6-autofix": "^0.3.0",
-    "fs": "0.0.1-security",
+    "fs": "^0.0.1-security",
     "jss": "^9.8.7",
-    "leaflet": "^1.2.0",
-    "linkifyjs": "^2.1.8",
+    "leaflet": "^1.7.1",
+    "linkifyjs": "^2.1.9",
     "lru-cache": "^5.1.1",
-    "mobx": "^3.3.1",
-    "mobx-react": "^4.3.3",
-    "papaparse": "^4.4.0",
-    "react": "^16.6.3",
-    "react-chartjs-2": "^2.7.4",
-    "react-dom": "^16.6.3",
-    "react-router-dom": "^4.2.2",
-    "react-scripts": "^2.1.1",
+    "mobx": "^3.6.2",
+    "mobx-react": "^4.4.3",
+    "papaparse": "^5.3.1",
+    "react": "^16.14.0",
+    "react-chartjs-2": "^2.11.2",
+    "react-dom": "^16.14.0",
+    "react-router-dom": "^4.3.1",
+    "react-scripts": "4.0.3",
     "react-simple-pie-chart": "^0.5.0",
-    "turf": "^3.0.14",
-    "validator": "^10.11.0"
+    "validator": "^10.11.0",
+    "web-vitals": "^1.1.2"
   }
 }

@@ -5,12 +5,12 @@ import React from 'react'
 
 const LoadingSpinner = ({ title }) => (
   <div>
-    <Grid container justify='center'>
+    <Grid container justifyContent='center'>
       <header style={styles.loadingHeader}>
         {title}
       </header>
     </Grid>
-    <Grid container justify='center'>
+    <Grid container justifyContent='center'>
       <CircularProgress/>
     </Grid>
   </div>

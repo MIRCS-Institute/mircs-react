@@ -1,4 +1,4 @@
-import { createMuiTheme } from '@material-ui/core/styles'
+import { createTheme } from '@material-ui/core/styles'
 import amber from '@material-ui/core/colors/amber'
 import indigo from '@material-ui/core/colors/indigo'
 
@@ -7,12 +7,12 @@ const Palette = {
   secondary: amber,
 }
 
-const DefaultTheme = createMuiTheme({
+const DefaultTheme = createTheme({
   palette: Palette,
 })
 export default DefaultTheme
 
-export const InvertedTheme = createMuiTheme({
+export const InvertedTheme = createTheme({
   palette: {
     ...Palette,
     type: 'dark',
