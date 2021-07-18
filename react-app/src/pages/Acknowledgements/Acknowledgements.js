@@ -24,7 +24,7 @@ const Acknowledgements = observer(class extends React.Component {
               button
               component='a'
               target='_blank'
-              href={`https://www.npmjs.com/${dependency}`}
+              href={`https://www.npmjs.com/package/${dependency}`}
             >
               <ListItemText primary={dependency}/>
             </ListItem>
